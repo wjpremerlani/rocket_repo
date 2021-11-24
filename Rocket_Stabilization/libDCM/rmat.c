@@ -48,7 +48,7 @@
 fractional ggain[] =  { GGAIN, GGAIN, GGAIN };
 
 uint16_t spin_rate = 0;
-fractional spin_axis[] = { 0, 0, RMAX };
+//fractional spin_axis[] = { 0, 0, RMAX };
 
 #if (BOARD_TYPE == AUAV3_BOARD || BOARD_TYPE == UDB5_BOARD)
 // modified gains for MPU6000
@@ -265,7 +265,7 @@ static void adj_accel(void)
 //	gplane[2] = gplane[2] + omegaSOG(omegaAccum[0], air_speed_3DGPS);
 //	gplane[1] = gplane[1] + ((uint16_t)(ACCELSCALE)) * forward_acceleration;
 }
-
+fractional theta[3];
 // The update algorithm!!
 static void rupdate(void)
 {
@@ -276,7 +276,7 @@ static void rupdate(void)
 	fractional delta_angle_square_over_2[9];
 	fractional delta_angle_cube_over_6[9];
 	fractional rup[9];
-	fractional theta[3];
+
 	fractional rbuff[9];
 		
 	VectorAdd(3, omegaAccum, omegagyro, omegacorrI);

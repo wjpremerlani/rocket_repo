@@ -1,7 +1,64 @@
 
-#define CUSTOM_OFFSETS
+#define CUSTOM_OFFSETS // this is the best option for rockets. you will need to define offsets
 
-#define GROUND_TEST ( 0 ) // produces extra output for groundtesting
+// define GROUND_TEST to be 1 for ground testing, set to 0 for flight
+// for ground testing, launch is triggered by enabling the control by pulling SCL to ground
+// this option also produces extra output such as gyro offsets
+#define GROUND_TEST ( 0 ) 
+
+// the following allows multiple sets of options to be saved in one file
+#define FLORIN (1)
+#define JIM (0)
+#define BILL (0)
+
+
+// Florin's board
+#if ( FLORIN == 1 )
+// identify your board any way you want and set the date
+#define BOARD "Florin #xx"
+#define DATE "10/17/2020"
+#if ( GROUND_TEST == 1)
+#define REVISION "rev21, ground test"
+#else
+#define REVISION "rev21, flight ready"
+#endif // GROUND_TEST
+// tilt angle that produces maximum tilt response
+#define MAX_TILT_ANGLE ( 7.5 ) // degrees
+// servo PWM signal at max tilt
+#define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
+// spin rate that produces maximum roll rate feedback
+#define MAX_SPIN_RATE ( 500.0 ) // degrees per second
+// servo PWM signal at max roll rate
+#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+// angle at which the heading hold integrator saturates
+#define MAX_ROLL_ANGLE ( 180 ) // degrees
+
+// these are parameters for intentional tilt control offset
+// these values will turn it off all together
+#define EARTH_TILT_X ( 0 )
+#define EARTH_TILT_Y ( 0 )
+#define TILT_DURATION ( 99 )
+
+// this turns out to perform better than the 500 degree/sec range,
+// so it is recommended
+#define GYRO_RANGE ( 1000 )
+// gyro calibration factor
+#define CALIBRATION ( 1.000 )
+
+// These are your sensor offsets.
+// It is important to get the accelerometer offsets correct.
+// The gyro values do not matter as much, they are starting points,
+// but getting them approximately correct will reduce initialization time.
+// Typical values are shown
+#define XACCEL_OFFSET	( 100 )
+#define YACCEL_OFFSET	( -60 )
+#define ZACCEL_OFFSET	( -120 )
+#define XRATE_OFFSET	( -30 )
+#define YRATE_OFFSET	( 32 )
+#define ZRATE_OFFSET	( 21 )
+#endif // FLORIN
+
+
 
 // Jim's first board, now its Tyler's
 /*
@@ -26,17 +83,23 @@
 
 
 // Jim's second board
-
+#if ( JIM == 1 )
 #define BOARD "Jim Brd2"
-#define DATE "9/27/2020"
-#define REVISION "rev20a, flight ready, 10 degree tilt"
+#define DATE "10/10/2020"
+#if ( GROUND_TEST == 1)
+#define REVISION "rev21, ground test, 15 deg. tilt"
+#else
+#define REVISION "rev21, flight ready, 15 deg. tilt"
+#endif // GROUND_TEST
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
 #define MAX_SPIN_RATE ( 500.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 180 ) // degrees
 
-#define EARTH_TILT_X ( -2011 )
-#define EARTH_TILT_Y ( 2011 )
+#define EARTH_TILT_X ( -3466 )
+#define EARTH_TILT_Y ( 2443 )
+#define TILT_DURATION ( 11 )
 
 #define GYRO_RANGE ( 1000 )
 //#define CALIBRATION ( 0.9945 )
@@ -49,6 +112,8 @@
 #define XRATE_OFFSET	( -115 )
 #define YRATE_OFFSET	( 32 )
 #define ZRATE_OFFSET	( 21 )
+#endif // JIM
+
 
 /*
 // Ray's first board
@@ -102,22 +167,33 @@
 #define ZRATE_OFFSET	( 0 )
 */
 // Bill's board 2
-
-/*
+#if ( BILL == 1)
+#undef GROUND_TEST
+#define GROUND_TEST ( 1 )
 #define BOARD "BillsBrd2"
-#define DATE "9/27/2020"
-#define REVISION "Rev20a flight test"
+#define DATE "10/4/2020"
+#define REVISION "Rev21 ground test"
 #define GYRO_RANGE ( 1000 )
 #define CALIBRATION ( 0.9924 )
 
-#define EARTH_TILT_X ( -2011 )
-#define EARTH_TILT_Y ( 2011 )
+//#define EARTH_TILT_X ( -2011 )
+//#define EARTH_TILT_Y ( 2011 )
+
+#define EARTH_TILT_X ( 0 )
+#define EARTH_TILT_Y ( 2845 ) 
+#define TILT_DURATION ( 12 ) //seconds
 
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
 
-#define MAX_SPIN_RATE ( 250.0 ) // degrees per second
+//#define MAX_SPIN_RATE ( 250.0 ) // degrees per second
+//#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+//#define MAX_ROLL_ANGLE ( 720 ) // degrees
+
+#define NO_SPIN_CONTROL
+#define MAX_SPIN_RATE ( 100.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 90 ) // degrees
 
 #define XACCEL_OFFSET	( 312 )
 #define YACCEL_OFFSET	( -98 )
@@ -125,8 +201,7 @@
 #define XRATE_OFFSET	( -22 )
 #define YRATE_OFFSET	( 17 )
 #define ZRATE_OFFSET	( -29 )
-*/
-
+#endif
 // Ray's first board
 /*
 #define XACCEL_OFFSET	( 311 )
