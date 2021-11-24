@@ -44,7 +44,7 @@
 
 #define RMAX15 24576 //0b0110000000000000   // 1.5 in 2.14 format
 
-#define GGAIN SCALEGYRO*6*(RMAX*(1.0/HEARTBEAT_HZ)) // integration multiplier for gyros
+#define GGAIN CALIBRATION*SCALEGYRO*6*(RMAX*(1.0/HEARTBEAT_HZ)) // integration multiplier for gyros
 fractional ggain[] =  { GGAIN, GGAIN, GGAIN };
 
 uint16_t spin_rate = 0;
@@ -190,8 +190,7 @@ static inline void read_gyros(void)
 {
 	// fetch the gyro signals and subtract the baseline offset, 
 	// and adjust for variations in supply voltage
-	unsigned spin_rate_over_2;
-
+	
 #if (HILSIM == 1)
 	HILSIM_set_omegagyro();
 //	omegagyro[0] = q_sim.BB;
@@ -202,16 +201,6 @@ static inline void read_gyros(void)
 	omegagyro[1] = YRATE_VALUE;
 	omegagyro[2] = ZRATE_VALUE;
 #endif
-
-	spin_rate = vector3_mag(omegagyro[0], omegagyro[1], omegagyro[2]);
-	spin_rate_over_2 = spin_rate >> 1;
-
-	if (spin_rate_over_2 > 0)
-	{
-		spin_axis[0] = __builtin_divsd(((int32_t)omegagyro[0]) << 13, spin_rate_over_2);
-		spin_axis[1] = __builtin_divsd(((int32_t)omegagyro[1]) << 13, spin_rate_over_2);
-		spin_axis[2] = __builtin_divsd(((int32_t)omegagyro[2]) << 13, spin_rate_over_2);
-	}
 }
 
 inline void read_accel(void)
@@ -269,30 +258,6 @@ void udb_callback_read_sensors(void)
 	read_accel();
 }
 
-static int16_t omegaSOG(int16_t omega, uint16_t speed)
-{
-	// multiplies omega times speed, and scales appropriately
-	// omega in radians per second, speed in cm per second
-	union longww working;
-	speed = speed >> 3;
-	working.WW = __builtin_mulsu(omega, speed);
-	if (((int16_t)working._.W1) > ((int16_t)CENTRIFSAT))
-	{
-		return RMAX;
-	}
-	else if (((int16_t)working._.W1) < ((int16_t)-CENTRIFSAT))
-	{
-		return - RMAX;
-	}
-	else
-	{
-		working.WW = working.WW>>5;
-		working.WW = __builtin_mulsu(working._.W0, CENTRISCALE);
-		working.WW = working.WW<<5;
-		return working._.W1;
-	}
-}
-
 static void adj_accel(void)
 {
 	// total (3D) airspeed in cm/sec is used to adjust for acceleration
@@ -307,38 +272,57 @@ static void rupdate(void)
 	// This is the key routine. It performs a small rotation
 	// on the direction cosine matrix, based on the gyro vector and correction.
 	// It uses vector and matrix routines furnished by Microchip.
+	fractional delta_angle[9];
+	fractional delta_angle_square_over_2[9];
+	fractional delta_angle_cube_over_6[9];
 	fractional rup[9];
 	fractional theta[3];
 	fractional rbuff[9];
-	uint32_t thetaSquare;
-	unsigned nonlinearAdjust;
-	
+		
 	VectorAdd(3, omegaAccum, omegagyro, omegacorrI);
 	VectorAdd(3, omega, omegaAccum, omegacorrP);
 	//	scale by the integration factors:
 	VectorMultiply(3, theta, omega, ggain); // Scalegain of 2
 	// diagonal elements of the update matrix:
-	rup[0] = rup[4] = rup[8]= RMAX;
+	rup[0] = RMAX;
+	rup[4] = RMAX;
+	rup[8] = RMAX;
+	rup[1] = 0 ;
+	rup[2] = 0 ;
+	rup[3] = 0 ;
+	rup[5] = 0 ;
+	rup[6] = 0 ;
+	rup[7] = 0 ;
 
-	// compute the square of rotation
-	thetaSquare = __builtin_mulss (theta[0], theta[0]) +
-	              __builtin_mulss (theta[1], theta[1]) +
-	              __builtin_mulss (theta[2], theta[2]);
-
-	// adjust gain by rotation_squared divided by 3
-	nonlinearAdjust = RMAX + ((uint16_t) (thetaSquare >>14))/3;	
-
-	theta[0] = __builtin_mulsu (theta[0], nonlinearAdjust)>>14;
-	theta[1] = __builtin_mulsu (theta[1], nonlinearAdjust)>>14;
-	theta[2] = __builtin_mulsu (theta[2], nonlinearAdjust)>>14;
-
-	// construct the off-diagonal elements of the update matrix:
-	rup[1] = -theta[2];
-	rup[2] =  theta[1];
-	rup[3] =  theta[2];
-	rup[5] = -theta[0];
-	rup[6] = -theta[1];
-	rup[7] =  theta[0];
+	// construct the delta angle matrix:
+	delta_angle[0] = 0 ;
+	delta_angle[1] = -theta[2];
+	delta_angle[2] =  theta[1];
+	delta_angle[3] =  theta[2];
+	delta_angle[4] = 0 ;
+	delta_angle[5] = -theta[0];
+	delta_angle[6] = -theta[1];
+	delta_angle[7] =  theta[0];
+	delta_angle[8] = 0 ;
+	
+	// compute 1/2 of square of the delta angle matrix
+	// since a matrix multiply divides by 2, we get it for free	
+	MatrixMultiply( 3, 3, 3, delta_angle_square_over_2 , delta_angle , delta_angle );
+	
+	// first step in computing delta angle cube over 6, compute it over 4 ;
+	MatrixMultiply( 3, 3, 3, delta_angle_cube_over_6 , delta_angle_square_over_2 , delta_angle );
+	
+	// multiply by 2/3
+	int16_t loop_index ;
+	for ( loop_index = 0 ; loop_index <= 8 ; ++ loop_index ) 
+	{
+		delta_angle_cube_over_6[loop_index] = __builtin_divsd(__builtin_mulsu(delta_angle_cube_over_6[loop_index],2 ),3);
+	}
+	
+	// form the update matrix
+	MatrixAdd(3, 3, rup, rup, delta_angle );
+	MatrixAdd(3, 3, rup, rup, delta_angle_square_over_2 );
+	MatrixAdd(3, 3, rup, rup, delta_angle_cube_over_6 );
 
 	// matrix multiply the rmatrix by the update matrix
 	MatrixMultiply(3, 3, 3, rbuff, rmat, rup);
@@ -477,31 +461,6 @@ static void roll_pitch_drift(void)
 		errorYawplane[2] = 0 ;
 	}
 
-}
-
-
-static void yaw_drift(void)
-{
-	// although yaw correction is done in horizontal plane,
-	// this is done in 3 dimensions, just in case we change our minds later
-	// form the horizontal direction over ground based on rmat
-	if (dcm_flags._.yaw_req)
-	{
-		if (ground_velocity_magnitudeXY > GPS_SPEED_MIN)
-		{
-			// vector cross product to get the rotation error in ground frame
-			VectorCross(errorYawground, dirOverGndHrmat, dirOverGndHGPS);
-			// convert to plane frame:
-			// *** Note: this accomplishes multiplication rmat transpose times errorYawground!!
-			MatrixMultiply(1, 3, 3, errorYawplane, errorYawground, rmat);
-		}
-		else
-		{
-			errorYawplane[0] = errorYawplane[1] = errorYawplane[2] = 0;
-		}
-		
-		dcm_flags._.yaw_req = 0;
-	}
 }
 
 
@@ -841,48 +800,6 @@ static void PI_feedback(void)
 	omegacorrI[2] = gyroCorrectionIntegral[2]._.W1>>3;
 }
 
-static uint16_t adjust_gyro_gain (uint16_t old_gain, int16_t gain_change)
-{
-	uint16_t gain;
-	gain = old_gain + gain_change;
-	if (gain > (uint16_t)(1.1 * GGAIN))
-	{
-		gain = (uint16_t)(1.1 * GGAIN);
-	}
-	if (gain < (uint16_t)(0.9 * GGAIN))
-	{
-		gain = (uint16_t)(0.9 * GGAIN);
-	}
-	return gain;
-}
-
-#define GYRO_CALIB_TAU 10.0
-#define MINIMUM_SPIN_RATE_GYRO_CALIB 50.0 // degrees/second
-
-static void calibrate_gyros(void)
-{
-	fractional omegacorrPweighted[3];
-	int32_t calib_accum;
-	int16_t gain_change;
-	uint16_t spin_rate_over2;
-	if (spin_rate > (uint16_t) (MINIMUM_SPIN_RATE_GYRO_CALIB * DEGPERSEC))
-	{
-		spin_rate_over2 = spin_rate>>1;
-		VectorMultiply(3, omegacorrPweighted, spin_axis, omegacorrP); // includes 1/2
-
-		calib_accum = __builtin_mulsu(omegacorrPweighted[0], (uint16_t)(0.025*GGAIN/GYRO_CALIB_TAU));
-		gain_change = __builtin_divsd(calib_accum, spin_rate_over2);
-		ggain[0] = adjust_gyro_gain(ggain[0], gain_change);
-
-		calib_accum = __builtin_mulsu(omegacorrPweighted[1], (uint16_t)(0.025*GGAIN/GYRO_CALIB_TAU));
-		gain_change = __builtin_divsd(calib_accum, spin_rate_over2);
-		ggain[1] = adjust_gyro_gain(ggain[1], gain_change);
-
-		calib_accum = __builtin_mulsu(omegacorrPweighted[2], (uint16_t)(0.025*GGAIN/GYRO_CALIB_TAU));
-		gain_change = __builtin_divsd(calib_accum, spin_rate_over2);
-		ggain[2] = adjust_gyro_gain(ggain[2], gain_change);
-	}
-}
 
 /*
 void output_matrix(void)

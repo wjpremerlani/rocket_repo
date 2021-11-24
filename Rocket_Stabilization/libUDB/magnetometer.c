@@ -35,7 +35,7 @@ int16_t rawMagCalib[3] = { 0 , 0 , 0 };
 int16_t magFieldRaw[3];
 int16_t magMessage = 0;                         // message type
 
-static magnetometer_callback_funcptr magnetometer_callback = NULL;
+//static magnetometer_callback_funcptr magnetometer_callback = NULL;
 
 #if (MAG_YAW_DRIFT == 1)
 //#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)

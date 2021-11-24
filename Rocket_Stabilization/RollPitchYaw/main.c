@@ -114,12 +114,10 @@ int16_t minutes = 0 ;
 
 #define TILT_GAIN ( 4.0 * TILT_ALLOTMENT / ( MAX_TILT_ANGLE / 57.3 ) ) 
 #define SPIN_GAIN ( SPIN_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_SPIN_RATE ) )
-#define DISTURBANCE ( 0 ) // no disturbance
-//#define DISTURBANCE ( 1430 ) // 5 degrees
-//#define DISTURBANCE ( 8192 ) // 30 degrees for testing
 
-int16_t offsetZ ;
 int16_t offsetX ;
+int16_t offsetY ;
+int16_t offsetZ ;
 
 int16_t controlModeYawPitch = 0 ;
 int16_t controlModeRoll = 0 ;
@@ -271,27 +269,35 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 	}
 	else
 	{
-//		union longww accum;
-/*
-//		legacy code for introducing an offset
+		union longww accum;
+
+//		code for introducing an offset
 		if ( _RA3 == 0 )
 		{
 			LED_ORANGE = LED_ON ;
-			accum.WW = ( __builtin_mulsu( rmat[5] , DISTURBANCE ) << 2 ) ;
-			offsetZ = accum._.W1 ;
-			accum.WW = ( __builtin_mulsu( rmat[3] , DISTURBANCE ) << 2 ) ;
+			accum.WW = ( __builtin_mulss( rmat[0] , EARTH_TILT_X ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[3] , EARTH_TILT_Y ) << 2 ) ;
 			offsetX = accum._.W1 ;
+			
+			accum.WW = ( __builtin_mulss( rmat[1] , EARTH_TILT_X ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[4] , EARTH_TILT_Y ) << 2 ) ;
+			offsetY = accum._.W1 ;
+			
+			accum.WW = ( __builtin_mulss( rmat[2] , EARTH_TILT_X ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[5] , EARTH_TILT_Y ) << 2 ) ;
+			offsetZ = accum._.W1 ;
+	
 		}
 		else
 		{
 			LED_ORANGE = LED_OFF ;
 			offsetX = 0 ;
+			offsetY = 0 ;
 			offsetZ = 0 ;
 		}
-*/
 
-		offsetX = 0 ;
-		offsetZ = 0 ;	
+
+
 
 		if ( _RA2 == 0 ) // check control enable pin
 		{
@@ -304,14 +310,14 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			controlModeYawPitch = 0 ;
 		}
 
-		if ( _RA3 == 0 ) // check control enable pin
+		if ( _RA2 == 0 ) // check control enable pin
 		{
-			LED_ORANGE = LED_ON ;
+			LED_BLUE = LED_ON ;
 			controlModeRoll = 1 ;
 		}
 		else
 		{
-			LED_ORANGE = LED_OFF ;
+			LED_BLUE = LED_OFF ;
 			controlModeRoll = 0 ;
 		}
 
@@ -326,7 +332,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 		if ( GROUND_TEST == 1 )
 		{
-			if ( ( _RA3 == 0 ) && ( _RA2 == 0 ) ) // ground test simulate launch by enabling both control modes
+			if ( ( _RA2 == 0 ) && ( _RA2 == 0 ) ) // ground test simulate launch by enabling both control modes
 			{
 				launched = 1 ;
 			}
@@ -365,11 +371,11 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		if ( ( controlModeYawPitch == 1 ) && ( apogee == 0 ) )
 		{
 
-			pitch_feedback_vertical = tilt_feedback ( -rmat[8] ) ;
-			yaw_feedback_vertical = tilt_feedback ( rmat[6] ) ;
+			pitch_feedback_vertical = tilt_feedback ( offsetZ -rmat[8] ) ;
+			yaw_feedback_vertical = tilt_feedback ( rmat[6] - offsetX ) ;
 
-			pitch_feedback_horizontal = tilt_feedback ( rmat[6] ) ;
-			yaw_feedback_horizontal = tilt_feedback ( rmat[7] ) ;
+			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX) ;
+			yaw_feedback_horizontal = tilt_feedback ( rmat[7] - offsetY ) ;
 
 		}
 
@@ -520,8 +526,8 @@ void send_debug_line(void)
 		secondline = 1 ;
 //		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
 //		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro Range %i DPS\r\nTilt %5.1f deg %i usecs.\r\nSpin %i deg/sec %i usecs.\r\n" ,
-			BOARD, REVISION, DATE, GYRO_RANGE ,
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro Range %i DPS, gyro calibration %6.4f\r\nTilt %5.1f deg %i usecs.\r\nSpin %i deg/sec %i usecs.\r\n" ,
+			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION ,
 			MAX_TILT_ANGLE , (int16_t) MAX_TILT_PULSE_WIDTH , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH 
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
 			

@@ -1,9 +1,10 @@
 
 #define CUSTOM_OFFSETS
 
-#define GROUND_TEST ( 1 ) // produces extra output for groundtesting
-/*
+#define GROUND_TEST ( 0 ) // produces extra output for groundtesting
+
 // Jim's first board, now its Tyler's
+/*
 #define BOARD "Tyler's Board"
 #define DATE "12/15/2019"
 #define REVISION "rev17a"
@@ -21,25 +22,25 @@
 #define YRATE_OFFSET	( -47 )
 #define ZRATE_OFFSET	( 6 )
 
-#define XACCEL_OFFSET	( 300 )
-#define YACCEL_OFFSET	( 53 )
-#define ZACCEL_OFFSET	( -1289 )
-#define XRATE_OFFSET	( -72 )
-#define YRATE_OFFSET	( -61 )
-#define ZRATE_OFFSET	( 9 )
 */
 
-/*
+
 // Jim's second board
+
 #define BOARD "Jim Brd2"
-#define DATE "11/27/2016"
-#define REVISION "rev17a"
+#define DATE "9/27/2020"
+#define REVISION "rev20a, flight ready, 10 degree tilt"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
-#define MAX_SPIN_RATE ( 750.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 500.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
 
+#define EARTH_TILT_X ( -2011 )
+#define EARTH_TILT_Y ( 2011 )
+
 #define GYRO_RANGE ( 1000 )
+//#define CALIBRATION ( 0.9945 )
+#define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 
 #define XACCEL_OFFSET	( 367 )
@@ -48,7 +49,6 @@
 #define XRATE_OFFSET	( -115 )
 #define YRATE_OFFSET	( 32 )
 #define ZRATE_OFFSET	( 21 )
-*/
 
 /*
 // Ray's first board
@@ -105,12 +105,13 @@
 
 /*
 #define BOARD "BillsBrd2"
-#define DATE "2/25/2016"
-#define REVISION "Rev15"
-//#define MOUNT_ORIENTATION VERTICAL_MOUNT
-//#define MAX_TILT ( 0.25 )
-//#define MAX_SPIN_RATE ( 2160.0 ) // after third flight
-//#define MAX_SPIN_RATE ( 500.0 )
+#define DATE "9/27/2020"
+#define REVISION "Rev20a flight test"
+#define GYRO_RANGE ( 1000 )
+#define CALIBRATION ( 0.9924 )
+
+#define EARTH_TILT_X ( -2011 )
+#define EARTH_TILT_Y ( 2011 )
 
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
@@ -217,7 +218,7 @@
 #define GYRO_RANGE ( 1000 )
 */
 // SN5
-
+/*
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
@@ -241,7 +242,7 @@
 
 #define GYRO_RANGE ( 1000 )
 
-
+*/
 
 // SN6
 
