@@ -122,10 +122,28 @@ int16_t minutes = 0 ;
 
 #define TILT_GAIN ( 4.0 * TILT_ALLOTMENT / ( MAX_TILT_ANGLE / 57.3 ) ) 
 #define SPIN_GAIN ( SPIN_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_SPIN_RATE ) )
+#define TILT_RATE_GAIN ( TILT_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_TILT_RATE ) )
 
 int16_t offsetX ;
 int16_t offsetY ;
 int16_t offsetZ ;
+
+struct tilt_def {
+	int16_t tilt ;
+	int16_t b ;
+	int16_t x ;
+	int16_t y ;
+	uint16_t t	;		
+};
+
+struct tilt_def tilt_defs[] = TILT_DEFS ;
+uint16_t NUM_TILTS = sizeof(tilt_defs)/sizeof(tilt_defs[0]) ;
+
+uint16_t tilt_index = 0 ;
+uint16_t tilt_print_index = 0 ;
+int16_t tilt_x ;
+int16_t tilt_y ;
+uint16_t tilt_t ;
 
 int16_t controlModeYawPitch = 0 ;
 int16_t controlModeRoll = 0 ;
@@ -189,10 +207,17 @@ int16_t remove_offset ( int16_t value , int16_t offset )
 	return (int16_t) saturate_32 ( ( int32_t ) 0x7FFF , (int32_t) value - (int32_t) offset ) ;
 }
 
-int16_t tilt_feedback ( int16_t tilt )
+int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 {
 	union longww accum ;
 	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) TILT_GAIN ) ;
+#if ( GYRO_RANGE == 500 )
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) 2*TILT_RATE_GAIN ) ; // 2 is because use of drift corrected values instead of raw values
+#elif ( GYRO_RANGE == 1000 )
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) 4*TILT_RATE_GAIN ) ; // 1000 degree per second
+#else
+#error set GYRO_RANGE to 500 or 1000 in options.h
+#endif // GYRO_RANGE
 	return saturate ( TILT_ALLOTMENT_INT , accum._.W1 )  ;
 }
 
@@ -306,7 +331,6 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
 #if ( USE_TILT == 1)		
 			// update tilt timer
-			if ((tilt_count  <= ((int16_t) (40.0*TILT_STOP )) ))
 			{
 				tilt_count ++ ;
 			}
@@ -318,19 +342,31 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 //		if delayed tilt is one, launch straight and then tilt after time delay
 //		if delayed tilt is not one, launch tilted and then go straight after time delay
 #if (USE_TILT == 1)
-		if ( ( _RA3 == 0 ) && ( tilt_count >= (int16_t) 40.0*TILT_START ) && ( tilt_count <= (int16_t) 40.0*TILT_STOP )  )
+		
+		if ( _RA3 == 0 )  
 		{
-			LED_ORANGE = LED_ON ;
-			accum.WW = ( __builtin_mulss( rmat[0] , EARTH_TILT_X ) << 2 ) ;
-			accum.WW += ( __builtin_mulss( rmat[3] , EARTH_TILT_Y ) << 2 ) ;
+			tilt_t = tilt_defs[tilt_index].t ;
+			if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
+			tilt_x = tilt_defs[tilt_index].x ;
+			tilt_y = tilt_defs[tilt_index].y ;
+			if (( tilt_x == 0 ) && ( tilt_x == 0 ) )
+			{
+				LED_ORANGE = LED_OFF ;
+			}
+			else
+			{
+				LED_ORANGE = LED_ON ;
+			}
+			accum.WW = ( __builtin_mulss( rmat[0] , tilt_x ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[3] , tilt_y ) << 2 ) ;
 			offsetX = accum._.W1 ;
 			
-			accum.WW = ( __builtin_mulss( rmat[1] , EARTH_TILT_X ) << 2 ) ;
-			accum.WW += ( __builtin_mulss( rmat[4] , EARTH_TILT_Y ) << 2 ) ;
+			accum.WW = ( __builtin_mulss( rmat[1] , tilt_x ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[4] , tilt_y ) << 2 ) ;
 			offsetY = accum._.W1 ;
 			
-			accum.WW = ( __builtin_mulss( rmat[2] , EARTH_TILT_X ) << 2 ) ;
-			accum.WW += ( __builtin_mulss( rmat[5] , EARTH_TILT_Y ) << 2 ) ;
+			accum.WW = ( __builtin_mulss( rmat[2] , tilt_x ) << 2 ) ;
+			accum.WW += ( __builtin_mulss( rmat[5] , tilt_y ) << 2 ) ;
 			offsetZ = accum._.W1 ;
 	
 		}
@@ -433,15 +469,12 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 		if ( ( controlModeYawPitch == 1 ) && ( apogee == 0 ) )
 		{
+			pitch_feedback_vertical = tilt_feedback ( offsetZ -rmat[8] , -omega[0] ) ;
+			yaw_feedback_vertical = tilt_feedback ( rmat[6] - offsetX , -omega[2] ) ;
 
-			pitch_feedback_vertical = tilt_feedback ( offsetZ -rmat[8] ) ;
-			yaw_feedback_vertical = tilt_feedback ( rmat[6] - offsetX ) ;
-
-			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX) ;
-			yaw_feedback_horizontal = tilt_feedback ( rmat[7] - offsetY ) ;
-
+			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX , -omega[1] ) ;
+			yaw_feedback_horizontal = tilt_feedback ( rmat[7] - offsetY , omega[0] ) ;
 		}
-
 		else
 		{
 			pitch_feedback_vertical = 0 ;
@@ -449,21 +482,16 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 			pitch_feedback_horizontal = 0 ;
 			yaw_feedback_horizontal = 0 ;	
-		
 		}
 
-		
 		if ( ( controlModeRoll == 1 )&& ( apogee == 0 ) )
 		{
-
 			roll_feedback ( pitch_feedback_vertical , yaw_feedback_vertical ,   omega[1] , - roll_deviation ,
 							&roll_feedback_vertical_pitch , &roll_feedback_vertical_yaw , &total_roll_feedback_vertical ) ;
 
 			roll_feedback ( pitch_feedback_horizontal , yaw_feedback_horizontal , - omega[2]  , - roll_deviation ,
 							&roll_feedback_horizontal_pitch , &roll_feedback_horizontal_yaw , &total_roll_feedback_horizontal ) ;
-
 		}
-
 		else
 		{
 			roll_feedback_vertical_pitch = 0 ;
@@ -489,8 +517,18 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		udb_pwOut[5] = 3000 ;
 		udb_pwOut[6] = 3000 ;
 		udb_pwOut[7] = 3000 ;
-		udb_pwOut[8] = 3000 ;		
-#else
+		udb_pwOut[8] = 3000 ;
+#elif ( DEBUG_NO_MIX == 1 )	
+		udb_pwOut[1] = pitch_feedback_vertical + 3000 ;
+		udb_pwOut[2] = yaw_feedback_vertical + 3000 ;
+		udb_pwOut[3] = total_roll_feedback_vertical + 3000 ;
+		udb_pwOut[4] = 3000 ;
+
+		udb_pwOut[5] = pitch_feedback_horizontal + 3000 ;
+		udb_pwOut[6] = yaw_feedback_horizontal + 3000 ;
+		udb_pwOut[7] = total_roll_feedback_horizontal + 3000 ;	
+		udb_pwOut[8] = 3000 ;
+#else		
 #ifndef NO_SPIN_CONTROL
 		udb_pwOut[1] = roll_feedback_vertical_pitch + pitch_feedback_vertical + 3000 ;
 		udb_pwOut[2] = roll_feedback_vertical_yaw + yaw_feedback_vertical + 3000 ;
@@ -547,6 +585,9 @@ int16_t accelOn ;
 #error GYRO_RANGE not specified as 500 or 1000
 #endif // GYRO_RANGE
 
+uint16_t t_start = 0 ;
+uint16_t t_end = 0 ;
+
 int16_t line_number = 1 ;
 // Prepare a line of serial output and start it sending
 void send_debug_line(void)
@@ -586,8 +627,29 @@ void send_debug_line(void)
 		case 3 :
 		{
 #if ( USE_TILT == 1)
-			sprintf( debug_buffer , "tilt target (UDB units), backwards = %i , right = %i\r\ntilt start = %.1f, tilt stop = %.1f\r\n" , EARTH_TILT_Y , EARTH_TILT_X , TILT_START , TILT_STOP );
-			line_number ++ ;
+			int16_t tilt_tilt = tilt_defs[tilt_print_index].tilt ;
+			int16_t tilt_b = tilt_defs[tilt_print_index].b ;
+			tilt_x = tilt_defs[tilt_print_index].x ;
+			tilt_y = tilt_defs[tilt_print_index].y ;
+			tilt_t = tilt_defs[tilt_print_index].t ;
+			t_end = tilt_t ;
+			if ( tilt_print_index == 0 )
+			{
+				sprintf( debug_buffer , "TILT LIST, tilt, bearing, X, Y, start time, end time\r\nTILT DEF, %i , %i , %i , %i , %.1f , %.1f\r\n" , tilt_tilt , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+			}
+			else
+			{
+				sprintf( debug_buffer , "TILT DEF, %.1f , %i , %i , %i , %.1f , %.1f\r\n" , ((double)tilt_tilt ) , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+			}
+			if ( tilt_print_index < NUM_TILTS - 1)
+			{
+				tilt_print_index ++ ;
+				t_start = t_end ;
+			}
+			else
+			{
+				line_number ++ ;
+			}
 			break ;
 #else
 			line_number ++ ;
@@ -610,9 +672,9 @@ void send_debug_line(void)
 		{
 //		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
 //		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calibration %6.4f\r\nTilt %5.1f deg %i usecs.\r\nSpin %i deg/sec %i usecs.\r\n" ,
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calibration %6.4f\r\nTiltAngle %5.1f deg, TiltRate %5.1f deg/s, %i usecs.\r\nSpin %i deg/sec %i usecs.\r\n" ,
 			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION ,
-			MAX_TILT_ANGLE , (int16_t) MAX_TILT_PULSE_WIDTH , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH
+			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
 			
 			 	) ;
@@ -634,8 +696,7 @@ void send_debug_line(void)
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
 //			offsetX , offsetZ ,
-					XACCEL_VALUE ,
-//			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , // shortcut to avoid having to use XACCEL_VALUE
+			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , 
 			( udb_yaccel.value)/2 - ( udb_yaccel.offset ) / 2 ,
 			( udb_zaccel.value)/2 - ( udb_zaccel.offset ) / 2 ,
 			((double)(  omegaAccum[0])) / ((double)( GYRO_FACTOR/2 )) ,
