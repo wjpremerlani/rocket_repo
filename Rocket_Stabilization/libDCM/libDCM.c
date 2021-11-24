@@ -80,56 +80,29 @@ extern inline void read_accel(void) ;
 
 void dcm_align_tilt(void)
 {
-	uint16_t minMag ;
-	uint16_t minMagIndex = 0 ;
-	int16_t temporary[3] ;
+	int16_t Z ;
+	int16_t one_plus_Z ;
 	read_accel() ;
 	vector3_normalize( &rmat[6] , gplane ) ;
-
-	temporary[0] = gplane[0] ;
-	temporary[1] = gplane[1] ;
-	temporary[2] = gplane[2] ;
-
-	minMag = abs( rmat[6] ) ;
-	if ( abs( rmat[7] ) < minMag )
+	rmat[2] = -rmat[6];
+	rmat[5] = -rmat[7];
+	Z = rmat[8];
+	one_plus_Z = RMAX + Z ;
+	if ( one_plus_Z > 0)
 	{
-		minMag = abs( rmat[7] ) ;
-		minMagIndex = 1 ;
-	}
-	if ( abs( rmat[8] ) < minMag )
-	{
-		minMag = abs( rmat[8] ) ;
-		minMagIndex = 2 ;
-	}
-
-	if ( minMagIndex == 0 )
-	{
-		temporary[0] = temporary[1] ;
-		temporary[1] = - temporary[2] ;
-		temporary[2] = temporary[0] ;
-		temporary[0] = 0 ;
-	}
-	else if ( minMagIndex == 1 )
-	{
-		temporary[1] = temporary[2] ;
-		temporary[2] = - temporary[0] ;
-		temporary[0] = temporary[1] ;
-		temporary[1] = 0 ;
+		rmat[0] = RMAX - __builtin_divsd( __builtin_mulss( rmat[6], rmat[6]), one_plus_Z ) ;
+		rmat[4] = RMAX - __builtin_divsd( __builtin_mulss( rmat[7], rmat[7]), one_plus_Z ) ;
+		rmat[1] = - __builtin_divsd( __builtin_mulss( rmat[6], rmat[7]), one_plus_Z ) ;
+		rmat[3] = rmat[1] ;	
 	}
 	else
 	{
-		temporary[2] = temporary[0] ;
-		temporary[0] = - temporary[1] ;
-		temporary[1] = temporary[2] ;
-		temporary[2] = 0 ;
+		rmat[0] = Z ;
+		rmat[4] = Z ;
+		rmat[1] = 0 ;
+		rmat[3] = 0 ;
 	}
-
-	vector3_normalize( temporary , temporary ) ;
-	rmat[3] = temporary[0] ;
-	rmat[4] = temporary[1] ;
-	rmat[5] = temporary[2] ;
-
-	VectorCross( &rmat[0] , &rmat[3] , &rmat[6] ) ;
+	
 	
 }
 

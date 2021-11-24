@@ -63,10 +63,10 @@ uint16_t spin_rate = 0;
 
 //#define KPROLLPITCH (ACCEL_RANGE * 1800)
 //#define KPROLLPITCH ( 4096 )
-#define KPROLLPITCH ( 2048 )
+#define KPROLLPITCH ( 2*2048 )
 //#define KIROLLPITCH ((uint32_t) ACCEL_RANGE * (uint32_t) 40960 / (uint32_t) HEARTBEAT_HZ)
 //#define KIROLLPITCH ((uint32_t) ACCEL_RANGE * (uint32_t) 2560 / (uint32_t) HEARTBEAT_HZ)
-#define KIROLLPITCH ( (uint32_t) 2560 / (uint32_t) HEARTBEAT_HZ)
+#define KIROLLPITCH ( (uint32_t) 4*2560 / (uint32_t) HEARTBEAT_HZ)
 
 #elif (BOARD_TYPE == UDB4_BOARD)
 // Paul's gains for 6G accelerometers
@@ -79,10 +79,10 @@ uint16_t spin_rate = 0;
 
 //#define KPYAW 256*4
 //#define KPYAW ( 4096 )
-#define KPYAW ( 2048 )
+#define KPYAW ( 2*2048 )
 //#define KIYAW 32
 //#define KIYAW (1280/HEARTBEAT_HZ)
-#define KIYAW (2560/HEARTBEAT_HZ)
+#define KIYAW (4*2560/HEARTBEAT_HZ)
 
 #define GYROSAT 15000
 // threshold at which gyros may be saturated

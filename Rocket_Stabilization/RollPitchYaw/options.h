@@ -4,12 +4,15 @@
 // define GROUND_TEST to be 1 for ground testing, set to 0 for flight
 // for ground testing, launch is triggered by enabling the control by pulling SCL to ground
 // this option also produces extra output such as gyro offsets
-#define GROUND_TEST ( 0 ) 
+#define GROUND_TEST ( 1 ) 
 
 // the following allows multiple sets of options to be saved in one file
-#define FLORIN (1)
+#define FLORIN (0)
 #define JIM (0)
 #define BILL (0)
+#define WAYNE_BRD4 (0)
+#define WAYNE_BRD5 (0)
+#define WAYNE_BRD6 (1)
 
 
 // Florin's board
@@ -84,12 +87,21 @@
 
 // Jim's second board
 #if ( JIM == 1 )
+#define USE_TILT (1)
 #define BOARD "Jim Brd2"
-#define DATE "10/10/2020"
+#define DATE "11/25/2020"
 #if ( GROUND_TEST == 1)
-#define REVISION "rev21, ground test, 15 deg. tilt"
+#if (USE_TILT == 1)
+#define REVISION "rev22a, ground test, 10 degree tilt"
 #else
-#define REVISION "rev21, flight ready, 15 deg. tilt"
+#define REVISION "rev22a, ground test, no tilt"
+#endif // USE_TILT
+#else
+#if (USE_TILT == 1)
+#define REVISION "rev22a, flight ready, 10 degree tilt"
+#else
+#define REVISION "rev22a, flight ready, no tilt"
+#endif // USE_TILT
 #endif // GROUND_TEST
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
@@ -97,9 +109,17 @@
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 180 ) // degrees
 
-#define EARTH_TILT_X ( -3466 )
-#define EARTH_TILT_Y ( 2443 )
-#define TILT_DURATION ( 11 )
+#if (USE_TILT == 1)
+//#define EARTH_TILT_X ( -3466 ) // 15 degree tilt
+//#define EARTH_TILT_Y ( 2443 )
+#define EARTH_TILT_X ( -2326 ) // 15 degree tilt
+#define EARTH_TILT_Y ( 1639 )
+#else
+#define EARTH_TILT_X ( 0 )
+#define EARTH_TILT_Y ( 0 )
+#endif // USE_TILT
+#define TILT_START ( 2.6 )
+#define TILT_STOP  ( 8.0)
 
 #define GYRO_RANGE ( 1000 )
 //#define CALIBRATION ( 0.9945 )
@@ -171,8 +191,8 @@
 #undef GROUND_TEST
 #define GROUND_TEST ( 1 )
 #define BOARD "BillsBrd2"
-#define DATE "10/4/2020"
-#define REVISION "Rev21 ground test"
+#define DATE "10/18/2020"
+#define REVISION "Rev22 ground test"
 #define GYRO_RANGE ( 1000 )
 #define CALIBRATION ( 0.9924 )
 
@@ -180,7 +200,7 @@
 //#define EARTH_TILT_Y ( 2011 )
 
 #define EARTH_TILT_X ( 0 )
-#define EARTH_TILT_Y ( 2845 ) 
+#define EARTH_TILT_Y ( 0 ) 
 #define TILT_DURATION ( 12 ) //seconds
 
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
@@ -190,7 +210,7 @@
 //#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
 //#define MAX_ROLL_ANGLE ( 720 ) // degrees
 
-#define NO_SPIN_CONTROL
+//#define NO_SPIN_CONTROL
 #define MAX_SPIN_RATE ( 100.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 90 ) // degrees
@@ -198,9 +218,12 @@
 #define XACCEL_OFFSET	( 312 )
 #define YACCEL_OFFSET	( -98 )
 #define ZACCEL_OFFSET	( -443 )
-#define XRATE_OFFSET	( -22 )
-#define YRATE_OFFSET	( 17 )
-#define ZRATE_OFFSET	( -29 )
+//#define XRATE_OFFSET	( -22 )
+//#define YRATE_OFFSET	( 17 )
+//#define ZRATE_OFFSET	( -29 )
+#define XRATE_OFFSET	( -88 )
+#define YRATE_OFFSET	( -7 )
+#define ZRATE_OFFSET	( -21 )
 #endif
 // Ray's first board
 /*
@@ -269,10 +292,12 @@
 
 
 // SN4
-/*
+#if ( WAYNE_BRD4 == 1 )
+#define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
+#define NO_MIXING
 
 #define XACCEL_OFFSET	( 164 )
 #define YACCEL_OFFSET	( -39 )
@@ -280,72 +305,88 @@
 #define XRATE_OFFSET	( -85 )
 #define YRATE_OFFSET	( -37 )
 #define ZRATE_OFFSET	( -11 )
+#define CALIBRATION ( 1.0000 )
 
 #define BOARD "board SN4, Wayne"
-#define DATE "3/30/2017"
-#define REVISION "Rev18, vertical"
-
-#define MAX_TILT_ANGLE ( 40.0 ) // degrees
-#define MAX_TILT_PULSE_WIDTH ( 333.4 ) // microseconds
-#define MAX_SPIN_RATE ( 500.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 166.6 ) // microseconds
+#if (( GROUND_TEST == 1 ))
+#define DATE "Dec. 14, 2020, ground test"
+#else
+#define DATE "Dec. 14, 2020, flight ready"
+#endif // GROUND_TEST 
+#define REVISION "Rev22, vertical, apogee detect"
+#define MAX_TILT_ANGLE ( 30.0 ) // degrees
+#define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_SPIN_RATE ( 300.0 ) // degrees per second
+#define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 180 )
 
 #define GYRO_RANGE ( 1000 )
-*/
+#endif // WAYNE_BRD4
+
 // SN5
-/*
+#if ( WAYNE_BRD5 == 1 )
+#define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
 #define NO_MIXING
 
-#define XACCEL_OFFSET	( 318 )
-#define YACCEL_OFFSET	( -77 )
-#define ZACCEL_OFFSET	( -899 )
-#define XRATE_OFFSET	( -65 )
-#define YRATE_OFFSET	( 50 )
-#define ZRATE_OFFSET	( -68 )
+#define XACCEL_OFFSET	( 330 )
+#define YACCEL_OFFSET	( -75 )
+#define ZACCEL_OFFSET	( -405 )
+#define XRATE_OFFSET	( -44 )
+#define YRATE_OFFSET	( 10 )
+#define ZRATE_OFFSET	( 15 )
+#define CALIBRATION ( 1.0032 )
 
 #define BOARD "board SN5, Wayne"
-#define DATE "March 11, 2019\r\napogee detect\r\n3 separate control channels"
-#define REVISION "Rev19, vertical"
-
-#define MAX_TILT_ANGLE ( 40.0 ) // degrees
+#if (( GROUND_TEST == 1 ))
+#define DATE "Jan 20, 2021, ground test"
+#else
+#define DATE "Jan 20, 2021, flight ready"
+#endif // GROUND_TEST 
+#define REVISION "Rev22, vertical, apogee detect"
+#define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 500.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 300.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 180 )
 
 #define GYRO_RANGE ( 1000 )
-
-*/
+#endif // WAYNE_BRD5
 
 // SN6
 
-/*
+#if ( WAYNE_BRD6 == 1 )
+#define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
 #define NO_MIXING
 
-#define XACCEL_OFFSET	( 284 )
-#define YACCEL_OFFSET	( -11 )
-#define ZACCEL_OFFSET	( -1331 )
-#define XRATE_OFFSET	( 42 )
-#define YRATE_OFFSET	( 81 )
-#define ZRATE_OFFSET	( -10 )
+#define XACCEL_OFFSET	( 285 )
+#define YACCEL_OFFSET	( 10 )
+#define ZACCEL_OFFSET	( -1197 )
+#define XRATE_OFFSET	( 40 )
+#define YRATE_OFFSET	( 90 )
+#define ZRATE_OFFSET	( 25 )
+#define CALIBRATION ( 0.9961 )
 
 #define BOARD "board SN6, Wayne"
-#define DATE "March 25, 2019\r\napogee detect\r\n3 separate control channels"
-#define REVISION "Rev19, vertical"
-
-#define MAX_TILT_ANGLE ( 40.0 ) // degrees
+#if (( GROUND_TEST == 1 ))
+#define DATE "Jan 29, 2021, ground test"
+#else
+#define DATE "Jan 29, 2021, flight ready"
+#endif // GROUND_TEST 
+#define REVISION "Rev22, vertical, apogee detect"
+#define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 500.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 300.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 180 )
 
 #define GYRO_RANGE ( 1000 )
-
-*/
+#endif // SN6
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)

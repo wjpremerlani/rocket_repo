@@ -122,7 +122,7 @@ void udb_a2d_record_offsets(void)
 	if (udb_skip_flags.skip_imu_cal == 1)
 		return;
 #endif
-
+	
 #ifdef CUSTOM_OFFSETS
 	// offsets have been measured manually and entered into the options.h file
 	udb_xaccel.offset = XACCEL_OFFSET ;

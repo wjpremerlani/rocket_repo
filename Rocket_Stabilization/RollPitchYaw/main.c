@@ -269,7 +269,7 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
 
-int16_t tilt_count = 40*TILT_DURATION ;
+int16_t tilt_count = 0 ;
 
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
@@ -304,17 +304,21 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 				roll_angle_32.WW = - MAX_ROLL_BINARY ;
 			}
 			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
-			
+#if ( USE_TILT == 1)		
 			// update tilt timer
-			if (tilt_count > 0 )
+			if ((tilt_count  <= ((int16_t) (40.0*TILT_STOP )) ))
 			{
-				tilt_count -- ;
+				tilt_count ++ ;
 			}
+#endif //USE_TILT
 		}
 		
 
 //		code for introducing an offset
-		if ( ( _RA3 == 0 ) && ( tilt_count > 0 ) )
+//		if delayed tilt is one, launch straight and then tilt after time delay
+//		if delayed tilt is not one, launch tilted and then go straight after time delay
+#if (USE_TILT == 1)
+		if ( ( _RA3 == 0 ) && ( tilt_count >= (int16_t) 40.0*TILT_START ) && ( tilt_count <= (int16_t) 40.0*TILT_STOP )  )
 		{
 			LED_ORANGE = LED_ON ;
 			accum.WW = ( __builtin_mulss( rmat[0] , EARTH_TILT_X ) << 2 ) ;
@@ -337,9 +341,15 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			offsetY = 0 ;
 			offsetZ = 0 ;
 		}
-
-
-
+#else
+		{
+			LED_ORANGE = LED_OFF ;
+			offsetX = 0 ;
+			offsetY = 0 ;
+			offsetZ = 0 ;
+		}
+		
+#endif
 
 		if ( _RA2 == 0 ) // check control enable pin
 		{
@@ -351,7 +361,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			LED_BLUE = LED_OFF ;
 			controlModeYawPitch = 0 ;
 		}
-
+#if (USE_TILT == 1)
 		if ( _RA2 == 0 ) // check control enable pin
 		{
 			LED_BLUE = LED_ON ;
@@ -362,7 +372,18 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			LED_BLUE = LED_OFF ;
 			controlModeRoll = 0 ;
 		}
-
+#else
+		if ( _RA3 == 0 ) // check control enable pin
+		{
+			LED_ORANGE = LED_ON ;
+			controlModeRoll = 1 ;
+		}
+		else
+		{
+			LED_ORANGE = LED_OFF ;
+			controlModeRoll = 0 ;
+		}	
+#endif // USE_TILT
 		if ( ( controlModeRoll + controlModeYawPitch ) > 0 )
 		{
 			_LATD15 = 1 ; // turn on external LED
@@ -374,7 +395,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 		if ( GROUND_TEST == 1 )
 		{
-			if ( ( _RA2 == 0 ) && ( _RA2 == 0 ) ) // ground test simulate launch by enabling both control modes
+			if ( ( _RA2 == 0 ) && ( _RA3 == 0 ) ) // ground test simulate launch by enabling both control modes
 			{
 				launched = 1 ;
 			}
@@ -434,12 +455,6 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		
 		if ( ( controlModeRoll == 1 )&& ( apogee == 0 ) )
 		{
-
-//			roll_feedback ( pitch_feedback_vertical , yaw_feedback_vertical ,  - remove_offset ( udb_yrate.value , udb_yrate.offset ) , 
-//							&roll_feedback_vertical_pitch , &roll_feedback_vertical_yaw , &total_roll_feedback_vertical ) ;
-//
-//			roll_feedback ( pitch_feedback_horizontal , yaw_feedback_horizontal ,  remove_offset ( udb_zrate.value , udb_zrate.offset )  , 
-//							&roll_feedback_horizontal_pitch , &roll_feedback_horizontal_yaw , &total_roll_feedback_horizontal ) ;
 
 			roll_feedback ( pitch_feedback_vertical , yaw_feedback_vertical ,   omega[1] , - roll_deviation ,
 							&roll_feedback_vertical_pitch , &roll_feedback_vertical_yaw , &total_roll_feedback_vertical ) ;
@@ -570,9 +585,14 @@ void send_debug_line(void)
 		}
 		case 3 :
 		{
-			sprintf( debug_buffer , "tilt target (UDB units), backwards = %i , right = %i\r\ntilt duration = %i seconds\r\n" , EARTH_TILT_Y , EARTH_TILT_X , TILT_DURATION );
+#if ( USE_TILT == 1)
+			sprintf( debug_buffer , "tilt target (UDB units), backwards = %i , right = %i\r\ntilt start = %.1f, tilt stop = %.1f\r\n" , EARTH_TILT_Y , EARTH_TILT_X , TILT_START , TILT_STOP );
 			line_number ++ ;
 			break ;
+#else
+			line_number ++ ;
+			return ;
+#endif // USE_TILT
 		}
 		case 2 :
 		{
@@ -614,7 +634,8 @@ void send_debug_line(void)
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
 //			offsetX , offsetZ ,
-			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , 
+					XACCEL_VALUE ,
+//			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , // shortcut to avoid having to use XACCEL_VALUE
 			( udb_yaccel.value)/2 - ( udb_yaccel.offset ) / 2 ,
 			( udb_zaccel.value)/2 - ( udb_zaccel.offset ) / 2 ,
 			((double)(  omegaAccum[0])) / ((double)( GYRO_FACTOR/2 )) ,
