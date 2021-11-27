@@ -136,8 +136,10 @@ struct tilt_def {
 	uint16_t t	;		
 };
 
+#if (USE_TILT == 1)
 struct tilt_def tilt_defs[] = TILT_DEFS ;
 uint16_t NUM_TILTS = sizeof(tilt_defs)/sizeof(tilt_defs[0]) ;
+#endif // USE_TILT
 
 uint16_t tilt_index = 0 ;
 uint16_t tilt_print_index = 0 ;

@@ -9,10 +9,10 @@
 
 // the following allows multiple sets of options to be saved in one file
 #define FLORIN (0)
-#define JIM (1)
+#define JIM (0)
 #define BILL (0)
 #define WAYNE_BRD4 (0)
-#define WAYNE_BRD5 (0)
+#define WAYNE_BRD5 (1)
 
 
 // Florin's board
@@ -88,7 +88,7 @@
 // Jim's second board
 #if ( JIM == 1 )
 #define USE_TILT (1)
-#define GROUND_TEST (0)
+#define GROUND_TEST (1)
 #define BOARD "Jim Brd2"
 #define DATE "7/26/2021"
 #if ( GROUND_TEST == 1)
@@ -309,6 +309,7 @@
 
 // SN5
 #if ( WAYNE_BRD5 == 1 )
+#define GROUND_TEST (1)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
@@ -331,6 +332,7 @@
 #endif // GROUND_TEST 
 #define REVISION "Rev22, vertical, apogee detect"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
+#define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
 #define MAX_SPIN_RATE ( 300.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
