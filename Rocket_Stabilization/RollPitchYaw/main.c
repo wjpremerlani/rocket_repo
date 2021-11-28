@@ -506,13 +506,13 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 #ifdef NO_MIXING
 #if ( MOUNT_ORIENTATION == 	VERTICAL_MOUNT	)
-		udb_pwOut[1] = pitch_feedback_vertical + 3000 ;
-		udb_pwOut[2] = yaw_feedback_vertical + 3000 ;
-		udb_pwOut[3] = total_roll_feedback_vertical + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN pitch_feedback_vertical ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN yaw_feedback_vertical ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN total_roll_feedback_vertical ;
 #else
-		udb_pwOut[1] = pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = yaw_feedback_horizontal + 3000 ;
-		udb_pwOut[3] = total_roll_feedback_horizontal + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN pitch_feedback_horizontal ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN yaw_feedback_horizontal ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN total_roll_feedback_horizontal ;
 #endif
 		udb_pwOut[4] = 3000 ;
 

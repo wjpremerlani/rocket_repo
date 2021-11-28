@@ -316,6 +316,14 @@
 #define DETECT_APOGEE
 #define NO_MIXING
 
+#define PWM1_CENTER (3000)
+#define PWM2_CENTER (3000)
+#define PWM3_CENTER (3000)
+
+#define PWM1_SIGN +
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+
 #define XACCEL_OFFSET	( 318 )
 #define YACCEL_OFFSET	( -77 )
 #define ZACCEL_OFFSET	( -899 )
