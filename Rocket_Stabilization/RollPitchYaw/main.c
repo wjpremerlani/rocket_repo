@@ -662,8 +662,8 @@ void send_debug_line(void)
 		{
 //		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
 //		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-			sprintf( debug_buffer , "Max Roll Angle = %i deg.\r\nOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-			MAX_ROLL_ANGLE ,
+			sprintf( debug_buffer , "Max Roll= %i deg, Max Roll Rate= %i deg/sec %i usecs\r\nOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
+			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ,
 			udb_xaccel.offset , udb_yaccel.offset , udb_zaccel.offset ,
 			udb_xrate.offset , udb_yrate.offset , udb_zrate.offset
 			 	) ;
@@ -674,9 +674,9 @@ void send_debug_line(void)
 		{
 //		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
 //		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calibration %6.4f\r\nTiltAngle %5.1f deg, TiltRate %5.1f deg/s, %i usecs.\r\nSpin %i deg/sec %i usecs.\r\n" ,
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt %5.1f deg, TiltRate %5.1f deg/s, %i usecs\r\n" ,
 			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION ,
-			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH
+			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
 			
 			 	) ;

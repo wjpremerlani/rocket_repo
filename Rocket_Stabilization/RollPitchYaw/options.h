@@ -8,16 +8,15 @@
 #define DEBUG_NO_MIX ( 0 )
 
 // the following allows multiple sets of options to be saved in one file
-#define FLORIN (0)
-#define JIM (0)
-#define BILL (0)
-#define WAYNE_BRD4 (0)
-#define WAYNE_BRD5 (1)
-#define WAYNE_BRD6 (0)
-
+//#define FLORIN (0)
+#define JIM (1)
+//#define BILL (0)
+//#define WAYNE_BRD4 (0)
+//#define WAYNE_BRD5 (0)
+//#define WAYNE_BRD6 (0)
 
 // Florin's board
-#if ( FLORIN == 1 )
+#ifdef FLORIN
 // identify your board any way you want and set the date
 #define BOARD "Florin #xx"
 #define DATE "10/17/2020"
@@ -360,13 +359,13 @@
 #define DETECT_APOGEE
 #define NO_MIXING
 
-#define PWM1_CENTER (3000)
-#define PWM2_CENTER (3000)
-#define PWM3_CENTER (3000)
+#define PWM1_CENTER (3020)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3154)
 
 #define PWM1_SIGN +
-#define PWM2_SIGN +
-#define PWM3_SIGN +
+#define PWM2_SIGN -
+#define PWM3_SIGN -
 
 #define XACCEL_OFFSET	( 285 )
 #define YACCEL_OFFSET	( 10 )
@@ -376,18 +375,18 @@
 #define ZRATE_OFFSET	( 25 )
 #define CALIBRATION ( 0.9885 )
 
-#define BOARD "board SN6, Wayne"
+#define BOARD "SN6, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "Dec. 1, 2021, ground test"
+#define DATE "2/10/2022, gnd test"
 #else
-#define DATE "Dec. 1, 2021, flight ready"
+#define DATE "2/10/2022, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "Rev23, vertical, apogee detect"
+#define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 300.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
 #define MAX_SPIN_RATE ( 300.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 180 )
 
 #define GYRO_RANGE ( 1000 )
