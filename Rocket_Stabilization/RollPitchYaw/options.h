@@ -8,15 +8,15 @@
 #define DEBUG_NO_MIX ( 0 )
 
 // the following allows multiple sets of options to be saved in one file
-//#define FLORIN (0)
-#define JIM (1)
-//#define BILL (0)
-//#define WAYNE_BRD4 (0)
-//#define WAYNE_BRD5 (0)
-//#define WAYNE_BRD6 (0)
+#define FLORIN (0)
+#define JIM (0)
+#define BILL (0)
+#define WAYNE_BRD4 (0)
+#define WAYNE_BRD5 (0)
+#define WAYNE_BRD6 (1)
 
 // Florin's board
-#ifdef FLORIN
+#if( FLORIN == 1)
 // identify your board any way you want and set the date
 #define BOARD "Florin #xx"
 #define DATE "10/17/2020"

@@ -660,8 +660,7 @@ void send_debug_line(void)
 		}
 		case 2 :
 		{
-//		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
-//		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
+#ifndef NO_MIXING
 			sprintf( debug_buffer , "Max Roll= %i deg, Max Roll Rate= %i deg/sec %i usecs\r\nOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
 			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ,
 			udb_xaccel.offset , udb_yaccel.offset , udb_zaccel.offset ,
@@ -669,12 +668,21 @@ void send_debug_line(void)
 			 	) ;
 			line_number ++ ;
 			break ;
+#else
+			sprintf( debug_buffer , "MaxRoll= %i deg, RollRate= %i d/s, PWM=%i usecs\r\nOffsets, Accel,%i,%i,%i,Gyro,%i, %i,%i\r\nPWM cntrs,%i,%i,%i usecs, signs,%i,%i,%i\r\n" , 
+			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ,
+			udb_xaccel.offset , udb_yaccel.offset , udb_zaccel.offset ,
+			udb_xrate.offset , udb_yrate.offset , udb_zrate.offset ,
+			PWM1_CENTER/2 , PWM2_CENTER/2 , PWM3_CENTER/2 , PWM1_SIGN 1 ,PWM2_SIGN 1 ,PWM3_SIGN 1 
+			 	) ;
+			line_number ++ ;
+			break ;
+			
+#endif // NO_MIXING
 		}
 		case 1 :
 		{
-//		sprintf( debug_buffer , "JJBrd1, rev13, 5/10/2015\r\nTiltMultiplier: %i, RollMultiplier: %i\r\n" , BOARD, REVISION, DATE, (int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ) ;
-//		sprintf( debug_buffer , "%s, %s, %s\r\nTiltMultiplier: %i, RollMultiplier: %i\r\nSensorOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt %5.1f deg, TiltRate %5.1f deg/s, %i usecs\r\n" ,
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calib %6.4f\r\nMaxTilt= %5.1f deg, TiltRate= %5.1f d/s, PWM=%i usecs\r\n" ,
 			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION ,
 			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
