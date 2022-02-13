@@ -352,7 +352,7 @@
 
 // SN6
 #if ( WAYNE_BRD6 == 1 )
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
@@ -373,13 +373,13 @@
 #define XRATE_OFFSET	( 40 )
 #define YRATE_OFFSET	( 90 )
 #define ZRATE_OFFSET	( 25 )
-#define CALIBRATION ( 0.9885 )
+#define CALIBRATION ( 0.9961 )
 
 #define BOARD "SN6, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "2/10/2022, gnd test"
+#define DATE "2/11/2022, gnd test"
 #else
-#define DATE "2/10/2022, flt rdy"
+#define DATE "2/11/2022, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
