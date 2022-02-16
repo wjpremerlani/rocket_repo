@@ -12,8 +12,8 @@
 #define JIM (0)
 #define BILL (0)
 #define WAYNE_BRD4 (0)
-#define WAYNE_BRD5 (0)
-#define WAYNE_BRD6 (1)
+#define WAYNE_BRD5 (1)
+#define WAYNE_BRD6 (0)
 
 // Florin's board
 #if( FLORIN == 1)
@@ -310,20 +310,20 @@
 
 // SN5
 #if ( WAYNE_BRD5 == 1 )
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
 #define NO_MIXING
 
-#define PWM1_CENTER (3000)
-#define PWM2_CENTER (3000)
-#define PWM3_CENTER (3000)
+#define PWM1_CENTER (3020)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3154)
 
 #define PWM1_SIGN +
-#define PWM2_SIGN +
-#define PWM3_SIGN +
+#define PWM2_SIGN -
+#define PWM3_SIGN -
 
 #define XACCEL_OFFSET	( 330 )
 #define YACCEL_OFFSET	( -75 )
@@ -331,28 +331,27 @@
 #define XRATE_OFFSET	( -44 )
 #define YRATE_OFFSET	( 10 )
 #define ZRATE_OFFSET	( 15 )
-#define CALIBRATION ( 0.9885 )
+#define CALIBRATION ( 1.0032 )
 
-#define BOARD "board SN5, Wayne"
+#define BOARD "SN5, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "Dec. 1, 2021, ground test"
+#define DATE "2/16/2022, gnd test"
 #else
-#define DATE "Dec. 1, 2021, flight ready"
+#define DATE "2/16/2022, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "Rev23, vertical, apogee detect"
+#define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 300.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
 #define MAX_SPIN_RATE ( 300.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 180 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD5
-
 // SN6
 #if ( WAYNE_BRD6 == 1 )
-#define GROUND_TEST (0)
+#define GROUND_TEST (1)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
