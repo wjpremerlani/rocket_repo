@@ -138,19 +138,13 @@ int16_t tilt_x ;
 int16_t tilt_y ;
 uint16_t tilt_t ;
 
-int16_t controlModeYawPitch = 1 ;
-int16_t controlModeRoll = 1 ;
+int16_t controlModeYawPitch = YAW_PITCH_ENABLE ;
+int16_t controlModeRoll = ROLL_ENABLE ;
 int16_t launched = 0 ;
 int16_t accelEarthVertical = 0 ;
 int32_t velocityEarthVertical = 0 ;
 int16_t launch_count = 0 ;
 
-int16_t roll_feedback_vertical_pitch = 0 ;
-int16_t roll_feedback_vertical_yaw = 0 ;
-int16_t total_roll_feedback_vertical = 0 ;
-
-int16_t pitch_feedback_vertical = 0 ;
-int16_t yaw_feedback_vertical = 0 ;
 
 int16_t roll_feedback_horizontal_pitch = 0 ;
 int16_t roll_feedback_horizontal_yaw = 0 ;
@@ -331,9 +325,8 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 
 		{
-			offsetX = 0 ;
-			offsetY = 0 ;
-			offsetZ = 0 ;
+			offsetX = TILT_X ;
+			offsetY = TILT_Y ;
 		}
 			
 		{
@@ -346,35 +339,22 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 		if ( ( controlModeYawPitch == 1 )  )
 		{
-			pitch_feedback_vertical = tilt_feedback ( offsetZ -rmat[8] , -omega[0] ) ;
-			yaw_feedback_vertical = tilt_feedback ( rmat[6] - offsetX , -omega[2] ) ;
-
 			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX , -omega[1] ) ;
 			yaw_feedback_horizontal = tilt_feedback ( rmat[7] - offsetY , omega[0] ) ;
 		}
 		else
 		{
-			pitch_feedback_vertical = 0 ;
-			yaw_feedback_vertical = 0 ;	
-
 			pitch_feedback_horizontal = 0 ;
 			yaw_feedback_horizontal = 0 ;	
 		}
 
 		if ( ( controlModeRoll == 1 ) )
 		{
-			roll_feedback ( pitch_feedback_vertical , yaw_feedback_vertical ,   omega[1] , - roll_deviation ,
-							&roll_feedback_vertical_pitch , &roll_feedback_vertical_yaw , &total_roll_feedback_vertical ) ;
-
 			roll_feedback ( pitch_feedback_horizontal , yaw_feedback_horizontal , - omega[2]  , - roll_deviation ,
 							&roll_feedback_horizontal_pitch , &roll_feedback_horizontal_yaw , &total_roll_feedback_horizontal ) ;
 		}
 		else
 		{
-			roll_feedback_vertical_pitch = 0 ;
-			roll_feedback_vertical_yaw = 0 ;
-			total_roll_feedback_vertical = 0 ;
-
 			roll_feedback_horizontal_pitch = 0 ;
 			roll_feedback_horizontal_yaw = 0 ;
 			total_roll_feedback_horizontal = 0 ;
@@ -458,19 +438,20 @@ void send_debug_line(void)
 		}
 		case 3 :
 		{
+			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
 			line_number ++ ;
-			return ;
+			break ;
 		}
 		case 2 :
 		{
-			sprintf( debug_buffer , "Max Roll= %i deg, Max Roll Rate= %i deg/sec %i usecs\r\n" , 
+			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
 			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
 			line_number ++ ;
 			break ;
 		}
 		case 1 :
 		{
-			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nMaxTilt= %5.1f deg, TiltRate= %5.1f d/s, PWM=%i usecs\r\n" ,
+			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
 			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
@@ -497,13 +478,13 @@ void send_debug_line(void)
 			((double)( omegacorrI[0])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[1])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[2])) / ((double)( GYRO_FACTOR/2 )) ,
-			yaw_feedback_horizontal ,
-			pitch_feedback_horizontal ,
-			total_roll_feedback_horizontal ,
-			udb_pwOut[1] ,
-			udb_pwOut[2] ,
-			udb_pwOut[3] ,
-			udb_pwOut[4] ) ;
+			yaw_feedback_horizontal/2 ,
+			pitch_feedback_horizontal/2 ,
+			total_roll_feedback_horizontal/2 ,
+			udb_pwOut[1]/2 ,
+			udb_pwOut[2]/2 ,
+			udb_pwOut[3]/2 ,
+			udb_pwOut[4]/2 ) ;
 //			(uint16_t) udb_cpu_load() );
 			tenths ++ ;
 //			hundredths += 5 ;

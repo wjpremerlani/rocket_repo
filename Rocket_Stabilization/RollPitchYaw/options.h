@@ -1,8 +1,33 @@
-
 #define CUSTOM_OFFSETS
 #define USE_TILT (0)
-#define BOARD ""
-#define DATE "3/7/2022"
+#define ROLL_ONLY 1
+#define ROLL_PLUS_VERTICAL 2
+#define ROLL_PLUS_TILT 3
+
+#define CONTROL_TYPE ROLL_PLUS_TILT
+
+#if ( CONTROL_TYPE == ROLL_ONLY )
+#define CONTROL_TEXT "roll only"
+#define ROLL_ENABLE 1
+#define YAW_PITCH_ENABLE 0
+#define TILT_X 0
+#define TILT_Y 0
+#elif ( CONTROL_TYPE == ROLL_PLUS_VERTICAL )
+#define CONTROL_TEXT "roll and vertical"
+#define ROLL_ENABLE 1
+#define YAW_PITCH_ENABLE 1
+#define TILT_X 0
+#define TILT_Y 0
+#elif ( CONTROL_TYPE == ROLL_PLUS_TILT )
+#define CONTROL_TEXT "roll and 30 deg tilt"
+#define ROLL_ENABLE 1
+#define YAW_PITCH_ENABLE 1
+#define TILT_X 5792
+#define TILT_Y 5792
+#else
+#error "no control type defined"
+#endif
+#define DATE "3/8/2022"
 #define REVISION "VOS rv1"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second

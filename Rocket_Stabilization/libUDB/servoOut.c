@@ -101,10 +101,10 @@ void udb_init_pwm(void) // initialize the PWM
 	_TRISD1 = 0;
 	_TRISD2 = 0;
 	_TRISD3 = 0;
-	_TRISD4 = 0;
-	_TRISD5 = 0;
-	_TRISD6 = 0;
-	_TRISD7 = 0;
+	_TRISD4 = 1; // change PWM out pins 5-8 to inputs for VOS
+	_TRISD5 = 1;
+	_TRISD6 = 1;
+	_TRISD7 = 1;
 	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0;
 	if (NUM_OUTPUTS >= 10) _TRISA1 = 0;
 #elif (BOARD_TYPE == AUAV3_BOARD)
