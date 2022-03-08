@@ -412,9 +412,6 @@ static void roll_pitch_drift(void)
 	{
 		launched = 1 ;
 	}
-#ifndef GROUND_TEST
-#error ground_test
-#endif
 
 	if (  ( acceleration < ( GRAVITY/4 ))&& (launched == 0 ) )
 
