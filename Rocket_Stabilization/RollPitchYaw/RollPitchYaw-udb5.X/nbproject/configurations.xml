@@ -64,7 +64,6 @@
         <itemPath>../../libUDB/servoOut.c</itemPath>
         <itemPath>../../libUDB/mpu6000.c</itemPath>
         <itemPath>../../libUDB/analog2digital_udb5.c</itemPath>
-        <itemPath>../../libUDB/eeprom_udb4.c</itemPath>
         <itemPath>../../libUDB/traps_asm.s</itemPath>
         <itemPath>../../libUDB/magnetometer.c</itemPath>
         <itemPath>../../libUDB/mcu.c</itemPath>
