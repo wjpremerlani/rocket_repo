@@ -41,7 +41,5 @@ inline void MPU6000_init16(void);
 
 inline void start_pwm_outputs(void);
 
-inline void calculate_analog_sensor_values(void);
-
 inline void radioIn_failsafe_check(void);
 inline void radioIn_failsafe_reset(void);

@@ -105,7 +105,6 @@ static void pulse(void)
 	vref_adj = 0;
 #endif // VREF
 
-	calculate_analog_sensor_values();
 	udb_callback_read_sensors();
 	udb_flags._.a2d_read = 1; // signal the A/D to start the next summation
 

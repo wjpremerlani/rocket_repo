@@ -22,7 +22,6 @@
 #include "libUDB_internal.h"
 #include "oscillator.h"
 #include "interrupt.h"
-#include "analogs.h"
 #include "events.h"
 #include "osd.h"
 
@@ -63,10 +62,6 @@ void udb_skip_imu_calibration(boolean b)
 void udb_init(void)
 {
 	udb_flags.B = 0;
-
-	init_analogs();
-
-	udb_init_ADC();
 	init_events();
 #if (USE_I2C1_DRIVER == 1)
 	I2C1_Init();

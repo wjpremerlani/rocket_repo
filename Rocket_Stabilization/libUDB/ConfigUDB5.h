@@ -34,7 +34,7 @@
 //#define SCALEACCEL          1.29    // 4 g range
 #define SCALEACCEL          1.27    // 4 g range measured by WJP on a few UDB5s
 
-#define NUM_ANALOG_INPUTS   4
+#define NUM_ANALOG_INPUTS   0
 
 // A/D channels:
 #define analogInput1BUFF    3
