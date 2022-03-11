@@ -16,9 +16,7 @@
         <itemPath>../../libUDB/libUDB.h</itemPath>
         <itemPath>../../libUDB/libUDB_internal.h</itemPath>
         <itemPath>../../libUDB/libUDB_defines.h</itemPath>
-        <itemPath>../../libUDB/ConfigUDB4.h</itemPath>
         <itemPath>../../libUDB/boardRotation_defines.h</itemPath>
-        <itemPath>../../libUDB/ConfigAUAV3.h</itemPath>
         <itemPath>../../libUDB/mpu6000.h</itemPath>
         <itemPath>../../libUDB/ConfigUDB5.h</itemPath>
         <itemPath>../../libUDB/mpu_spi.h</itemPath>
@@ -60,7 +58,6 @@
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
         <itemPath>../../libUDB/background.c</itemPath>
         <itemPath>../../libUDB/libUDB.c</itemPath>
-        <itemPath>../../libUDB/analog2digital_udb4.c</itemPath>
         <itemPath>../../libUDB/servoOut.c</itemPath>
         <itemPath>../../libUDB/mpu6000.c</itemPath>
         <itemPath>../../libUDB/analog2digital_udb5.c</itemPath>
