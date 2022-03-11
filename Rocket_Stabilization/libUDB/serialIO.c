@@ -102,36 +102,11 @@ void udb_gps_start_sending_data(void)
 void __attribute__((__interrupt__,__no_auto_psv__)) _U1TXInterrupt(void)
 {
 	_U1TXIF = 0; // clear the interrupt
-	indicate_loading_inter;
-	interrupt_save_set_corcon;
-
-#if (HILSIM_USB != 1)
-	int16_t txchar = udb_gps_callback_get_byte_to_send();
-#else
-	int16_t txchar = -1;
-#endif // HILSIM_USB
-	if (txchar != -1)
-	{
-		U1TXREG = (uint8_t)txchar;
-	}
-	interrupt_restore_corcon;
 }
 
 void __attribute__((__interrupt__, __no_auto_psv__)) _U1RXInterrupt(void)
 {
 	_U1RXIF = 0; // clear the interrupt
-	indicate_loading_inter;
-	interrupt_save_set_corcon;
-	
-	while (U1STAbits.URXDA)
-	{
-		uint8_t rxchar = U1RXREG;
-#if (HILSIM_USB != 1)
-		udb_gps_callback_received_byte(rxchar);
-#endif // HILSIM_USB
-	}
-	U1STAbits.OERR = 0;
-	interrupt_restore_corcon;
 }
 
 

@@ -20,10 +20,7 @@
 
 
 #include "libDCM_internal.h"
-#include "gpsParseCommon.h"
 #include "../libUDB/heartbeat.h"
-#include "../libUDB/barometer.h"
-#include "estAltitude.h"
 #include "mathlibNAV.h"
 #include "rmat.h"
 
@@ -114,16 +111,6 @@ void dcm_run_init_step(uint16_t count)
 		dcm_calibrate();
 		dcm_align_tilt();
 	}
-
-	if (count <= GPS_COUNT)
-	{
-		gps_startup_sequence(GPS_COUNT - count); // Counts down from GPS_COUNT to 0
-		if (count == GPS_COUNT)
-		{
-			DPRINT("init_finished\r\n");
-			dcm_flags._.init_finished = 1;
-		}
-	}
 }
 
 #if (BAROMETER_ALTITUDE == 1)
@@ -162,22 +149,6 @@ void do_I2C_stuff(void)
 // Called at HEARTBEAT_HZ
 void udb_heartbeat_callback(void)
 {
-#if (BAROMETER_ALTITUDE == 1)
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ / 40) == 0)
-	{
-		do_I2C_stuff(); // TODO: this should always be be called at 40Hz
-	}
-#else
-//#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
-#if (MAG_YAW_DRIFT == 1)
-	// This is a simple counter to do stuff at 4hz
-//	if (udb_heartbeat_counter % 10 == 0)
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ / 4) == 0)
-	{
-		rxMagnetometer(udb_magnetometer_callback);
-	}
-#endif
-#endif // BAROMETER_ALTITUDE
 
 //  when we move the IMU step to the MPU call back, to run at 200 Hz, remove this
 	if (dcm_flags._.calib_finished)
@@ -195,9 +166,6 @@ void udb_heartbeat_callback(void)
 		}
 	}
 
-#if (HILSIM == 1)
-	send_HILSIM_outputs();
-#endif
 }
 
 // dcm_calibrate is called twice during the startup sequence.
@@ -213,32 +181,7 @@ void dcm_calibrate(void)
 	}
 }
 
-void dcm_set_origin_location(int32_t o_lon, int32_t o_lat, int32_t o_alt)
-{
-	union longbbbb accum_nav;
-	unsigned char lat_cir;
 
-	lat_origin.WW = o_lat;
-	lon_origin.WW = o_lon;
-	alt_origin.WW = o_alt;
-
-	// scale the low 16 bits of latitude from GPS units to gentleNAV units
-	accum_nav.WW = __builtin_mulss(LONGDEG_2_BYTECIR, lat_origin._.W1);
-
-	lat_cir = accum_nav.__.B2;  // effectively divides by 256
-	// estimate the cosine of the latitude, which is used later computing desired course
-	cos_lat = cosine(lat_cir);
-}
-
-struct relative3D dcm_absolute_to_relative(struct waypoint3D absolute)
-{
-	struct relative3D rel;
-
-	rel.z = absolute.z;
-	rel.y = (absolute.y - lat_origin.WW) / 90; // in meters
-	rel.x = long_scale((absolute.x - lon_origin.WW) / 90, cos_lat);
-	return rel;
-}
 
 #ifdef USE_EXTENDED_NAV
 struct relative3D_32 dcm_absolute_to_relative_32(struct waypoint3D absolute)
@@ -252,17 +195,6 @@ struct relative3D_32 dcm_absolute_to_relative_32(struct waypoint3D absolute)
 }
 #endif // USE_EXTENDED_NAV
 
-vect3_32t dcm_rel2abs(vect3_32t rel)
-{
-	vect3_32t abs;
-
-	abs.z = rel.z;
-	abs.y = (rel.y * 90) + lat_origin.WW;
-	abs.x = (rel.x * 90) + lon_origin.WW;
-//	abs.x = long_scale((rel.x * 90), cos_lat) + lon_origin.WW;
-
-	return abs;
-}
 
 #if (HILSIM == 1)
 

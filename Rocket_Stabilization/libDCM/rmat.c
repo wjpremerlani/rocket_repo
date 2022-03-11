@@ -21,8 +21,6 @@
 
 #include "libDCM_internal.h"
 #include "mathlibNAV.h"
-#include "deadReckoning.h"
-#include "gpsParseCommon.h"
 #include "../libUDB/heartbeat.h"
 
 // These are the routines for maintaining a direction cosine matrix
@@ -828,7 +826,6 @@ void dcm_run_imu_step(void)
 {
 	// update the matrix, renormalize it, adjust for roll and
 	// pitch drift, and send it to the servos.
-	dead_reckon();              // in libDCM:deadReconing.c
 	adj_accel();                // local
 #if ( GYRO_RANGE == 500 )
 	rupdate();                  // local
