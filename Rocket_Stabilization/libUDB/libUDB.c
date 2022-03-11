@@ -23,7 +23,6 @@
 #include "oscillator.h"
 #include "interrupt.h"
 #include "events.h"
-#include "osd.h"
 
 #if (USE_I2C1_DRIVER == 1)
 #include "I2C.h"
@@ -63,34 +62,12 @@ void udb_init(void)
 {
 	udb_flags.B = 0;
 	init_events();
-#if (USE_I2C1_DRIVER == 1)
-	I2C1_Init();
-#endif
-#if (USE_NV_MEMORY == 1)
-	nv_memory_init();
-	data_storage_init();
-	data_services_init();
-#endif
-#if (USE_FLEXIFUNCTION_MIXING == 1)
-	flexiFunctionServiceInit();
-#endif
 	udb_init_clock();
 	udb_init_capture();
-#if (MAG_YAW_DRIFT == 1 && HILSIM != 1)
-//	udb_init_I2C();
-#endif
-#if (CONSOLE_UART != 1)
-	udb_init_GPS();
-#endif
-#if (CONSOLE_UART != 2)
 	udb_init_USART();
-#endif
 	udb_init_pwm();
-	osd_init();
 
-#if (BOARD_TYPE == UDB5_BOARD || BOARD_TYPE == AUAV3_BOARD)
 	MPU6000_init16();
-#endif
 
 	SRbits.IPL = 0; // turn on all interrupt priorities
 }

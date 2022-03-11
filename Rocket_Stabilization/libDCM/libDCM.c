@@ -22,7 +22,6 @@
 #include "libDCM_internal.h"
 #include "gpsParseCommon.h"
 #include "../libUDB/heartbeat.h"
-#include "../libUDB/magnetometer.h"
 #include "../libUDB/barometer.h"
 #include "estAltitude.h"
 #include "mathlibNAV.h"

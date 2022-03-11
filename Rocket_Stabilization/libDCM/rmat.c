@@ -23,8 +23,6 @@
 #include "mathlibNAV.h"
 #include "deadReckoning.h"
 #include "gpsParseCommon.h"
-#include "../libUDB/magnetometer.h"
-#include "../libUDB/magnetometerOptions.h"
 #include "../libUDB/heartbeat.h"
 
 // These are the routines for maintaining a direction cosine matrix

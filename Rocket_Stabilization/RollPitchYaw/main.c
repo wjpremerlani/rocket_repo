@@ -525,7 +525,3 @@ void udb_serial_callback_received_byte(uint8_t rxchar)
 void udb_callback_radio_did_turn_off(void)
 {
 }
-
-void osd_init(void)
-{
-}
