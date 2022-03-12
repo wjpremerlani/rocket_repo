@@ -38,7 +38,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="libDCM" displayName="libDCM" projectFiles="true">
-        <itemPath>../../libDCM/estYawDrift.c</itemPath>
         <itemPath>../../libDCM/mathlibNAV.c</itemPath>
         <itemPath>../../libDCM/rmat.c</itemPath>
         <itemPath>../../libDCM/libDCM.c</itemPath>

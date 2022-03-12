@@ -48,10 +48,6 @@ void dcm_set_origin_location(int32_t o_long, int32_t o_lat, int32_t o_alt);
 // After dead reckoning is complete, this callback may go away.
 void dcm_callback_gps_location_updated(void);   // Callback
 
-// Allows disabling yaw drift estimation.
-// Starts off enabled.  Call this to disable and to then re-enable.
-void dcm_enable_yaw_drift_correction(boolean enabled);
-
 // Implement this callback to prepare the pwOut values.
 // It is called at 40Hz (once every 25ms).
 //void dcm_servo_callback_prepare_outputs(void);  // Callback

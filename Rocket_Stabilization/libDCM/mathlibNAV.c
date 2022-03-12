@@ -21,11 +21,6 @@
 
 #include "dcmTypes.h"
 #include "mathlibNAV.h"
-#if (WIN == 1 || NIX == 1)
-#include "SIL-udb.h"
-#endif // (WIN == 1 || NIX == 1)
-
-//  math libraray
 
 #define RADIANTOCIRCULAR 10430
 

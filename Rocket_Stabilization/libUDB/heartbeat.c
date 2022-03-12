@@ -23,12 +23,6 @@
 #include "oscillator.h"
 #include "interrupt.h"
 #include "heartbeat.h"
-#if (USE_I2C1_DRIVER == 1)
-#include "I2C.h"
-#endif
-#if (USE_NV_MEMORY == 1)
-#include "NV_memory.h"
-#endif
 
 int one_hertz_flag = 0;
 uint16_t udb_heartbeat_counter = 0;
@@ -86,32 +80,10 @@ static void pulse(void)
 //	LED_BLUE = LED_OFF;     // indicates logfile activity
 
 
-#ifdef VREF
-	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1);
-#else
 	vref_adj = 0;
-#endif // VREF
-
 	udb_callback_read_sensors();
 	udb_flags._.a2d_read = 1; // signal the A/D to start the next summation
 
 	// process sensor data, run flight controller, generate outputs. implemented in libDCM.c
 	udb_heartbeat_callback(); // this was called udb_servo_callback_prepare_outputs()
-
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ/40) == 0)
-	{
-#if (USE_I2C1_DRIVER == 1)
-		I2C1_trigger_service();
-#endif
-
-#if (USE_NV_MEMORY == 1)
-		nv_memory_service_trigger();
-		storage_service_trigger();
-		data_services_trigger();
-#endif
-
-#if (USE_FLEXIFUNCTION_MIXING == 1)
-		flexiFunctionServiceTrigger();
-#endif
-	}
 }

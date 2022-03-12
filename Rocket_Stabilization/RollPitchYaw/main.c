@@ -56,8 +56,6 @@ int main(void)
 {
 	_TRISA2 = 1 ; // SCL is input pin for enabling yaw/pitch control
 	_TRISA3 = 1 ; // SDA is input pin for enabling roll control
-	_TRISD15 = 0 ; // repurpose PWM8 input as an output
-	_LATD15 = 0 ;
 	mcu_init();
 
 	// Set up the libraries
@@ -406,9 +404,6 @@ void send_debug_line(void)
 	db_index = 0;
 	if( RECORD_OFFSETS == 1 )
 	{
-//		int16_t gravity2x = (int16_t) 2*GRAVITY ;
-//		sprintf( debug_buffer , "%i, %i, %i, %i, %i, %i, %i\r\n" , 
-//			gravity2x, udb_xaccel.value , udb_yaccel.value , udb_zaccel.value , udb_xrate.value , udb_yrate.value , udb_zrate.value ) ; 
 		sprintf( debug_buffer , "%i, %i, %i, %i, %i, %i\r\n" , 
 			udb_xaccel.value , udb_yaccel.value , udb_zaccel.value , udb_xrate.value , udb_yrate.value , udb_zrate.value ) ; 
 	}
