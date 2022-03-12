@@ -61,7 +61,6 @@ void udb_init(void)
 {
 	udb_flags.B = 0;
 	udb_init_clock();
-	udb_init_capture();
 	udb_init_USART();
 	udb_init_pwm();
 

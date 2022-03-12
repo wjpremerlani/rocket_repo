@@ -85,19 +85,6 @@ static void pulse(void)
 {
 //	LED_BLUE = LED_OFF;     // indicates logfile activity
 
-#if (NORADIO != 1)
-	// 20Hz testing of radio link
-	if ((udb_heartbeat_counter % (HEARTBEAT_HZ/20)) == 1)
-	{
-		radioIn_failsafe_check();
-	}
-	// Computation of noise rate
-	// Noise pulses are counted when they are detected, and reset once a second
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ/1) == 1)
-	{
-		radioIn_failsafe_reset();
-	}
-#endif // NORADIO
 
 #ifdef VREF
 	vref_adj = (udb_vref.offset>>1) - (udb_vref.value>>1);

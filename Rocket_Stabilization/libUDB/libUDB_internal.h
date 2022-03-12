@@ -31,7 +31,6 @@ uint16_t get_reset_flags(void);
 inline void udb_init_leds(void);
 inline void udb_init_ADC(void);
 inline void udb_init_clock(void);
-inline void udb_init_capture(void);
 inline void udb_init_GPS(void);
 inline void udb_init_USART(void);
 inline void udb_init_pwm(void);
@@ -41,5 +40,3 @@ inline void MPU6000_init16(void);
 
 inline void start_pwm_outputs(void);
 
-inline void radioIn_failsafe_check(void);
-inline void radioIn_failsafe_reset(void);
