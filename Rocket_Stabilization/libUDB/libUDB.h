@@ -86,7 +86,6 @@ void mav_printf(const char * format, ...);
 
 #include "fixDeps.h"
 #include "libUDB_defines.h"
-#include "nv_memory_options.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // libUDB.h defines the API for accessing the UDB hardware through libUDB.

@@ -8,7 +8,6 @@
         <itemPath>../../libDCM/libDCM.h</itemPath>
         <itemPath>../../libDCM/libDCM_defines.h</itemPath>
         <itemPath>../../libDCM/libDCM_internal.h</itemPath>
-        <itemPath>../../libDCM/estAltitude.h</itemPath>
         <itemPath>../../libDCM/rmat.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">

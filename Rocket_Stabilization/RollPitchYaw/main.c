@@ -79,10 +79,6 @@ int main(void)
 	return 0;
 }
 
-void init_events(void)
-{
-}
-
 // Called every 1/40 second at high priority
 void udb_heartbeat_40hz_callback(void)
 {
