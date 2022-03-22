@@ -18,6 +18,8 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
+//  2022-03-22  FBH  Revise to port to 810
+
 
 #include "libUDB_internal.h"
 #include "oscillator.h"
@@ -294,8 +296,14 @@ void init_leds(void)
 	_LATB2 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; _LATB5 = LED_OFF; 
 	_TRISB2 = 0; _TRISB3 = 0; _TRISB4 = 0; _TRISB5 = 0;
 #elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
-	_LATE1 = LED_OFF; _LATE2 = LED_OFF; _LATE3 = LED_OFF; _LATE4 = LED_OFF;
-	_TRISE1 = 0; _TRISE2 = 0; _TRISE3 = 0; _TRISE4 = 0;
+    
+    //  FBH  change LED ports for 810 chip; will change again for 806
+	//_LATE1 = LED_OFF; _LATE2 = LED_OFF; _LATE3 = LED_OFF; _LATE4 = LED_OFF;
+	//_TRISE1 = 0; _TRISE2 = 0; _TRISE3 = 0; _TRISE4 = 0;
+    
+    _LATA2 = LED_OFF; _LATA3 = LED_OFF; _LATA4 = LED_OFF; _LATA5 = LED_OFF;
+	_TRISA2 = 0; _TRISA3 = 0; _TRISA4 = 0; _TRISA5 = 0;
+      
 #else
 #error Invalid BOARD_TYPE
 #endif // BOARD_TYPE

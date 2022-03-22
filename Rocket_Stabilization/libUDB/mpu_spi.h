@@ -29,7 +29,10 @@
 // on AUAV3, SPI1 connects to MPU, SPI2 is for off board.
 // On UDB4/5:
 // SPI1 interface uses INT1, RA12 for MPU interrupt
+
+//  FBH Change the SPI2 interrupt for 810 to INT0, RD0 for MPU interrupt
 // SPI2 interface uses INT3, RA14 for MPU interrupt
+
 // On AUAV3:
 // SPI1 interface uses INT1, RG12 for MPU interrupt
 
@@ -38,9 +41,11 @@
 #define MPU_SPI 1
 #define _TRISMPUINT _TRISA12
 
+//  FBH Change the SPI2 interrupt for 810 to INT0, RD0 for MPU interrupt
 #elif (BOARD_TYPE == UDB5_BOARD)
 #define MPU_SPI 2
-#define _TRISMPUINT _TRISA14
+//#define _TRISMPUINT _TRISA14
+#define _TRISMPUINT _TRISD0
 
 #elif (BOARD_TYPE == AUAV2_BOARD)
 #define MPU_SPI 1

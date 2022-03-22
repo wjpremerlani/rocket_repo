@@ -73,10 +73,16 @@
 #define MAX_OUTPUTS         8
 
 // LED pins
-#define LED_BLUE            LATEbits.LATE4
-#define LED_ORANGE          LATEbits.LATE3
-#define LED_GREEN           LATEbits.LATE2
-#define LED_RED             LATEbits.LATE1
+//  FBH
+//#define LED_BLUE            LATEbits.LATE4
+//#define LED_ORANGE          LATEbits.LATE3
+//#define LED_GREEN           LATEbits.LATE2
+//#define LED_RED             LATEbits.LATE1
+
+#define LED_BLUE            LATAbits.LATA5
+#define LED_ORANGE          LATAbits.LATA4
+#define LED_GREEN           LATAbits.LATA3
+#define LED_RED             LATAbits.LATA2
 
 // SPI SS pin definitions
 #define SPI1_SS             _LATB2

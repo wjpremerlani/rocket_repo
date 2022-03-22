@@ -18,7 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with MatrixPilot.  If not, see <http://www.gnu.org/licenses/>.
 
-//	routines to drive the PWM pins for the servos,
+//	routines to drive the PWM pins for the servos
+
+//  2022-03-22  FBH  Remap servo channels so can use RDO for MPU_INT; limit channels to 4
 
 #include "libUDB_internal.h"
 #include "../libDCM/libDCM.h"
@@ -27,17 +29,19 @@
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 
-#define SERVO_OUT_PIN_1         _LATD0
-#define SERVO_OUT_PIN_2         _LATD1
-#define SERVO_OUT_PIN_3         _LATD2
-#define SERVO_OUT_PIN_4         _LATD3
-#define SERVO_OUT_PIN_5         _LATD4
+// FBH
+//#define SERVO_OUT_PIN_1         _LATD0
+#define SERVO_OUT_PIN_1         _LATD1
+#define SERVO_OUT_PIN_2         _LATD2
+#define SERVO_OUT_PIN_3         _LATD3
+#define SERVO_OUT_PIN_4         _LATD4
+
 #define SERVO_OUT_PIN_6         _LATD5
-#define SERVO_OUT_PIN_7         _LATD6
-#define SERVO_OUT_PIN_8         _LATD7
-#define SERVO_OUT_PIN_9         _LATA4
-#define SERVO_OUT_PIN_10        _LATA1
-#define ACTION_OUT_PIN          SERVO_OUT_PIN_9
+//#define SERVO_OUT_PIN_7         _LATD6
+//#define SERVO_OUT_PIN_8         _LATD7
+//#define SERVO_OUT_PIN_9         _LATA4
+//#define SERVO_OUT_PIN_10        _LATA1
+#define ACTION_OUT_PIN          SERVO_OUT_PIN_6
 
 #elif (BOARD_TYPE == AUAV3_BOARD)
 
@@ -97,16 +101,22 @@ void udb_init_pwm(void) // initialize the PWM
 	}
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
-	_TRISD0 = 0;
+    
+    // FBH
+	//_TRISD0 = 0;
 	_TRISD1 = 0;
 	_TRISD2 = 0;
 	_TRISD3 = 0;
-	_TRISD4 = 1; // change PWM out pins 5-8 to inputs for VOS
-	_TRISD5 = 1;
-	_TRISD6 = 1;
-	_TRISD7 = 1;
-	if (NUM_OUTPUTS >= 9)  _TRISA4 = 0;
-	if (NUM_OUTPUTS >= 10) _TRISA1 = 0;
+    _TRISD4 = 0;  // FBH add
+    
+    // FBH
+	//_TRISD4 = 1; // change PWM out pins 5-8 to inputs for VOS
+	//_TRISD5 = 1;
+	//_TRISD6 = 1;
+	//_TRISD7 = 1;
+	//if (NUM_OUTPUTS >= 9)  _TRISA4 = 0;
+	//if (NUM_OUTPUTS >= 10) _TRISA1 = 0;
+    
 #elif (BOARD_TYPE == AUAV3_BOARD)
 	// port D
 	TRISDbits.TRISD7 = 0;       // O4
@@ -194,7 +204,9 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			SERVO_OUT_PIN_3 = 0;
 			HANDLE_SERVO_OUT(4, SERVO_OUT_PIN_4);
 			break;
-		case 4:
+            
+        // FBH    
+		/*case 4:
 			SERVO_OUT_PIN_4 = 0;
 			HANDLE_SERVO_OUT(5, SERVO_OUT_PIN_5);
 			break;
@@ -229,6 +241,7 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			_T4IE = 0;              // disable timer 4 interrupt
 			break;
 #endif // SERVO_OUT_PIN_10
+         */
 	}
 
 	_T4IF = 0;                      // clear the interrupt

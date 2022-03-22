@@ -54,8 +54,13 @@ int16_t tilted = 0 ;
 
 int main(void)
 {
-	_TRISA2 = 1 ; // SCL is input pin for enabling yaw/pitch control
-	_TRISA3 = 1 ; // SDA is input pin for enabling roll control
+    
+    //  FBH  A2 and A3 are LED pins for 810
+	//_TRISA2 = 1 ; // SCL is input pin for enabling yaw/pitch control
+	//_TRISA3 = 1 ; // SDA is input pin for enabling roll control
+    _TRISE3 = 1 ;  // good as place as any to set up for simulated launch pin
+    _TRISE4 = 1 ;  // and OpenLog card error input
+    
 	mcu_init();
 
 	// Set up the libraries
@@ -324,7 +329,9 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 			
 		{
-			if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch 
+            //  FBH
+			//if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch - see line ~57
+            if ( _RE3 == 0 ) // ground test simulate launch 
 			{
 				launched = 1 ;
 			}
