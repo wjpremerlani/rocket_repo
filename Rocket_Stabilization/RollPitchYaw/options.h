@@ -1,3 +1,5 @@
+// 2022-30-22  FBH Setup to do port from 710A to 810 for the Explorer demo board
+
 #define CUSTOM_OFFSETS
 #define USE_TILT (0)
 #define ROLL_ONLY 1
