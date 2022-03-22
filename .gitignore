@@ -1,0 +1,5 @@
+*.flag
+*.mk
+*.properties
+*.bash
+*.xml
