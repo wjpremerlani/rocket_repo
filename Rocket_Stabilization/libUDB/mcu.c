@@ -39,8 +39,11 @@ _FOSC(FCKSM_CSDCMD &
 // Primary Oscillator XT mode.
 _FWDT(FWDTEN_OFF &
       WINDIS_OFF);
+// DOTO WJP
+// apparently GCP_OFF is not used on this dsPIC, the implications need to be checked.
+// also, this syntax is deprecated, we should revise to use pragma instead
 _FGS(GSS_OFF &
-     GCP_OFF &
+//     GCP_OFF &
      GWRP_OFF);
 _FPOR(FPWRT_PWR1);
 _FICD(JTAGEN_OFF &
