@@ -4,7 +4,7 @@
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 
-#define CONTROL_TYPE ROLL_PLUS_VERTICAL
+#define CONTROL_TYPE ROLL_ONLY
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -27,13 +27,13 @@
 #else
 #error "no control type defined"
 #endif
-#define DATE "3/12/2022"
-#define REVISION "VOS_port_RV3"
+#define DATE "3/23/2022"
+#define REVISION "despin"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 0.0 ) // microseconds
 #define MAX_SPIN_RATE ( 1000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 360 ) // degrees
 
 #define GYRO_RANGE ( 1000 )
