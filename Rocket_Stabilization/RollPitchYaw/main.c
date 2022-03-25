@@ -140,6 +140,8 @@ int16_t launched = 0 ;
 int16_t accelEarthVertical = 0 ;
 int32_t velocityEarthVertical = 0 ;
 int16_t launch_count = 0 ;
+int16_t prelaunch_timer = PRELAUNCH_DELAY ;
+int16_t flight_timer = FLIGHT_TIME ;
 
 int16_t lockout = 0 ;
 int16_t enable_control = 0 ;
@@ -279,8 +281,6 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
 
-int16_t tilt_count = 0 ;
-
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
 {
@@ -291,17 +291,63 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 	}
 	else
 	{
-		if (fail_safe() == 1)
+		if (( launched == 1) && (fail_safe() == 1))
 		{
-			LED_RED = LED_ON ;
+			lockout = 1 ;
+		}
+		if (GROUND_TEST==1)
+		{
+			if (prelaunch_timer == 0 )
+			{
+				launched = 1 ;
+			}
+			if ( (launched==1)&&(flight_timer>0)&&(lockout==0))
+			{
+				enable_control = 1 ;
+			}
+			else
+			{
+				enable_control = 0 ;
+			}
 		}
 		else
 		{
-			LED_RED = LED_OFF ;
+			if ( (launched==1)&&(flight_timer>0))
+			{
+				enable_control = 1 ;
+			}
+			else
+			{
+				enable_control = 0 ;
+			}
 		}
+		
 		if (udb_heartbeat_counter % 40 == 0)
 		{
-			udb_led_toggle(LED_GREEN) ;
+			if (prelaunch_timer>0)
+			{
+				prelaunch_timer = prelaunch_timer - 1 ;
+			}
+			if (( launched == 1) && (flight_timer>0))
+			{
+				flight_timer = flight_timer -1 ;
+			}
+			if (enable_control==1)
+			{
+				udb_led_toggle(LED_RED) ;
+			}
+			else
+			{
+				LED_RED = LED_OFF ;
+			}
+			if (lockout==0)
+			{
+				udb_led_toggle(LED_GREEN);
+			}
+			else
+			{
+				LED_GREEN = LED_OFF ;
+			}
 		}
 		if ( launched == 1 )
 		{

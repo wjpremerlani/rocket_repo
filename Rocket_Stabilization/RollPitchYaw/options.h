@@ -3,6 +3,10 @@
 #define ROLL_ONLY 1
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
+#define GROUND_TEST (1)
+
+#define PRELAUNCH_DELAY 120
+#define FLIGHT_TIME 20
 
 #define CONTROL_TYPE ROLL_ONLY
 
