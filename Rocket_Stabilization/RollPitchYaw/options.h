@@ -4,6 +4,7 @@
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 #define GROUND_TEST (1)
+#define POLARITY +
 
 #define PRELAUNCH_DELAY 120
 #define FLIGHT_TIME 20
@@ -31,7 +32,7 @@
 #else
 #error "no control type defined"
 #endif
-#define DATE "3/23/2022"
+#define DATE "3/25/2022"
 #define REVISION "despin"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second

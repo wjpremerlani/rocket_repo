@@ -351,10 +351,6 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 		if ( launched == 1 )
 		{
-			/*if (udb_heartbeat_counter % 40 == 0)
-			{
-				udb_led_toggle(LED_RED) ;
-			}*/
 			// update roll_angle_32
 			// compute earth frame Z axis change in angle
 			accum.WW = 0 ;
@@ -417,16 +413,24 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			roll_feedback_horizontal_yaw = 0 ;
 			total_roll_feedback_horizontal = 0 ;
 		}
-		
+			
+		if (enable_control==1)
+		{
+			udb_pwOut[1] = 3000 POLARITY total_roll_feedback_horizontal ;
+		}
+		else
+		{
+			udb_pwOut[1] = 3000 ;
+		}
+		udb_pwOut[2] = 3000 ;
+		udb_pwOut[3] = 3000 ;
+		udb_pwOut[4] = 3000 ;
 		udb_pwOut[5] = 3000 ;
 		udb_pwOut[6] = 3000 ;
 		udb_pwOut[7] = 3000 ;
 		udb_pwOut[8] = 3000 ;
-
-		udb_pwOut[1] = total_roll_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = 3000 ;
-		udb_pwOut[3] = 3000 ;
-		udb_pwOut[4] = 3000 ;
+		
+		
 
 	}
 
