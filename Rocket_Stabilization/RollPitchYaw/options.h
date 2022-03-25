@@ -48,6 +48,9 @@
 #define YRATE_OFFSET	( 0 )
 #define ZRATE_OFFSET	( 0 )
 
+#define LOCKOUT_ROLL 30 // 30 degrees
+#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
+
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)
 #define GPS_TYPE                            GPS_STD

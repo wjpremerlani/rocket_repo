@@ -45,6 +45,8 @@ struct relative2D roll_reference ;
 int16_t roll_angle ;
 int16_t rect_to_polar16(struct relative2D *xy);
 
+int16_t fail_safe(void);
+
 #define MAX_ROLL_BINARY ((int32_t) ((int32_t)286*(int32_t)MAX_ROLL_ANGLE ))
 
 int16_t apogee = 0 ;
@@ -139,6 +141,8 @@ int16_t accelEarthVertical = 0 ;
 int32_t velocityEarthVertical = 0 ;
 int16_t launch_count = 0 ;
 
+int16_t lockout = 0 ;
+int16_t enable_control = 0 ;
 
 int16_t roll_feedback_horizontal_pitch = 0 ;
 int16_t roll_feedback_horizontal_yaw = 0 ;
@@ -287,10 +291,24 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 	}
 	else
 	{
-		LED_GREEN = LED_ON ;
-		if ( launched == 1 )
+		if (fail_safe() == 1)
 		{
 			LED_RED = LED_ON ;
+		}
+		else
+		{
+			LED_RED = LED_OFF ;
+		}
+		if (udb_heartbeat_counter % 40 == 0)
+		{
+			udb_led_toggle(LED_GREEN) ;
+		}
+		if ( launched == 1 )
+		{
+			/*if (udb_heartbeat_counter % 40 == 0)
+			{
+				udb_led_toggle(LED_RED) ;
+			}*/
 			// update roll_angle_32
 			// compute earth frame Z axis change in angle
 			accum.WW = 0 ;
@@ -315,7 +333,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 		else
 		{
-			LED_RED = LED_OFF ;
+			//LED_RED = LED_OFF ;
 		}
 
 		{
@@ -359,10 +377,10 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		udb_pwOut[7] = 3000 ;
 		udb_pwOut[8] = 3000 ;
 
-		udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
-		udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal + 3000 ;
+		udb_pwOut[1] = total_roll_feedback_horizontal + 3000 ;
+		udb_pwOut[2] = 3000 ;
+		udb_pwOut[3] = 3000 ;
+		udb_pwOut[4] = 3000 ;
 
 	}
 
@@ -381,6 +399,18 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		{
 			send_debug_line();
 		}
+	}
+}
+
+int16_t fail_safe()
+{
+	if (( rmat[8]> LOCKOUT_COS_TILT)&&(abs(roll_deviation)<LOCKOUT_ROLL))
+	{
+		return 0 ;
+	}
+	else
+	{
+		return 1 ;
 	}
 }
 
@@ -414,7 +444,7 @@ void send_debug_line(void)
 		{
 
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, fail_safe, pwm1\r\n" ) ;
 			}
 
 			line_number ++ ;
@@ -456,7 +486,7 @@ void send_debug_line(void)
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i\r\n",
 			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
@@ -469,13 +499,8 @@ void send_debug_line(void)
 			((double)( omegacorrI[0])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[1])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[2])) / ((double)( GYRO_FACTOR/2 )) ,
-			yaw_feedback_horizontal/2 ,
-			pitch_feedback_horizontal/2 ,
-			total_roll_feedback_horizontal/2 ,
-			udb_pwOut[1]/2 ,
-			udb_pwOut[2]/2 ,
-			udb_pwOut[3]/2 ,
-			udb_pwOut[4]/2 ) ;
+			fail_safe() ,
+			udb_pwOut[1]/2 ) ;
 //			(uint16_t) udb_cpu_load() );
 			tenths ++ ;
 //			hundredths += 5 ;
