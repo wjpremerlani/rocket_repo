@@ -4,10 +4,16 @@
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 #define GROUND_TEST (1)
-#define POLARITY +
+#define POLARITY -
 
-#define PRELAUNCH_DELAY 120
-#define FLIGHT_TIME 20
+#define PRELAUNCH_DELAY 300
+#define FLIGHT_TIME 30
+
+#define LOCKOUT_ROLL 90 // 90 degrees
+#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
+
+//#define LOCKOUT_ROLL 720 // 
+//#define LOCKOUT_COS_TILT 0 // cosine 90 degrees
 
 #define CONTROL_TYPE ROLL_ONLY
 
@@ -53,8 +59,6 @@
 #define YRATE_OFFSET	( 0 )
 #define ZRATE_OFFSET	( 0 )
 
-#define LOCKOUT_ROLL 30 // 30 degrees
-#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)
