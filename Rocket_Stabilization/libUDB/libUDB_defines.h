@@ -171,7 +171,7 @@ struct udb_flag_bits {
 #define RMAX                    16384//0b0100000000000000       // 1.0 in 2.14 fractional format
 #define GRAVITY                 ((int32_t)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
 
-#define SERVOCENTER             3000
+#define SERVOCENTER             CENTER
 #define SERVORANGE              ((int16_t)(1000))
 #define SERVOMAX                (SERVOCENTER + SERVORANGE)
 #define SERVOMIN                (SERVOCENTER - SERVORANGE)

@@ -30,6 +30,25 @@
 
 #include <stdint.h>
 
+// legacy #defines:
+#define CUSTOM_OFFSETS
+#define USE_TILT (0)
+#define ROLL_ONLY 1
+#define ROLL_PLUS_VERTICAL 2
+#define ROLL_PLUS_TILT 3
+
+#define XACCEL_OFFSET	( 0 )
+#define YACCEL_OFFSET	( 0 )
+#define ZACCEL_OFFSET	( 0 )
+#define XRATE_OFFSET	( 0 )
+#define YRATE_OFFSET	( 0 )
+#define ZRATE_OFFSET	( 0 )
+
+// tilt is not used for now
+#define MAX_TILT_ANGLE ( 7.5 ) // degrees
+#define MAX_TILT_RATE ( 100.0 ) // degrees per second
+#define MAX_TILT_PULSE_WIDTH ( 0.0 ) // microseconds
+
 char debug_buffer[512];
 int db_index = 0;
 void send_debug_line(void);
@@ -46,6 +65,7 @@ int16_t roll_angle ;
 int16_t rect_to_polar16(struct relative2D *xy);
 
 int16_t fail_safe(void);
+int16_t dead_band_compensate(int16_t pwm) ;
 
 #define MAX_ROLL_BINARY ((int32_t) ((int32_t)286*(int32_t)MAX_ROLL_ANGLE ))
 
@@ -234,9 +254,9 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #endif
 
 #if ( GYRO_RANGE == 500 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 2*SPIN_GAIN ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 2*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN ) ; // 1000 degree per second
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
@@ -416,19 +436,19 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			
 		if (enable_control==1)
 		{
-			udb_pwOut[1] = 3000 POLARITY total_roll_feedback_horizontal ;
+			udb_pwOut[1] = CENTER POLARITY dead_band_compensate(total_roll_feedback_horizontal) ;
 		}
 		else
 		{
-			udb_pwOut[1] = 3000 ;
+			udb_pwOut[1] = CENTER ;
 		}
-		udb_pwOut[2] = 3000 ;
-		udb_pwOut[3] = 3000 ;
-		udb_pwOut[4] = 3000 ;
-		udb_pwOut[5] = 3000 ;
-		udb_pwOut[6] = 3000 ;
-		udb_pwOut[7] = 3000 ;
-		udb_pwOut[8] = 3000 ;
+		udb_pwOut[2] = CENTER ;
+		udb_pwOut[3] = CENTER ;
+		udb_pwOut[4] = CENTER ;
+		udb_pwOut[5] = CENTER ;
+		udb_pwOut[6] = CENTER ;
+		udb_pwOut[7] = CENTER ;
+		udb_pwOut[8] = CENTER ;
 		
 		
 
@@ -461,6 +481,44 @@ int16_t fail_safe()
 	else
 	{
 		return 1 ;
+	}
+}
+
+int16_t dead_band_memory = 0 ;
+int16_t dead_band_compensate ( int16_t pwm_in)
+{
+	if (abs(pwm_in) < DEAD_BAND)
+	{
+		if ( pwm_in > 0)
+		{
+			dead_band_memory = dead_band_memory + pwm_in ;
+			if ( dead_band_memory >= DEAD_BAND)
+			{
+				dead_band_memory = dead_band_memory - DEAD_BAND ;
+				return DEAD_BAND ;
+			}
+			else
+			{
+				return 0 ;
+			}
+		}
+		else
+		{
+			dead_band_memory = dead_band_memory + pwm_in ;
+			if ( dead_band_memory <= - DEAD_BAND)
+			{
+				dead_band_memory = dead_band_memory + DEAD_BAND ;
+				return - DEAD_BAND ;
+			}
+			else
+			{
+				return 0 ;
+			}
+		}
+	}
+	else
+	{
+		return pwm_in ;
 	}
 }
 
