@@ -3,3 +3,8 @@
 *.properties
 *.bash
 *.xml
+*.o
+*.d
+*.map
+*.elf
+*.hex
