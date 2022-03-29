@@ -49,6 +49,9 @@
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 0.0 ) // microseconds
 
+
+
+
 char debug_buffer[512];
 int db_index = 0;
 void send_debug_line(void);
@@ -580,10 +583,10 @@ void send_debug_line(void)
 		}
 		case 1 :
 		{
-			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
+			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nCntr= %i, Dd_bnd= %i, L_O= %i\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
-			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
-			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
+			CENTER , DEAD_BAND , LOCKOUT_ROLL
+			
 			
 			 	) ;
 			line_number ++ ;

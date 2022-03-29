@@ -25,6 +25,10 @@
 #include "oscillator.h"
 #include "interrupt.h"
 
+// legacy defines, not used for despin
+#define NUM_INPUTS                          0
+#define NUM_OUTPUTS                         8
+
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 
 #define SERVO_OUT_PIN_1         _LATD0
