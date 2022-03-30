@@ -74,7 +74,9 @@
 #define NUM_INPUTS                          0
 
 // NUM_OUTPUTS: Set to 3, 4, 5, or 6
-#define NUM_OUTPUTS                         8
+
+//  FBH
+#define NUM_OUTPUTS                         4   // was 8
 
 // Channel numbers for each output
 // Use as is, or edit to match your setup.

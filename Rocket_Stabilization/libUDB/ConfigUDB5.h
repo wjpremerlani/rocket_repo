@@ -20,6 +20,7 @@
 
 
 // used for the UDB5
+//  FBH  And the VOS_206A
 
 // ACCEL_RANGE must be either 4 or 8
 // ACCEL_RANGE 2 will cause all sorts of trouble, do not use it
@@ -70,18 +71,30 @@
 
 // Max inputs and outputs
 #define MAX_INPUTS          8
-#define MAX_OUTPUTS         8
+
+//  FBH
+#define MAX_OUTPUTS         4   // was 8
 
 // LED pins
+
+//  FBH
+/*
 #define LED_BLUE            LATEbits.LATE4
 #define LED_ORANGE          LATEbits.LATE3
 #define LED_GREEN           LATEbits.LATE2
 #define LED_RED             LATEbits.LATE1
+ */
+#define LED_BLUE            LATBbits.LATEB4
+#define LED_ORANGE          LATBbits.LATB3
+#define LED_GREEN           LATDbits.LATD5  //  FBH temp for RTOM3 testing
+#define LED_RED             LATBbits.LATB1
 
 // SPI SS pin definitions
-#define SPI1_SS             _LATB2
+
+//  FBH
+//#define SPI1_SS             _LATB2
 #define SPI2_SS             _LATG9
-#define SPI1_TRIS           _TRISB2
+//#define SPI1_TRIS           _TRISB2
 #define SPI2_TRIS           _TRISG9
 
 // Input Capture pin difinitions
@@ -89,7 +102,11 @@
 #define IC_PIN2             _RD9
 #define IC_PIN3             _RD10
 #define IC_PIN4             _RD11
+
+//  FBH  not available on 206A
+/*
 #define IC_PIN5             _RD12
 #define IC_PIN6             _RD13
 #define IC_PIN7             _RD14
 #define IC_PIN8             _RD15
+ */

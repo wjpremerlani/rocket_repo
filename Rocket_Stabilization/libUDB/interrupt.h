@@ -35,7 +35,9 @@
 
 #define INT_PRI_MPUSPI  6   // mpu6000.c : SPI1 (UDB4 or AUAV3) or SPI2 (UDB4 or UDB5)
 #define INT_PRI_INT1    6   // mpu6000.c : mpu on SPI1 uses external interrupt 1
-#define INT_PRI_INT3    6   // mpu6000.c : mpu on SPI3 uses external interrupt 3
+
+//#define INT_PRI_INT3    6   // mpu6000.c : mpu on SPI3 uses external interrupt 3
+#define INT_PRI_INT0    6   // mpu6000.c : mpu on SPI2 uses external interrupt 0 for 206A version
 
 #define INT_PRI_IC      6   // radioIn.c : input capture interrupt and pass through
 

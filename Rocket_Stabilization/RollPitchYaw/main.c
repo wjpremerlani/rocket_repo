@@ -56,8 +56,11 @@ int16_t tilted = 0 ;
 
 int main(void)
 {
-	_TRISA2 = 1 ; // SCL is input pin for enabling yaw/pitch control
-	_TRISA3 = 1 ; // SDA is input pin for enabling roll control
+    //  FBH
+	//_TRISA2 = 1 ; // SCL is input pin for enabling yaw/pitch control
+	//_TRISA3 = 1 ; // SDA is input pin for enabling roll control
+    _TRISG14 = 1 ; // for manual launch
+    
 	mcu_init();
 
 	// Set up the libraries
@@ -326,7 +329,9 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 			
 		{
-			if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch 
+            //  FBH
+			//if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch 
+            if (_RG14 == 0)  // ground test simulate launch 
 			{
 				launched = 1 ;
 			}

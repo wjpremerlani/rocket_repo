@@ -30,6 +30,10 @@
 // On UDB4/5:
 // SPI1 interface uses INT1, RA12 for MPU interrupt
 // SPI2 interface uses INT3, RA14 for MPU interrupt
+
+// FBH - On VOS_206A:
+// SPI2 interface uses INT0, RF6 for MPU interrupt
+
 // On AUAV3:
 // SPI1 interface uses INT1, RG12 for MPU interrupt
 
@@ -40,7 +44,10 @@
 
 #elif (BOARD_TYPE == UDB5_BOARD)
 #define MPU_SPI 2
-#define _TRISMPUINT _TRISA14
+
+// FBH - change for VOS_206A
+// #define _TRISMPUINT _TRISA14
+#define _TRISMPUINT _TRISF6
 
 #elif (BOARD_TYPE == AUAV2_BOARD)
 #define MPU_SPI 1

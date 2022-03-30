@@ -282,7 +282,12 @@ void configureDigitalIO(void) // UDB4 and UDB5 boards
 	// TODO: this needs to be updated to support PPM input on user defined input channel
 	_TRISD8 = 1;
 #if (USE_PPM_INPUT == 0)
-	_TRISD9 = _TRISD10 = _TRISD11 = _TRISD12 = _TRISD13 = _TRISD14 = _TRISD8;
+    
+    //  FBH
+	//_TRISD9 = _TRISD10 = _TRISD11 = _TRISD12 = _TRISD13 = _TRISD14 = _TRISD8;
+    _TRISD9 = _TRISD10 = _TRISD11 = _TRISD8;
+    
+    
 #endif
 	TRISF = 0b1111111111101100;
 }
@@ -293,9 +298,16 @@ void init_leds(void)
 #if (BOARD_TYPE == AUAV3_BOARD)
 	_LATB2 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; _LATB5 = LED_OFF; 
 	_TRISB2 = 0; _TRISB3 = 0; _TRISB4 = 0; _TRISB5 = 0;
+    
 #elif (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
-	_LATE1 = LED_OFF; _LATE2 = LED_OFF; _LATE3 = LED_OFF; _LATE4 = LED_OFF;
+    
+    //  FBH
+	/*_LATE1 = LED_OFF; _LATE2 = LED_OFF; _LATE3 = LED_OFF; _LATE4 = LED_OFF;
 	_TRISE1 = 0; _TRISE2 = 0; _TRISE3 = 0; _TRISE4 = 0;
+    */
+    _LATB1 = LED_OFF; _LATD5 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; //  FBH  use D5 temp for RTOM3 testing
+	_TRISB1 = 0; _TRISD5 = 0; _TRISB3 = 0; _TRISB4 = 0;
+    
 #else
 #error Invalid BOARD_TYPE
 #endif // BOARD_TYPE
