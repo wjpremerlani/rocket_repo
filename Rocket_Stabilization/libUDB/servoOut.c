@@ -27,10 +27,18 @@
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
 
+//  FBH  remap for RTOM3 test board
+/*
 #define SERVO_OUT_PIN_1         _LATD0
 #define SERVO_OUT_PIN_2         _LATD1
 #define SERVO_OUT_PIN_3         _LATD2
 #define SERVO_OUT_PIN_4         _LATD3
+ */
+#define SERVO_OUT_PIN_1         _LATB3
+#define SERVO_OUT_PIN_2         _LATD9
+#define SERVO_OUT_PIN_3         _LATD10
+#define SERVO_OUT_PIN_4         _LATC1
+
 //#define SERVO_OUT_PIN_5         _LATD4
 #define SERVO_OUT_PIN_6         _LATG2  //  FBH  temp for RTOM2 testing
 //#define SERVO_OUT_PIN_7         _LATD6
@@ -97,10 +105,20 @@ void udb_init_pwm(void) // initialize the PWM
 	}
 
 #if (BOARD_TYPE == UDB4_BOARD || BOARD_TYPE == UDB5_BOARD)
-	_TRISD0 = 0;
+    
+    //  FBH  remap for RTOM3 test board
+	/*
+    _TRISD0 = 0;
 	_TRISD1 = 0;
 	_TRISD2 = 0;
 	_TRISD3 = 0;
+     */
+    _TRISB3 = 0;
+	_TRISD9 = 0;
+	_TRISD10 = 0;
+	_TRISC1 = 0;
+    
+    
 	_TRISD4 = 1; // change PWM out pins 5-8 to inputs for VOS
     
     //  FBH  temp for RTOM3 testing

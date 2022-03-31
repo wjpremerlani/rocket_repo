@@ -85,9 +85,9 @@
 #define LED_RED             LATEbits.LATE1
  */
 #define LED_BLUE            LATBbits.LATEB4
-#define LED_ORANGE          LATBbits.LATB3
-#define LED_GREEN           LATDbits.LATD5  //  FBH temp for RTOM3 testing
-#define LED_RED             LATBbits.LATB1
+#define LED_ORANGE          LATGbits.LATG3  //  FBH temp for using RTOM3 for testing1 - will be B3
+#define LED_GREEN           LATFbits.LATF1  //  FBH temp for using RTOM3 for testing - will be B2
+#define LED_RED             LATDbits.LATD5  //  FBH temp for using RTOM3 for testing1 - will be B1
 
 // SPI SS pin definitions
 
@@ -97,11 +97,14 @@
 //#define SPI1_TRIS           _TRISB2
 #define SPI2_TRIS           _TRISG9
 
-// Input Capture pin difinitions
+//  FBH  remap/ignore for RTOM3 test board
+/*
+// Input Capture pin definitions
 #define IC_PIN1             _RD8
 #define IC_PIN2             _RD9
 #define IC_PIN3             _RD10
 #define IC_PIN4             _RD11
+ */
 
 //  FBH  not available on 206A
 /*

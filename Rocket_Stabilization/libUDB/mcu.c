@@ -279,6 +279,9 @@ void configureDigitalIO(void)   // AUAV3 board
 #else
 void configureDigitalIO(void) // UDB4 and UDB5 boards
 {
+    
+    //  FBH  remap/ignore for RTOM3 test board
+    /*
 	// TODO: this needs to be updated to support PPM input on user defined input channel
 	_TRISD8 = 1;
 #if (USE_PPM_INPUT == 0)
@@ -289,6 +292,8 @@ void configureDigitalIO(void) // UDB4 and UDB5 boards
     
     
 #endif
+     */
+    
 	TRISF = 0b1111111111101100;
 }
 #endif // BOARD_TYPE
@@ -305,8 +310,8 @@ void init_leds(void)
 	/*_LATE1 = LED_OFF; _LATE2 = LED_OFF; _LATE3 = LED_OFF; _LATE4 = LED_OFF;
 	_TRISE1 = 0; _TRISE2 = 0; _TRISE3 = 0; _TRISE4 = 0;
     */
-    _LATB1 = LED_OFF; _LATD5 = LED_OFF; _LATB3 = LED_OFF; _LATB4 = LED_OFF; //  FBH  use D5 temp for RTOM3 testing
-	_TRISB1 = 0; _TRISD5 = 0; _TRISB3 = 0; _TRISB4 = 0;
+    _LATD5 = LED_OFF; _LATF1 = LED_OFF; _LATG3 = LED_OFF; _LATB4 = LED_OFF; //  FBH  use temp for RTOM3 testing - will be B1-B4
+	_TRISD5 = 0; _TRISF1 = 0; _TRISG3 = 0; _TRISB4 = 0;
     
 #else
 #error Invalid BOARD_TYPE

@@ -27,8 +27,8 @@
 #else
 #error "no control type defined"
 #endif
-#define DATE "3/12/2022"
-#define REVISION "VOS_port_RV3"
+#define DATE "3/31/2022"
+#define REVISION "VOS_port_206AV1"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
