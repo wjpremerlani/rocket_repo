@@ -200,8 +200,13 @@ extern uint16_t maxstack;
 void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 {
 	indicate_loading_inter;
-	// interrupt_save_set_corcon;
-
+	// WJP
+	// clear the interrupt flag with _T4IF = 0; 
+	// not strictly needed for this ISR,
+	// but it is always good practise to clear
+	// an ISR's interrupt flag the first thing
+	// to avoid missing interrupts:
+	_T4IF = 0;                      // clear the interrupt
 	switch (outputNum) {
 		case 0:
 			HANDLE_SERVO_OUT(1, SERVO_OUT_PIN_1);
@@ -218,7 +223,14 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 			SERVO_OUT_PIN_3 = 0;
 			HANDLE_SERVO_OUT(4, SERVO_OUT_PIN_4);
 			break;
-            
+		//  WJP
+		case 4:
+			SERVO_OUT_PIN_4 = 0;
+			_T4IE = 0;
+			break;
+		default:
+			_T4IE = 0;
+			break;
         //  FBH
         /*    
 		case 4:
@@ -258,19 +270,4 @@ void __attribute__((__interrupt__,__no_auto_psv__)) _T4Interrupt(void)
 #endif // SERVO_OUT_PIN_10
          */
 	}
-
-	_T4IF = 0;                      // clear the interrupt
-
-#if (RECORD_FREE_STACK_SPACE == 1)
-	// Check stack space here because it's a high-priority ISR
-	// which may have interrupted a whole chain of other ISRs,
-	// So available stack space can get lowest here.
-	uint16_t stack = SP_current();
-	if (stack > maxstack)
-	{
-		maxstack = stack;
-	}
-#endif
-
-	// interrupt_restore_corcon;
 }
