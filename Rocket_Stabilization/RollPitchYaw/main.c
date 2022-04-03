@@ -570,7 +570,9 @@ void send_debug_line(void)
 		}
 		case 3 :
 		{
-			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
+			sprintf(debug_buffer , "PL_delay= %i, FLT_time= %i\r\n" ,
+					PRELAUNCH_DELAY , FLIGHT_TIME) ;
+			//sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
 			line_number ++ ;
 			break ;
 		}
