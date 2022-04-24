@@ -443,15 +443,15 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 		else
 		{
-			udb_pwOut[1] = CENTER ;
+			udb_pwOut[1] = 0 ;
 		}
-		udb_pwOut[2] = CENTER ;
-		udb_pwOut[3] = CENTER ;
-		udb_pwOut[4] = CENTER ;
-		udb_pwOut[5] = CENTER ;
-		udb_pwOut[6] = CENTER ;
-		udb_pwOut[7] = CENTER ;
-		udb_pwOut[8] = CENTER ;
+		udb_pwOut[2] = 0 ;
+		udb_pwOut[3] = 0 ;
+		udb_pwOut[4] = 0 ;
+		udb_pwOut[5] = 0 ;
+		udb_pwOut[6] = 0 ;
+		udb_pwOut[7] = 0 ;
+		udb_pwOut[8] = 0 ;
 		
 		
 

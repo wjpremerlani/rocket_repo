@@ -11,7 +11,8 @@
 #define FLIGHT_TIME 60
 
 #define LOCKOUT_ROLL 4*330 // 180 degrees
-#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
+//#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
+#define LOCKOUT_COS_TILT -17000 // has the effect of ignoring tilt
 
 #define CONTROL_TEXT "roll only"
 #define ROLL_ENABLE 1
