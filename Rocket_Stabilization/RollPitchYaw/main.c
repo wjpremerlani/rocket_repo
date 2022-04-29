@@ -304,6 +304,8 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
 
+int16_t ground_test = 0 ;
+
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
 {
@@ -318,7 +320,11 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		{
 			lockout = 1 ;
 		}
-		if (GROUND_TEST==1)
+		if ((_RA2==0)||(_RA3 ==0))
+		{
+			ground_test = 1 ;
+		}
+		if ( ground_test == 1)
 		{
 			if (prelaunch_timer == 0 )
 			{
@@ -347,9 +353,12 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		
 		if (udb_heartbeat_counter % 40 == 0)
 		{
-			if (prelaunch_timer>0)
+			if (ground_test == 1)
 			{
-				prelaunch_timer = prelaunch_timer - 1 ;
+				if (prelaunch_timer>0)
+				{
+					prelaunch_timer = prelaunch_timer - 1 ;
+				}
 			}
 			if (( launched == 1) && (flight_timer>0))
 			{
@@ -365,7 +374,14 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			}
 			if (lockout==0)
 			{
-				udb_led_toggle(LED_GREEN);
+				if ( ground_test == 1)
+				{
+					udb_led_toggle(LED_GREEN);
+				}
+				else
+				{
+					LED_GREEN = LED_ON ;
+				}
 			}
 			else
 			{
@@ -406,14 +422,6 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			offsetY = TILT_Y ;
 		}
 			
-		{
-			if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch 
-			{
-				launched = 1 ;
-			}
-		}
-	
-
 		if ( ( controlModeYawPitch == 1 )  )
 		{
 			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX , -omega[1] ) ;
