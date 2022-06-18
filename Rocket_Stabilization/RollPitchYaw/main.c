@@ -24,6 +24,7 @@
 
 #include "../libDCM/libDCM.h"
 #include "../libUDB/heartbeat.h"
+#include "options.h"
 
 // Used for serial debug output
 #include <stdio.h>
@@ -304,7 +305,7 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
 
-int16_t ground_test = 0 ;
+int16_t ground_test = GROUND_TEST ; // two ways to do the ground test
 
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
