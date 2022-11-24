@@ -5,7 +5,7 @@
 #define POLARITY -
 
 #define DEAD_BAND 0
-#define CENTER 2*1498
+#define CENTER 2*1507
 #define ROLL_RATE_ENABLE 1
 
 #define PRELAUNCH_DELAY 20
