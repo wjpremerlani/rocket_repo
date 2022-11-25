@@ -398,6 +398,7 @@ uint16_t t_start = 0 ;
 uint16_t t_end = 0 ;
 
 int16_t line_number = 1 ;
+extern union longww omegagyro_filtered[];
 // Prepare a line of serial output and start it sending
 void send_debug_line(void)
 {
@@ -456,7 +457,7 @@ void send_debug_line(void)
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
 			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
@@ -466,9 +467,9 @@ void send_debug_line(void)
 			((double)(  omegaAccum[0])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)(  omegaAccum[1])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)(  omegaAccum[2])) / ((double)( GYRO_FACTOR/2 )) ,
-			((double)( omegacorrI[0])) / ((double)( GYRO_FACTOR/2 )) ,
-			((double)( omegacorrI[1])) / ((double)( GYRO_FACTOR/2 )) ,
-			((double)( omegacorrI[2])) / ((double)( GYRO_FACTOR/2 )) ,
+			((double)( (int16_t)(omegagyro_filtered[0].WW>>12))) / ((double)( GYRO_FACTOR*8 )) ,
+			((double)( (int16_t)(omegagyro_filtered[1].WW>>12))) / ((double)( GYRO_FACTOR*8 )) ,
+			((double)( (int16_t)(omegagyro_filtered[2].WW>>12))) / ((double)( GYRO_FACTOR*8 )) ,
 			yaw_feedback_horizontal/2 ,
 			pitch_feedback_horizontal/2 ,
 			total_roll_feedback_horizontal/2 ,
