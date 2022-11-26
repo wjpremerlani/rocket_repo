@@ -4,7 +4,7 @@
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 
-#define CONTROL_TYPE ROLL_PLUS_VERTICAL
+#define CONTROL_TYPE ROLL_PLUS_TILT
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -27,8 +27,8 @@
 #else
 #error "no control type defined"
 #endif
-#define DATE "3/12/2022"
-#define REVISION "VOS_port_RV3"
+#define DATE "11/26/2022"
+#define REVISION "VOS_port_RV3_gyro_upgrade"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
@@ -104,7 +104,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Serial Output BAUD rate for status messages
 //  19200, 38400, 57600, 115200, 230400, 460800, 921600 // yes, it really will work at this rate
-#define SERIAL_BAUDRATE                     19200 // default
+#define SERIAL_BAUDRATE                     38400 // for 20 records per second
+//#define SERIAL_BAUDRATE                     19200 // default
 //#define SERIAL_BAUDRATE                     115200 // high speed for 40 records per second
 
 ////////////////////////////////////////////////////////////////////////////////
