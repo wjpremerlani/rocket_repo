@@ -457,7 +457,7 @@ void send_debug_line(void)
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
 			minutes, seconds , hundredths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,

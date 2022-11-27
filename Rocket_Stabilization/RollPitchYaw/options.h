@@ -27,7 +27,7 @@
 #else
 #error "no control type defined"
 #endif
-#define DATE "11/26/2022"
+#define DATE "11/27/2022"
 #define REVISION "VOS_port_RV3_gyro_upgrade"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
