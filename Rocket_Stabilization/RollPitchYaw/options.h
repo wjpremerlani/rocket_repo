@@ -12,8 +12,10 @@
 #define JIM (0)
 #define BILL (0)
 #define WAYNE_BRD4 (0)
-#define WAYNE_BRD5 (1)
+#define WAYNE_BRD5 (0)
 #define WAYNE_BRD6 (0)
+#define WAYNE_BRD7 (0)
+#define WAYNE_BRD8 (1)
 
 // Florin's board
 #if( FLORIN == 1)
@@ -390,6 +392,90 @@
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD6
+
+// SN7
+#if ( WAYNE_BRD7 == 1 )
+#define GROUND_TEST (1)
+#define USE_TILT (0)
+#define MOUNT_ORIENTATION VERTICAL_MOUNT
+//#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+#define DETECT_APOGEE
+#define NO_MIXING
+
+#define PWM1_CENTER (3020)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3154)
+
+#define PWM1_SIGN +
+#define PWM2_SIGN -
+#define PWM3_SIGN -
+
+#define XACCEL_OFFSET	( 156 )
+#define YACCEL_OFFSET	( -17 )
+#define ZACCEL_OFFSET	( -383 )
+#define XRATE_OFFSET	( 15 )
+#define YRATE_OFFSET	( -18 )
+#define ZRATE_OFFSET	( -2 )
+#define CALIBRATION ( 1.0032 )
+
+#define BOARD "SN7, Wayne"
+#if (( GROUND_TEST == 1 ))
+#define DATE "11/27/2022, gnd test"
+#else
+#define DATE "11/27/2022, flt rdy"
+#endif // GROUND_TEST 
+#define REVISION "R23, vert, apogee det"
+#define MAX_TILT_ANGLE ( 30.0 ) // degrees
+#define MAX_TILT_RATE ( 300.0 ) // degrees per second
+#define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_SPIN_RATE ( 600.0 ) // degrees per second
+#define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 360 )
+
+#define GYRO_RANGE ( 1000 )
+#endif // WAYNE_BRD7
+
+// SN7
+#if ( WAYNE_BRD8 == 1 )
+#define GROUND_TEST (1)
+#define USE_TILT (0)
+#define MOUNT_ORIENTATION VERTICAL_MOUNT
+//#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+#define DETECT_APOGEE
+#define NO_MIXING
+
+#define PWM1_CENTER (3020)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3154)
+
+#define PWM1_SIGN +
+#define PWM2_SIGN -
+#define PWM3_SIGN -
+
+#define XACCEL_OFFSET	( 185 )
+#define YACCEL_OFFSET	( -86 )
+#define ZACCEL_OFFSET	( -340 )
+#define XRATE_OFFSET	( -39 )
+#define YRATE_OFFSET	( -43 )
+#define ZRATE_OFFSET	( -50 )
+#define CALIBRATION ( 1.0032 )
+
+#define BOARD "SN8, Wayne"
+#if (( GROUND_TEST == 1 ))
+#define DATE "11/28/2022, gnd test"
+#else
+#define DATE "11/28/2022, flt rdy"
+#endif // GROUND_TEST 
+#define REVISION "R23, vert, apogee det"
+#define MAX_TILT_ANGLE ( 30.0 ) // degrees
+#define MAX_TILT_RATE ( 300.0 ) // degrees per second
+#define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
+#define MAX_SPIN_RATE ( 600.0 ) // degrees per second
+#define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 360 )
+
+#define GYRO_RANGE ( 1000 )
+#endif // WAYNE_BRD7
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)
