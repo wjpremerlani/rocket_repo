@@ -370,10 +370,10 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 //	if (udb_heartbeat_counter % 20 == 0)
 
 //  // Serial output at 10Hz
-//	if (udb_heartbeat_counter % 4 == 0)
+	if (udb_heartbeat_counter % 4 == 0)
 
 //	// Serial output at 20Hz
-	if (udb_heartbeat_counter % 2 == 0)
+//		if (udb_heartbeat_counter % 2 == 0)
 
 //	otherwise, Serial output at 40 Hz
 	{
@@ -457,8 +457,8 @@ void send_debug_line(void)
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
-			sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
-			minutes, seconds , hundredths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
 			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , 
@@ -478,13 +478,13 @@ void send_debug_line(void)
 			udb_pwOut[3]/2 ,
 			udb_pwOut[4]/2 ) ;
 //			(uint16_t) udb_cpu_load() );
-//			tenths ++ ;
-			hundredths += 5 ;
-//			if ( tenths == 10 )
-			if ( hundredths == 100 )
+			tenths ++ ;
+//			hundredths += 5 ;
+			if ( tenths == 10 )
+//			if ( hundredths == 100 )
 			{
-//				tenths = 0 ;
-				hundredths = 0 ;
+				tenths = 0 ;
+//				hundredths = 0 ;
 				seconds++ ;
 				if ( seconds == 60 )
 				{
