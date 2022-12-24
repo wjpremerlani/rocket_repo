@@ -335,17 +335,17 @@
 
 #define BOARD "SN5, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "2/16/2022, gnd test"
+#define DATE "12/24/2022, gnd test"
 #else
-#define DATE "2/16/2022, flt rdy"
+#define DATE "12/24/2022, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 300.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 300.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 900.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
-#define MAX_ROLL_ANGLE ( 180 )
+#define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD5
