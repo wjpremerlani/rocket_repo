@@ -260,7 +260,8 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #if ( GYRO_RANGE == 500 )
 	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 2*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 1000 degree per second
+	accum.WW = 0 ;
+//accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE

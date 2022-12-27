@@ -10,7 +10,7 @@
 #define ROLL_RATE_ENABLE 1
 
 #define PRELAUNCH_DELAY 20
-#define FLIGHT_TIME 10
+#define FLIGHT_TIME 120
 
 #define LOCKOUT_ROLL 4*330 // 180 degrees
 //#define LOCKOUT_COS_TILT 14189 // cosine 30 degrees
