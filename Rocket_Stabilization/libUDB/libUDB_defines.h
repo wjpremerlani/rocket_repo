@@ -172,9 +172,9 @@ struct udb_flag_bits {
 #define GRAVITY                 ((int32_t)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
 
 #define SERVOCENTER             CENTER
-#define SERVORANGE              ((int16_t)(1000))
-#define SERVOMAX                (SERVOCENTER + SERVORANGE)
-#define SERVOMIN                (SERVOCENTER - SERVORANGE)
+#define SERVORANGE              ((uint16_t)(16000))
+#define SERVOMAX               ((uint16_t)(SERVOCENTER + SERVORANGE))
+#define SERVOMIN                ((uint16_t)(SERVOCENTER - SERVORANGE))
 
 extern int16_t magMessage;
 extern int16_t vref_adj;

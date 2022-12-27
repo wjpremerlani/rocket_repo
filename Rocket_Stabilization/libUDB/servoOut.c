@@ -68,14 +68,16 @@
 #if (MIPS == 64)
 #define SCALE_FOR_PWM_OUT(x)    (x/2)
 #elif (MIPS == 32)
-#define SCALE_FOR_PWM_OUT(x)    (x*2)
+//#define SCALE_FOR_PWM_OUT(x)    (x*2)
+#define SCALE_FOR_PWM_OUT(x)    (x)
+// upgrade to 8 times former resolution
 #elif (MIPS == 16)
 #define SCALE_FOR_PWM_OUT(x)    (x)
 #else
 #error Invalid MIPS Configuration
 #endif
 
-int16_t udb_pwOut[NUM_OUTPUTS+1];   // pulse widths for servo outputs
+uint16_t udb_pwOut[NUM_OUTPUTS+1];   // pulse widths for servo outputs
 static volatile int16_t outputNum;
 
 
@@ -94,7 +96,9 @@ void udb_init_pwm(void) // initialize the PWM
 #if (MIPS == 64)
 		T4CONbits.TCKPS = 2;        // prescaler 64:1
 #else
-		T4CONbits.TCKPS = 1;        // prescaler 8:1
+//		T4CONbits.TCKPS = 1;        // prescaler 8:1
+		T4CONbits.TCKPS = 0;        // no prescaler
+		
 #endif
 		_T4IP = INT_PRI_T4;         // set interrupt priority
 		_T4IE = 0;                  // disable timer 4 interrupt for now (enable for each set of pulses)

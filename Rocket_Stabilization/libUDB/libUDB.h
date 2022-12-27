@@ -166,7 +166,7 @@ extern int16_t udb_pwTrim[];                // initial pulse widths for trimming
 // These are the servo channel values that will be sent out to the servos.
 // Set these values in your implementation of the udb_heartbeat_callback()
 // Each channel should be set to a value between 2000 and 4000.
-extern int16_t udb_pwOut[];                 // pulse widths for servo outputs
+extern uint16_t udb_pwOut[];                 // pulse widths for servo outputs
 
 // This read-only value holds flags that tell you, among other things,
 // whether the receiver is currently receiving values from the transmitter.
@@ -174,7 +174,7 @@ extern union udb_fbts_byte { struct udb_flag_bits _; int8_t B; } udb_flags;
 
 // This takes a servo out value, and clips it to be within
 // 3000-1000*SERVOSAT and 3000+1000*SERVOSAT (2000-4000 by default).
-int16_t udb_servo_pulsesat(int32_t pw);
+uint16_t udb_servo_pulsesat(uint32_t pw);
 
 // Call this funtion once at some point soon after
 // the UDB has booted up and the radio is on.

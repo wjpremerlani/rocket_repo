@@ -140,9 +140,18 @@ void udb_a2d_record_offsets(void)
 #endif // INITIALIZE_VERTICAL
 
 // saturation logic to maintain pulse width within bounds
-int16_t udb_servo_pulsesat(int32_t pw)
+uint16_t udb_servo_pulsesat(uint32_t pw)
 {
-	if (pw > SERVOMAX) pw = SERVOMAX;
-	if (pw < SERVOMIN) pw = SERVOMIN;
-	return (int16_t)pw;
+	if (pw > ((uint32_t)SERVOMAX))
+	{
+		return SERVOMAX ;
+	}
+	else if (pw < ((uint32_t)SERVOMIN) )
+	{
+		return SERVOMIN ;
+	}
+	else
+	{
+		return (uint16_t)pw;
+	}
 }

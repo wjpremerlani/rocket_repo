@@ -129,8 +129,8 @@ int16_t tenths = 0 ;
 int16_t seconds = 0 ;
 int16_t minutes = 0 ;
 
-#define TILT_ALLOTMENT ( 2.0*MAX_TILT_PULSE_WIDTH )
-#define SPIN_ALLOTMENT ( 2.0*MAX_SPIN_PULSE_WIDTH )
+#define TILT_ALLOTMENT ( 32.0*MAX_TILT_PULSE_WIDTH )
+#define SPIN_ALLOTMENT ( 32.0*MAX_SPIN_PULSE_WIDTH )
 #define TILT_ALLOTMENT_INT (( uint16_t ) TILT_ALLOTMENT)
 #define SPIN_ALLOTMENT_INT (( uint16_t ) SPIN_ALLOTMENT)
 #define TOTAL_DEFLECTION ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT )
@@ -394,9 +394,10 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			// update roll_angle_32
 			// compute earth frame Z axis change in angle
 			accum.WW = 0 ;
-			accum.WW += ( __builtin_mulss( rmat[6] , theta[0] ) << 2 ) ;
-			accum.WW += ( __builtin_mulss( rmat[7] , theta[1] ) << 2 ) ;
-			accum.WW += ( __builtin_mulss( rmat[8] , theta[2] ) << 2 ) ;
+			accum._.W1 += theta[2] ;
+//			accum.WW += ( __builtin_mulss( rmat[6] , theta[0] ) << 2 ) ;
+//			accum.WW += ( __builtin_mulss( rmat[7] , theta[1] ) << 2 ) ;
+//			accum.WW += ( __builtin_mulss( rmat[8] , theta[2] ) << 2 ) ;
 #if ( GYRO_RANGE == 500)
 			roll_angle_32.WW += accum._.W1 ;
 #elif ( GYRO_RANGE == 1000)
@@ -410,8 +411,8 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			else if ( roll_angle_32.WW < - MAX_ROLL_BINARY  )
 			{
 				roll_angle_32.WW = - MAX_ROLL_BINARY ;
-			}
-			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
+			}		
+				roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);
 		}
 		else
 		{
@@ -448,7 +449,8 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			
 		if (enable_control==1)
 		{
-			udb_pwOut[1] = CENTER POLARITY dead_band_compensate(total_roll_feedback_horizontal) ;
+			udb_pwOut[1] = CENTER POLARITY total_roll_feedback_horizontal ;
+//			udb_pwOut[1] = CENTER POLARITY dead_band_compensate(total_roll_feedback_horizontal) ;
 		}
 		else
 		{
