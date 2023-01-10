@@ -261,7 +261,7 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 2*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
 	accum.WW = 0 ;
-//accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 1000 degree per second
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) 4*SPIN_GAIN*ROLL_RATE_ENABLE ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
@@ -322,7 +322,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		{
 			lockout = 1 ;
 		}
-		if ((_RA2==0)||(_RA3 ==0))
+		if ((_RA2==0)||(_RA3 ==0)||(_RD5 == 0))
 		{
 			ground_test = 1 ;
 		}
@@ -597,7 +597,7 @@ void send_debug_line(void)
 		}
 		case 1 :
 		{
-			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nCntr= %i, Dd_bnd= %i, L_O= %i\r\n" ,
+			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nCntr= %u, Dd_bnd= %i, L_O= %i\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
 			CENTER , DEAD_BAND , LOCKOUT_ROLL
 			

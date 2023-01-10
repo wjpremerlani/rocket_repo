@@ -36,7 +36,7 @@
 #define SERVO_OUT_PIN_3         _LATD2
 #define SERVO_OUT_PIN_4         _LATD3
 #define SERVO_OUT_PIN_5         _LATD4
-#define SERVO_OUT_PIN_6         _LATD5
+#define SERVO_OUT_PIN_6         _LATD6
 #define SERVO_OUT_PIN_7         _LATD6
 #define SERVO_OUT_PIN_8         _LATD7
 #define SERVO_OUT_PIN_9         _LATA4
