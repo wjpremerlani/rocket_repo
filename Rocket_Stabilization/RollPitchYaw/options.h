@@ -22,8 +22,8 @@
 #define TILT_X 0
 #define TILT_Y 0
 
-#define DATE "1/10/2023"
-#define REVISION "despin"
+#define DATE "1/12/2023"
+#define REVISION "despin 1.0"
 
 #define MAX_SPIN_RATE ( 2000 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 500.0 ) // microseconds

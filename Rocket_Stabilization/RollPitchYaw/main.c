@@ -590,18 +590,24 @@ void send_debug_line(void)
 		}
 		case 2 :
 		{
-			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
-			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+			if ( ROLL_RATE_ENABLE == 1)
+			{
+				sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
+				MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+			}
+			else
+			{
+				sprintf( debug_buffer , "Roll= %i deg, rate is not used, PWM=%i usecs\r\n" , 
+				MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+			}
 			line_number ++ ;
 			break ;
 		}
 		case 1 :
 		{
-			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nCntr= %u, Dd_bnd= %i, L_O= %i\r\n" ,
-			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
-			CENTER , DEAD_BAND , LOCKOUT_ROLL
-			
-			
+			sprintf( debug_buffer , "%s, %s\r\nGyro range=%i DPS\r\nPwm Cntr=%u,Dd_bnd=%i\r\n" ,
+			REVISION, DATE, GYRO_RANGE ,
+			CENTER/32 , DEAD_BAND 		
 			 	) ;
 			line_number ++ ;
 			break ;
@@ -625,7 +631,7 @@ void send_debug_line(void)
 			((double)( omegacorrI[1])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[2])) / ((double)( GYRO_FACTOR/2 )) ,
 			fail_safe() ,
-			udb_pwOut[1]/2 ) ;
+			udb_pwOut[1]/32 ) ;
 //			(uint16_t) udb_cpu_load() );
 			tenths ++ ;
 //			hundredths += 5 ;
