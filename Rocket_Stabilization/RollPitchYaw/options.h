@@ -320,8 +320,8 @@
 #define NO_MIXING
 
 #define PWM1_CENTER (3020)
-#define PWM2_CENTER (2944)
-#define PWM3_CENTER (3154)
+#define PWM2_CENTER (2914)
+#define PWM3_CENTER (3112)
 
 #define PWM1_SIGN +
 #define PWM2_SIGN -
@@ -337,9 +337,9 @@
 
 #define BOARD "SN5, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "12/24/2022, gnd test"
+#define DATE "2/9/2023, gnd test"
 #else
-#define DATE "12/24/2022, flt rdy"
+#define DATE "2/9/2023, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
@@ -395,7 +395,7 @@
 
 // SN7
 #if ( WAYNE_BRD7 == 1 )
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
@@ -403,8 +403,8 @@
 #define NO_MIXING
 
 #define PWM1_CENTER (3020)
-#define PWM2_CENTER (2944)
-#define PWM3_CENTER (3154)
+#define PWM2_CENTER (2914)
+#define PWM3_CENTER (3112)
 
 #define PWM1_SIGN +
 #define PWM2_SIGN -
@@ -420,17 +420,17 @@
 
 #define BOARD "SN7, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "11/27/2022, gnd test"
+#define DATE "2/11/2023, gnd test"
 #else
-#define DATE "11/27/2022, flt rdy"
+#define DATE "2/11/2023, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 300.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 600.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 900.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
-#define MAX_ROLL_ANGLE ( 360 )
+#define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD7
@@ -445,8 +445,8 @@
 #define NO_MIXING
 
 #define PWM1_CENTER (3020)
-#define PWM2_CENTER (2944)
-#define PWM3_CENTER (3154)
+#define PWM2_CENTER (2914)
+#define PWM3_CENTER (3112)
 
 #define PWM1_SIGN +
 #define PWM2_SIGN -
@@ -461,18 +461,18 @@
 #define CALIBRATION ( 1.0032 )
 
 #define BOARD "SN8, Wayne"
-#if (( GROUND_TEST == 1 ))
-#define DATE "11/28/2022, gnd test"
+#if (( GROUND_TEST == 0 ))
+#define DATE "2/11/2023, gnd test"
 #else
-#define DATE "11/28/2022, flt rdy"
+#define DATE "2/11/2023, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 300.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 600.0 ) // degrees per second
+#define MAX_SPIN_RATE ( 900.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
-#define MAX_ROLL_ANGLE ( 360 )
+#define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD7
