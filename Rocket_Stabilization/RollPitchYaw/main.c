@@ -113,9 +113,11 @@ int16_t minutes = 0 ;
 #define SPIN_GAIN ( SPIN_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_SPIN_RATE ) )
 #define TILT_RATE_GAIN ( TILT_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_TILT_RATE ) )
 
-int16_t offsetX ;
-int16_t offsetY ;
-int16_t offsetZ ;
+int16_t target_earth_frame_tilt[3];
+int16_t rmat_column_1[3];
+int16_t rmat_column_2[3];
+int16_t column_1_dot_target ;
+int16_t column_2_dot_target ;
 
 struct tilt_def {
 	int16_t tilt ;
@@ -128,8 +130,6 @@ struct tilt_def {
 
 uint16_t tilt_index = 0 ;
 uint16_t tilt_print_index = 0 ;
-int16_t tilt_x ;
-int16_t tilt_y ;
 uint16_t tilt_t ;
 
 int16_t controlModeYawPitch = YAW_PITCH_ENABLE ;
@@ -319,8 +319,9 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 
 		{
-			offsetX = TILT_X ;
-			offsetY = TILT_Y ;
+            target_earth_frame_tilt[0] = - TILT_X ;
+            target_earth_frame_tilt[1] = - TILT_Y ;
+            target_earth_frame_tilt[2] =  TILT_Z ;
 		}
 			
 		{
@@ -333,8 +334,16 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 		if ( ( controlModeYawPitch == 1 )  )
 		{
-			pitch_feedback_horizontal = tilt_feedback ( rmat[6] - offsetX , -omega[1] ) ;
-			yaw_feedback_horizontal = tilt_feedback ( rmat[7] - offsetY , omega[0] ) ;
+            rmat_column_1[0] = rmat[0];
+            rmat_column_1[1] = rmat[3];
+            rmat_column_1[2] = rmat[6];
+            rmat_column_2[0] = rmat[1];
+            rmat_column_2[1] = rmat[4];
+            rmat_column_2[2] = rmat[7];
+            column_1_dot_target = 2*VectorDotProduct(3,rmat_column_1,target_earth_frame_tilt);
+            column_2_dot_target = 2*VectorDotProduct(3,rmat_column_2,target_earth_frame_tilt); 
+            pitch_feedback_horizontal = tilt_feedback ( column_1_dot_target , -omega[1] ) ;
+			yaw_feedback_horizontal = tilt_feedback ( column_2_dot_target , omega[0] ) ;
 		}
 		else
 		{

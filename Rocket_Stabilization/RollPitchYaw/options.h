@@ -1,10 +1,12 @@
 #define CUSTOM_OFFSETS
-#define USE_TILT (0)
+#define USE_TILT (0)  // not used right now
 #define ROLL_ONLY 1
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 
-#define CONTROL_TYPE ROLL_PLUS_VERTICAL
+//#define BILLS_BRD_2
+
+#define CONTROL_TYPE ROLL_PLUS_TILT
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -12,22 +14,25 @@
 #define YAW_PITCH_ENABLE 0
 #define TILT_X 0
 #define TILT_Y 0
+#define TILT_Z 16384
 #elif ( CONTROL_TYPE == ROLL_PLUS_VERTICAL )
 #define CONTROL_TEXT "roll and vertical"
 #define ROLL_ENABLE 1
 #define YAW_PITCH_ENABLE 1
 #define TILT_X 0
 #define TILT_Y 0
+#define TILT_Z 16384
 #elif ( CONTROL_TYPE == ROLL_PLUS_TILT )
 #define CONTROL_TEXT "roll and 12 deg tilt"
 #define ROLL_ENABLE 1
 #define YAW_PITCH_ENABLE 1
 #define TILT_X 2409
 #define TILT_Y 2409
+#define TILT_Z 16026
 #else
 #error "no control type defined"
 #endif
-#define DATE "11/27/2022"
+#define DATE "4/13/2023"
 #define REVISION "VOS_port_RV3_gyro_upgrade"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
@@ -40,13 +45,21 @@
 //#define CALIBRATION ( 0.9945 )
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
-
+#ifdef BILLS_BRD_2
+#define XACCEL_OFFSET	( 530 )
+#define YACCEL_OFFSET	( -91 )
+#define ZACCEL_OFFSET	( 436 )
+#define XRATE_OFFSET	( -85 )
+#define YRATE_OFFSET	( -8 )
+#define ZRATE_OFFSET	( -23 )
+#else
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
 #define ZACCEL_OFFSET	( 0 )
 #define XRATE_OFFSET	( 0 )
 #define YRATE_OFFSET	( 0 )
 #define ZRATE_OFFSET	( 0 )
+#endif // BILLS_BRD_2
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)

@@ -1,10 +1,8 @@
-*.flag
-*.mk
-*.properties
-*.bash
 *.o
 *.d
 *.map
 *.elf
 *.hex
 Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/private/
+Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/Makefile*
+Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/Package*
