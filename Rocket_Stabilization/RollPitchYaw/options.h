@@ -1,10 +1,7 @@
-#define CUSTOM_OFFSETS
-#define USE_TILT (0)  // not used right now
 #define ROLL_ONLY 1
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
-
-//#define BILLS_BRD_2
+#define OUTPUT_HZ 20
 
 #define CONTROL_TYPE ROLL_PLUS_TILT
 
@@ -15,6 +12,7 @@
 #define TILT_X 0
 #define TILT_Y 0
 #define TILT_Z 16384
+
 #elif ( CONTROL_TYPE == ROLL_PLUS_VERTICAL )
 #define CONTROL_TEXT "roll and vertical"
 #define ROLL_ENABLE 1
@@ -22,6 +20,7 @@
 #define TILT_X 0
 #define TILT_Y 0
 #define TILT_Z 16384
+
 #elif ( CONTROL_TYPE == ROLL_PLUS_TILT )
 #define CONTROL_TEXT "roll and 12 deg tilt"
 #define ROLL_ENABLE 1
@@ -31,7 +30,8 @@
 #define TILT_Z 16026
 #else
 #error "no control type defined"
-#endif
+#endif // CONTROL_TYPE
+
 #define DATE "4/13/2023"
 #define REVISION "VOS_port_RV3_gyro_upgrade"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
@@ -45,6 +45,7 @@
 //#define CALIBRATION ( 0.9945 )
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
+#define CUSTOM_OFFSETS
 #ifdef BILLS_BRD_2
 #define XACCEL_OFFSET	( 530 )
 #define YACCEL_OFFSET	( -91 )

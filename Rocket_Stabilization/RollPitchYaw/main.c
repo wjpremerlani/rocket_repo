@@ -375,16 +375,14 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 	}
 
-//	// Serial output at 2Hz  (40Hz / 20)
-//	if (udb_heartbeat_counter % 20 == 0)
 
-//  // Serial output at 10Hz
+#if ( OUTPUT_HZ == 10 )
 	if (udb_heartbeat_counter % 4 == 0)
-
-//	// Serial output at 20Hz
-//		if (udb_heartbeat_counter % 2 == 0)
-
-//	otherwise, Serial output at 40 Hz
+#elif (OUTPUT_HZ == 20)
+		if (udb_heartbeat_counter % 2 == 0)
+#else
+#error "OUTPUT_HZ must be either 10 or 20"
+#endif // OUTPUT_HZ 
 	{
 		if (dcm_flags._.calib_finished)
 		{
@@ -416,41 +414,68 @@ void send_debug_line(void)
 	{
 		sprintf( debug_buffer , "%i, %i, %i, %i, %i, %i\r\n" , 
 			udb_xaccel.value , udb_yaccel.value , udb_zaccel.value , udb_xrate.value , udb_yrate.value , udb_zrate.value ) ; 
-	}
+		udb_serial_start_sending_data();
+    }
 	else switch ( line_number )
 	{
-		
-		case 5 :
+        case 11 :
+        {
+            line_number ++ ;
+            break ;
+        }
+		case 10 :
 		{
-
-			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
-			}
-
+			sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
+            udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
+		case 9 :
+        {
+            line_number ++ ;
+            break ;
+        }
 		
-		case 4 :
+		case 8 :
 		{
 			sprintf( debug_buffer , "time,accelOn,launchCount,launched,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ, " ) ;
+            udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 3 :
+        case 7 :
+        {
+            sprintf( debug_buffer , "Logging rate is %i lines per second.\r\n",OUTPUT_HZ) ;
+            udb_serial_start_sending_data();
+            line_number ++ ;
+            break ;
+        }
+		case 6 :
 		{
 			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
+            udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 2 :
+        case 5 :
+        {
+            line_number ++ ;
+            break ;
+        }
+		case 4 :
 		{
 			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
 			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+            udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 1 :
+        case 3 :
+        {
+            line_number ++ ;
+            break ;
+        }
+		case 2 :
 		{
 			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
@@ -458,17 +483,28 @@ void send_debug_line(void)
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
 			
 			 	) ;
+            udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 6 :
+        case 1 :
+        {
+            line_number ++ ;
+            break ;
+        }
+		case 12 :
 		{
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
+#if(OUTPUT_HZ==10)  
+            sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
 			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
-			roll_deviation,
+#else
+            sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",                  
+          	minutes, seconds , hundredths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) ,           
+#endif // OUTPUT_HZ
+            roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
 			-( udb_xaccel.value)/2 + ( udb_xaccel.offset ) / 2 , 
 			( udb_yaccel.value)/2 - ( udb_yaccel.offset ) / 2 ,
@@ -487,13 +523,22 @@ void send_debug_line(void)
 			udb_pwOut[3]/2 ,
 			udb_pwOut[4]/2 ) ;
 //			(uint16_t) udb_cpu_load() );
+#if (OUTPUT_HZ == 10)
 			tenths ++ ;
-//			hundredths += 5 ;
+#else
+			hundredths += 5 ;
+#endif // OUTPUT_HZ
+#if  (OUTPUT_HZ == 10)          
 			if ( tenths == 10 )
-//			if ( hundredths == 100 )
+#else
+			if ( hundredths == 100 )
+#endif // OUTPUT_HZ
 			{
+#if (OUTPUT_HZ == 10)
 				tenths = 0 ;
-//				hundredths = 0 ;
+#else
+				hundredths = 0 ;
+#endif // OUTPUT_HZ
 				seconds++ ;
 				if ( seconds == 60 )
 				{
@@ -501,10 +546,10 @@ void send_debug_line(void)
 					minutes++ ;
 				}
 			}
+            udb_serial_start_sending_data();
 			break ;
 		}
 	}
-	udb_serial_start_sending_data();
 }
 
 // Return one character at a time, as requested.
