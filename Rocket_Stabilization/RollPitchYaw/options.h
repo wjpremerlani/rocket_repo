@@ -14,8 +14,8 @@
 #define WAYNE_BRD4 (0)
 #define WAYNE_BRD5 (0)
 #define WAYNE_BRD6 (0)
-#define WAYNE_BRD7 (0)
-#define WAYNE_BRD8 (1)
+#define WAYNE_BRD7 (1)
+#define WAYNE_BRD8 (0)
 
 // Florin's board
 #if( FLORIN == 1)
@@ -420,16 +420,16 @@
 
 #define BOARD "SN7, Wayne"
 #if (( GROUND_TEST == 1 ))
-#define DATE "2/11/2023, gnd test"
+#define DATE "4/15/2023, gnd test"
 #else
-#define DATE "2/11/2023, flt rdy"
+#define DATE "4/15/2023, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
-#define MAX_TILT_RATE ( 300.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 500.0 ) // microseconds
-#define MAX_SPIN_RATE ( 900.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 300.0 ) // microseconds
+#define MAX_TILT_RATE ( 500.0 ) // degrees per second
+#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
+#define MAX_SPIN_RATE ( 1100.0 ) // degrees per second
+#define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
