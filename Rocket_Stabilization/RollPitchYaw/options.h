@@ -9,12 +9,12 @@
 
 // the following allows multiple sets of options to be saved in one file
 #define FLORIN (0)
-#define JIM (0)
+#define JIM (1)
 #define BILL (0)
 #define WAYNE_BRD4 (0)
 #define WAYNE_BRD5 (0)
 #define WAYNE_BRD6 (0)
-#define WAYNE_BRD7 (1)
+#define WAYNE_BRD7 (0)
 #define WAYNE_BRD8 (0)
 
 // Florin's board
@@ -90,13 +90,13 @@
 // Jim's second board
 #if ( JIM == 1 )
 #define USE_TILT (1)
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define BOARD "Jim Brd2"
-#define DATE "7/26/2021"
+#define DATE "4/16/2023"
 #if ( GROUND_TEST == 1)
-#define REVISION "rev23a, snake, ground test"
+#define REVISION "rev23a, wiggle, ground test"
 #else
-#define REVISION "rev23a, snake, flight ready"
+#define REVISION "rev23a, wiggle, flight ready"
 #endif // GROUND_TEST
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
@@ -111,13 +111,21 @@
 //#define CALIBRATION ( 0.9945 )
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
-
+#ifdef BILLS_BRD_2
+#define XACCEL_OFFSET	( 530 )
+#define YACCEL_OFFSET	( -91 )
+#define ZACCEL_OFFSET	( 436 )
+#define XRATE_OFFSET	( -85 )
+#define YRATE_OFFSET	( -8 )
+#define ZRATE_OFFSET	( -23 )
+#else
 #define XACCEL_OFFSET	( 367 )
 #define YACCEL_OFFSET	( -66 )
 #define ZACCEL_OFFSET	( -128 )
 #define XRATE_OFFSET	( -115 )
 #define YRATE_OFFSET	( 32 )
 #define ZRATE_OFFSET	( 21 )
+#endif
 #endif // JIM
 
 
