@@ -351,7 +351,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
 			tilt_x = tilt_defs[tilt_index].x ;
 			tilt_y = tilt_defs[tilt_index].y ;
-			if (( tilt_x == 0 ) && ( tilt_x == 0 ) )
+			if (( tilt_x == 0 ) && ( tilt_y == 0 ) )
 			{
 				LED_ORANGE = LED_OFF ;
 			}

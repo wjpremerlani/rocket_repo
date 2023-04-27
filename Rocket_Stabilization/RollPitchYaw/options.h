@@ -92,7 +92,7 @@
 #define USE_TILT (1)
 #define GROUND_TEST (0)
 #define BOARD "Jim Brd2"
-#define DATE "4/16/2023"
+#define DATE "4/27/2023"
 #if ( GROUND_TEST == 1)
 #define REVISION "rev23a, wiggle, ground test"
 #else
