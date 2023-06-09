@@ -1,9 +1,10 @@
 #define ROLL_ONLY 1
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
+#define TILT_PATTERN 4
 #define OUTPUT_HZ 20
 
-#define CONTROL_TYPE ROLL_PLUS_TILT
+#define CONTROL_TYPE TILT_PATTERN
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -12,28 +13,43 @@
 #define TILT_X 0
 #define TILT_Y 0
 #define TILT_Z 16384
+#endif // ROLL_ONLY
 
-#elif ( CONTROL_TYPE == ROLL_PLUS_VERTICAL )
+#if ( CONTROL_TYPE == ROLL_PLUS_VERTICAL )
 #define CONTROL_TEXT "roll and vertical"
 #define ROLL_ENABLE 1
 #define YAW_PITCH_ENABLE 1
 #define TILT_X 0
 #define TILT_Y 0
 #define TILT_Z 16384
+#endif // ROLL_PLUS_VERTICAL
 
-#elif ( CONTROL_TYPE == ROLL_PLUS_TILT )
+#if ( CONTROL_TYPE == ROLL_PLUS_TILT )
 #define CONTROL_TEXT "roll and 12 deg tilt"
 #define ROLL_ENABLE 1
 #define YAW_PITCH_ENABLE 1
 #define TILT_X 2409
 #define TILT_Y 2409
 #define TILT_Z 16026
-#else
+#endif // ROLL_PLUS_TILT
+
+#if ( CONTROL_TYPE == TILT_PATTERN )
+#include "tilt_defs.h"
+#define CONTROL_TEXT "tilt pattern defined in tilt_defs.h"
+#define ROLL_ENABLE 1
+#define YAW_PITCH_ENABLE 1
+#define TILT_X 0
+#define TILT_Y 0
+#define TILT_Z 16384
+#endif // 
+
+
+#ifndef CONTROL_TYPE
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "4/13/2023"
-#define REVISION "VOS_port_RV3_gyro_upgrade"
+#define DATE "6/9/2023"
+#define REVISION "VOS_port_RV3_gyro_upgrade\r\nIncludes support of tilt_defs.h files."
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds

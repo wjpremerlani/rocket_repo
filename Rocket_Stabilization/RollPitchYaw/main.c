@@ -50,6 +50,21 @@ int16_t rect_to_polar16(struct relative2D *xy);
 int16_t apogee = 0 ;
 int16_t tilted = 0 ;
 
+int16_t tilt_count = 0 ;
+
+#if (CONTROL_TYPE == TILT_PATTERN)
+struct tilt_def {
+	int16_t tilt ;
+	int16_t b ;
+	int16_t x ;
+	int16_t y ;
+	uint16_t t	;		
+};
+struct tilt_def tilt_defs[] = TILT_DEFS ;
+uint16_t NUM_TILTS = sizeof(tilt_defs)/sizeof(tilt_defs[0]) ;
+#endif // TILT_PATTERN
+
+
 #define RECORD_OFFSETS	( 0 ) // set to 1 in order to record accelerometer and gyro offsets in telemetry
 
 int main(void)
@@ -118,15 +133,6 @@ int16_t rmat_column_1[3];
 int16_t rmat_column_2[3];
 int16_t column_1_dot_target ;
 int16_t column_2_dot_target ;
-
-struct tilt_def {
-	int16_t tilt ;
-	int16_t b ;
-	int16_t x ;
-	int16_t y ;
-	uint16_t t	;		
-};
-
 
 uint16_t tilt_index = 0 ;
 uint16_t tilt_print_index = 0 ;
@@ -275,8 +281,6 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
 
-int16_t tilt_count = 0 ;
-
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
 {
@@ -290,6 +294,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		LED_GREEN = LED_ON ;
 		if ( launched == 1 )
 		{
+            tilt_count ++ ;
 			LED_RED = LED_ON ;
 			// update roll_angle_32
 			// compute earth frame Z axis change in angle
@@ -319,11 +324,19 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 
 		{
+#if ( CONTROL_TYPE == TILT_PATTERN )
+            tilt_t = tilt_defs[tilt_index].t ;
+			if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
+			target_earth_frame_tilt[0] = - tilt_defs[tilt_index].x ;
+			target_earth_frame_tilt[1] = - tilt_defs[tilt_index].y ;
+            target_earth_frame_tilt[2] =  TILT_Z ;
+        }
+#else
             target_earth_frame_tilt[0] = - TILT_X ;
             target_earth_frame_tilt[1] = - TILT_Y ;
             target_earth_frame_tilt[2] =  TILT_Z ;
-		}
-			
+        }
+#endif // TILT_PATTERN
 		{
 			if ( ( _RA2 == 0 ) || ( _RA3 == 0 ) ) // ground test simulate launch 
 			{
@@ -472,7 +485,37 @@ void send_debug_line(void)
 		}
         case 3 :
         {
-            line_number ++ ;
+#if ( CONTROL_TYPE == TILT_PATTERN )
+			int16_t tilt_tilt = tilt_defs[tilt_print_index].tilt ;
+			int16_t tilt_b = tilt_defs[tilt_print_index].b ;
+			int16_t tilt_x = tilt_defs[tilt_print_index].x ;
+			int16_t tilt_y = tilt_defs[tilt_print_index].y ;
+			tilt_t = tilt_defs[tilt_print_index].t ;
+			t_end = tilt_t ;
+			if ( tilt_print_index == 0 )
+			{
+				sprintf( debug_buffer , "TILT LIST, tilt, bearing, X, Y, start time, end time\r\nTILT DEF, %i , %i , %i , %i , %.1f , %.1f\r\n" , tilt_tilt , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+                udb_serial_start_sending_data();
+			}
+			else
+			{
+				sprintf( debug_buffer , "TILT DEF, %.1f , %i , %i , %i , %.1f , %.1f\r\n" , ((double)tilt_tilt ) , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+                udb_serial_start_sending_data();
+			}
+			if ( tilt_print_index < NUM_TILTS - 1)
+			{
+				tilt_print_index ++ ;
+				t_start = t_end ;
+			}
+			else
+			{
+				line_number ++ ;
+			}
+			break ;
+#else
+			line_number ++ ;
+			return ;
+#endif // USE_TILT
             break ;
         }
 		case 2 :
