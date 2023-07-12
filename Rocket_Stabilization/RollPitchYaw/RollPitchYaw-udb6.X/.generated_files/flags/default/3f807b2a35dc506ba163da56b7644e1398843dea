@@ -1,0 +1,1 @@
+ -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  -I".." -I"../../libVectorMatrix" -Wa,-g,--defsym,PSV_ERRATA=1,--no-relax,-g$(MP_EXTRA_AS_POST) /home/jbbowen/Desktop/Rocketry/Active Guidance Rocket/RocketMatrixPilot/Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb6.X/../../libVectorMatrix/vsub.s
