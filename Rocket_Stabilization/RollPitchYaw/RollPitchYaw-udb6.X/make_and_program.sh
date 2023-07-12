@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd RollPitchYaw-udb6.X
-
 # Recreate makefiles to make sure they match
 prjMakefilesGenerator -v -mplabx-userdir=$HOME/.mplab_ide/dev/v6.05 ./
 
@@ -13,5 +11,3 @@ pk2cmd -F dist/default/production/RollPitchYaw-udb6.X.production.hex -M -PdsPIC3
 
 # Verify
 pk2cmd -F dist/default/production/RollPitchYaw-udb6.X.production.hex -PdsPIC33FJ256GP710 -Y -R -B.
-
-cd -
