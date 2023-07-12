@@ -147,7 +147,7 @@
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
         <makeUseCleanTarget>false</makeUseCleanTarget>
-        <makeCustomizationPreStep>cscript "$(ProjectDir)..\..\..\libUDB\fixDeps.vbs" "$(ProjectDir)..\..\..\RollPitchYaw\options.h" "$(ProjectDir)..\..\..\libUDB\fixDeps.h"</makeCustomizationPreStep>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep></makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>

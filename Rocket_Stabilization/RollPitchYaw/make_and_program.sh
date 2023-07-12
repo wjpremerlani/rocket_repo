@@ -3,7 +3,7 @@
 cd RollPitchYaw-udb6.X
 
 # Recreate makefiles to make sure they match
-prjMakefilesGenerator -v -mplabx-userdir=~/.mplab_ide/dev/v6.05 ./
+prjMakefilesGenerator -v -mplabx-userdir=/home/jbbowen/.mplab_ide/dev/v6.05 ./
 
 make clean
 make all
