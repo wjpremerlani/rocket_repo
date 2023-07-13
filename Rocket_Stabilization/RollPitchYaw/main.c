@@ -575,10 +575,10 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 	}
 
 //	// Serial output at 2Hz  (40Hz / 20)
-//	if (udb_heartbeat_counter % 20 == 0)
+	if (udb_heartbeat_counter % 20 == 0)
 
 //  // Serial output at 10Hz
-	if (udb_heartbeat_counter % 4 == 0)
+//	if (udb_heartbeat_counter % 4 == 0)
 
 //	// Serial output at 20Hz
 //	if (udb_heartbeat_counter % 2 == 0)
