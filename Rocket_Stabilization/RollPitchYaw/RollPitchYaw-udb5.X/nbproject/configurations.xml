@@ -246,7 +246,7 @@
         <property key="linker-stack" value="true"/>
         <property key="linker-symbols" value=""/>
         <property key="map-file"
-                  value="&quot;${DISTDIR}/RollPitchYaw-udb4.X.${IMAGE_TYPE}.map&quot;"/>
+                  value="&quot;${DISTDIR}/RollPitchYaw-udb5.X.${IMAGE_TYPE}.map&quot;"/>
         <property key="no-ivt" value="false"/>
         <property key="oXC16ld-extra-opts" value=""/>
         <property key="oXC16ld-fill-upper" value="0"/>
