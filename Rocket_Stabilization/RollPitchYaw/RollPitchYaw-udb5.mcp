@@ -317,6 +317,6 @@ transport=0
 format=0
 [CUSTOM_BUILD]
 Pre-Build=cscript "$(ProjectDir)..\libUDB\fixDeps.vbs" "$(ProjectDir)options.h" "$(ProjectDir)..\libUDB\fixDeps.h"cscript "$(ProjectDir)..\libUDB\fixDeps.vbs" "$(ProjectDir)options.h" "$(ProjectDir)..\libUDB\fixDeps.h"
-Pre-BuildEnabled=1
+Pre-BuildEnabled=0
 Post-Build=
 Post-BuildEnabled=1
