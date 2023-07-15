@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 plt.style.use('dark_background')
 
 # Open the serial port with a baud rate of 230400.
-ser = serial.Serial('/dev/ttyUSB0', 460800)
+ser = serial.Serial('/dev/ttyUSB0', 19200)
 
 def convert_time(time_str):
     # Split the time string into minutes, seconds, and milliseconds.
