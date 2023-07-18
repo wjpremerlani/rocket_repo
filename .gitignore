@@ -6,3 +6,6 @@
 Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/private/
 Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/Makefile*
 Rocket_Stabilization/RollPitchYaw/RollPitchYaw-udb5.X/nbproject/Package*
+*.idea
+*.generated_files
+*PK2DeviceFile.dat
