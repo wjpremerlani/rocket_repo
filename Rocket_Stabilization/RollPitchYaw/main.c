@@ -30,7 +30,7 @@
 
 #include <stdint.h>
 
-#define DEBUG_GAIN_SCHEDULE
+//#define DEBUG_GAIN_SCHEDULE
 #ifdef DEBUG_GAIN_SCHEDULE
 #define max_roll_binary_ MAX_ROLL_BINARY
 #define tilt_allotment_int_ TILT_ALLOTMENT_INT
@@ -67,7 +67,7 @@ int16_t roll_angle ;
 int16_t rect_to_polar16(struct relative2D *xy);
 
 #define MAX_ROLL_BINARY ((int32_t) ((int32_t)286*(int32_t)MAX_ROLL_ANGLE ))
-uint32_t max_roll_binary = MAX_ROLL_BINARY ;
+int32_t max_roll_binary = MAX_ROLL_BINARY ;
 
 int16_t apogee = 0 ;
 int16_t tilted = 0 ;
@@ -150,10 +150,10 @@ float max_tilt_pulse_width = MAX_TILT_PULSE_WIDTH ;
 float max_spin_pulse_width = MAX_SPIN_PULSE_WIDTH ;
 float tilt_allotment = 2.0*MAX_TILT_PULSE_WIDTH;
 float spin_allotment = 2.0*MAX_SPIN_PULSE_WIDTH;
-uint16_t tilt_allotment_int = (( uint16_t ) TILT_ALLOTMENT) ;
-uint16_t spin_allotment_int = (( uint16_t ) SPIN_ALLOTMENT) ;
-uint16_t total_deflection = ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT );
-uint16_t max_roll_angle = MAX_ROLL_ANGLE ;
+int16_t tilt_allotment_int = (( uint16_t ) TILT_ALLOTMENT) ;
+int16_t spin_allotment_int = (( uint16_t ) SPIN_ALLOTMENT) ;
+int16_t total_deflection = ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT );
+int16_t max_roll_angle = MAX_ROLL_ANGLE ;
 
 #define TILT_GAIN ( 4.0 * TILT_ALLOTMENT / ( MAX_TILT_ANGLE / 57.3 ) ) 
 #define SPIN_GAIN ( SPIN_ALLOTMENT * ( 256.0 / 65.0) * ( 256.0 / MAX_SPIN_RATE ) )
