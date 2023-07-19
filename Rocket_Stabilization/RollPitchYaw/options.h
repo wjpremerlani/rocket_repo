@@ -6,6 +6,11 @@
 
 #define CONTROL_TYPE TILT_PATTERN
 
+// Uncomment the line below if you do not wish to use gain scheduling.
+// Otherwise define the gains schedule that you want in gain_defs.h.
+// Gain scheduling is separate from tilt patterns. You can use neither, either or both features.
+#define GAIN_SCHEDULING
+
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
 #define ROLL_ENABLE 1
@@ -48,8 +53,8 @@
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "6/9/2023"
-#define REVISION "VOS_port_RV3_gyro_upgrade\r\nIncludes support of tilt_defs.h files."
+#define DATE "7/19/2023"
+#define REVISION "VOS_port_RV3_upgrade\r\nIncludes support of gain scheduling."
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
@@ -62,7 +67,6 @@
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 #define CUSTOM_OFFSETS
-#define BILLS_BRD_2
 #ifdef BILLS_BRD_2
 #define XACCEL_OFFSET	( 530 )
 #define YACCEL_OFFSET	( -91 )

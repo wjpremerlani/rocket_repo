@@ -32,23 +32,23 @@
 
 //#define DEBUG_GAIN_SCHEDULE
 #ifdef DEBUG_GAIN_SCHEDULE
-#define max_roll_binary_ MAX_ROLL_BINARY
-#define tilt_allotment_int_ TILT_ALLOTMENT_INT
-#define spin_allotment_int_ SPIN_ALLOTMENT_INT
-#define total_deflection_ TOTAL_DEFLECTION
-#define max_roll_angle_ MAX_ROLL_ANGLE
-#define tilt_gain_ TILT_GAIN
-#define spin_gain_ SPIN_GAIN
-#define tilt_rate_gain_ TILT_RATE_GAIN
+#define MAX_ROLL_BINARY_ MAX_ROLL_BINARY
+#define TILT_ALLOTMENT_INT_ TILT_ALLOTMENT_INT
+#define SPIN_ALLOTMENT_INT_ SPIN_ALLOTMENT_INT
+#define TOTAL_DEFLECTION_ TOTAL_DEFLECTION
+#define MAX_ROLL_ANGLE_ MAX_ROLL_ANGLE
+#define TILT_GAIN_ TILT_GAIN
+#define SPIN_GAIN_ SPIN_GAIN
+#define TILT_RATE_GAIN_ TILT_RATE_GAIN
 #else
-#define max_roll_binary_ max_roll_binary
-#define tilt_allotment_int_ tilt_allotment_int
-#define spin_allotment_int_ spin_allotment_int
-#define total_deflection_ total_deflection
-#define max_roll_angle_ max_roll_angle
-#define tilt_gain_ tilt_gain
-#define spin_gain_ spin_gain
-#define tilt_rate_gain_ tilt_rate_gain
+#define MAX_ROLL_BINARY_ max_roll_binary
+#define TILT_ALLOTMENT_INT_ tilt_allotment_int
+#define SPIN_ALLOTMENT_INT_ spin_allotment_int
+#define TOTAL_DEFLECTION_ total_deflection
+#define MAX_ROLL_ANGLE_ max_roll_angle
+#define TILT_GAIN_ tilt_gain
+#define SPIN_GAIN_ spin_gain
+#define TILT_RATE_GAIN_ tilt_rate_gain
 #endif // DEBUG_GAIN_SCHEDULE
 
 char debug_buffer[512];
@@ -74,6 +74,15 @@ int16_t tilted = 0 ;
 
 int16_t tilt_count = 0 ;
 
+int16_t tilt_pwm ;
+float max_tilt  ;
+int16_t max_tilt_rate ;
+int16_t roll_pwm ;
+int16_t max_roll ;
+int16_t max_roll_rate ;
+uint16_t gain_time ;
+int16_t first_gain_retrieved = 0 ;
+
 #if (CONTROL_TYPE == TILT_PATTERN)
 struct tilt_def {
 	int16_t tilt ;
@@ -86,6 +95,22 @@ struct tilt_def tilt_defs[] = TILT_DEFS ;
 uint16_t NUM_TILTS = sizeof(tilt_defs)/sizeof(tilt_defs[0]) ;
 #endif // TILT_PATTERN
 
+#ifdef GAIN_SCHEDULING
+#include "gain_defs.h"
+struct gain_def {   
+    int16_t tilt_pwm ;
+    float max_tilt ;
+    int16_t max_tilt_rate ;
+    int16_t roll_pwm ;
+    int16_t max_roll ;
+    int16_t max_roll_rate ;
+    uint16_t time ;
+};
+struct gain_def gain_defs[] = GAIN_DEFS ;
+uint16_t NUM_GAINS = sizeof(gain_defs)/sizeof(gain_defs[0]) ;
+#endif // GAIN_SCHEDULING
+
+void compute_control_gains(void) ;
 
 #define RECORD_OFFSETS	( 0 ) // set to 1 in order to record accelerometer and gyro offsets in telemetry
 
@@ -146,10 +171,6 @@ int16_t minutes = 0 ;
 #define SPIN_ALLOTMENT_INT (( uint16_t ) SPIN_ALLOTMENT)
 #define TOTAL_DEFLECTION ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT )
 
-float max_tilt_pulse_width = MAX_TILT_PULSE_WIDTH ;
-float max_spin_pulse_width = MAX_SPIN_PULSE_WIDTH ;
-float tilt_allotment = 2.0*MAX_TILT_PULSE_WIDTH;
-float spin_allotment = 2.0*MAX_SPIN_PULSE_WIDTH;
 int16_t tilt_allotment_int = (( uint16_t ) TILT_ALLOTMENT) ;
 int16_t spin_allotment_int = (( uint16_t ) SPIN_ALLOTMENT) ;
 int16_t total_deflection = ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT );
@@ -171,6 +192,8 @@ int16_t column_2_dot_target ;
 
 uint16_t tilt_index = 0 ;
 uint16_t tilt_print_index = 0 ;
+uint16_t gain_index = 0 ;
+uint16_t gain_print_index = 0 ;
 uint16_t tilt_t ;
 
 int16_t controlModeYawPitch = YAW_PITCH_ENABLE ;
@@ -232,15 +255,15 @@ int16_t remove_offset ( int16_t value , int16_t offset )
 int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 {
 	union longww accum ;
-	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) tilt_gain_ ) ;
+	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) TILT_GAIN_ ) ;
 #if ( GYRO_RANGE == 500 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 2.0*tilt_rate_gain_ ) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 2.0*TILT_RATE_GAIN_ ) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 4.0*tilt_rate_gain_ ) ) ; // 1000 degree per second
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 4.0*TILT_RATE_GAIN_ ) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
-	return saturate ( tilt_allotment_int_ , accum._.W1 )  ;
+	return saturate ( TILT_ALLOTMENT_INT_ , accum._.W1 )  ;
 }
 
 void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t roll_rate , int16_t roll_deviation ,
@@ -257,26 +280,26 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	int16_t roll_pitch ;
 	int16_t roll_yaw ;
 
-	roll_margin_pitch = total_deflection_ - abs ( pitch_feedback ) ;
-	roll_margin_yaw = total_deflection_ - abs ( yaw_feedback ) ;
+	roll_margin_pitch = TOTAL_DEFLECTION_ - abs ( pitch_feedback ) ;
+	roll_margin_yaw = TOTAL_DEFLECTION_ - abs ( yaw_feedback ) ;
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
 	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
 	
 #ifdef NO_MIXING
-	net_roll_margin = spin_allotment_int_ ;
+	net_roll_margin = SPIN_ALLOTMENT_INT_ ;
 #else	
 	net_roll_margin = ( roll_margin_pitch + roll_margin_yaw ) / 2 ;
 #endif
 
 #if ( GYRO_RANGE == 500 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t )  (2.0*spin_gain_) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t )  (2.0*SPIN_GAIN_) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) (4.0*spin_gain_) ) ; // 1000 degree per second
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) (4.0*SPIN_GAIN_) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
 	
-	accum._.W1 += __builtin_divsd( __builtin_mulsu( roll_deviation , spin_allotment_int_ ) , max_roll_angle_ ) ;
+	accum._.W1 += __builtin_divsd( __builtin_mulsu( roll_deviation , SPIN_ALLOTMENT_INT_ ) , MAX_ROLL_ANGLE_ ) ;
 			
 	net_roll_deflection = saturate ( net_roll_margin , accum._.W1 ) ;
 	abs_net_roll_deflection = abs ( net_roll_deflection ) ;
@@ -343,13 +366,13 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			roll_angle_32.WW += accum._.W1 ;
 			roll_angle_32.WW += accum._.W1 ;
 #endif // GYRO_RANGE
-			if ( roll_angle_32.WW > max_roll_binary_ )
+			if ( roll_angle_32.WW > MAX_ROLL_BINARY_ )
 			{
-				roll_angle_32.WW = max_roll_binary_ ;
+				roll_angle_32.WW = MAX_ROLL_BINARY_ ;
 			}
-			else if ( roll_angle_32.WW < - max_roll_binary_  )
+			else if ( roll_angle_32.WW < - MAX_ROLL_BINARY_  )
 			{
-				roll_angle_32.WW = - max_roll_binary_ ;
+				roll_angle_32.WW = - MAX_ROLL_BINARY_ ;
 			}
 			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
 		}
@@ -357,7 +380,34 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		{
 			LED_RED = LED_OFF ;
 		}
-
+#ifdef GAIN_SCHEDULING
+        {
+            if (first_gain_retrieved == 0 )
+            {
+                gain_index = 0 ;
+                tilt_pwm = gain_defs[gain_index].tilt_pwm ;
+                max_tilt = gain_defs[gain_index].max_tilt ;
+                max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
+                roll_pwm = gain_defs[gain_index].roll_pwm ;
+                max_roll = gain_defs[gain_index].max_roll ;
+                max_roll_rate = gain_defs[gain_index].max_roll_rate ;
+                compute_control_gains();
+                first_gain_retrieved = 1 ;
+            }
+            uint16_t gain_time = gain_defs[gain_index].time ;
+            if ((tilt_count > 4*gain_time) &&(gain_index< NUM_GAINS-1))
+            {   
+                gain_index++;
+                tilt_pwm = gain_defs[gain_index].tilt_pwm ;
+                max_tilt = gain_defs[gain_index].max_tilt ;
+                max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
+                roll_pwm = gain_defs[gain_index].roll_pwm ;
+                max_roll = gain_defs[gain_index].max_roll ;
+                max_roll_rate = gain_defs[gain_index].max_roll_rate ;
+                compute_control_gains();
+            }
+        }
+#endif // 
 		{
 #if ( CONTROL_TYPE == TILT_PATTERN )
             tilt_t = tilt_defs[tilt_index].t ;
@@ -451,6 +501,8 @@ int16_t accelOn ;
 
 uint16_t t_start = 0 ;
 uint16_t t_end = 0 ;
+uint16_t t_gain_start = 0 ;
+uint16_t t_gain_end = 0 ;
 
 int16_t line_number = 1 ;
 extern union longww omegagyro_filtered[];
@@ -466,59 +518,103 @@ void send_debug_line(void)
     }
 	else switch ( line_number )
 	{
-        case 11 :
+        case 22 :
         {
             line_number ++ ;
             break ;
         }
-		case 10 :
+		case 20 :
 		{
 			sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 9 :
+		case 18 :
         {
             line_number ++ ;
             break ;
         }
 		
-		case 8 :
+		case 16 :
 		{
 			sprintf( debug_buffer , "time,accelOn,launchCount,launched,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ, " ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-        case 7 :
+        case 14 :
         {
             sprintf( debug_buffer , "Logging rate is %i lines per second.\r\n",OUTPUT_HZ) ;
             udb_serial_start_sending_data();
             line_number ++ ;
             break ;
         }
-		case 6 :
+#ifdef GAIN_SCHEDULING
+        case 13 :
+        {
+			sprintf( debug_buffer , "Gains schedule is defined in gain_defs.h.\r\n" ) ;
+            udb_serial_start_sending_data();
+			line_number ++ ;
+			break ;            
+        }
+#endif // GAIN_SCHEDULING
+		case 12 :
 		{
 			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-        case 5 :
+        case 10 :
         {
             line_number ++ ;
             break ;
         }
-		case 4 :
+		case 8 :
 		{
 			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
-			max_roll_angle_ , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+			MAX_ROLL_ANGLE_ , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-        case 3 :
+#ifdef GAIN_SCHEDULING
+        case 7 :
+        {
+            tilt_pwm = gain_defs[gain_print_index].tilt_pwm ;
+            max_tilt = gain_defs[gain_print_index].max_tilt ;
+            max_tilt_rate = gain_defs[gain_print_index].max_tilt_rate ;
+            roll_pwm = gain_defs[gain_print_index].roll_pwm ;
+            max_roll = gain_defs[gain_print_index].max_roll ;
+            max_roll_rate = gain_defs[gain_print_index].max_roll_rate ;
+            gain_time = gain_defs[gain_print_index].time ;
+            t_gain_end = gain_time ;
+            if ( gain_print_index == 0 )
+			{
+				sprintf( debug_buffer , "GAIN LIST, tilt_pwm, max_tilt, tilt_rate, roll_pwm, max_roll, roll_rate, t_start, t_end\r\nGAIN DEF,%i,%.1f,%i,%i,%i,%i,%.1f,%.1f\r\n" ,\
+                    tilt_pwm,(double)max_tilt,max_tilt_rate,roll_pwm,max_roll,max_roll_rate, ((double)t_gain_start )/((double)10) , ((double)t_gain_end )/((double)10) );
+                udb_serial_start_sending_data();
+			}
+            else
+            {
+                sprintf( debug_buffer , "GAIN DEF,%i,%.1f,%i,%i,%i,%i,%.1f,%.1f\r\n" ,\
+                    tilt_pwm,(double)max_tilt,max_tilt_rate,roll_pwm,max_roll,max_roll_rate, ((double)t_gain_start )/((double)10) , ((double)t_gain_end )/((double)10) );
+                udb_serial_start_sending_data();
+            }
+            if ( gain_print_index < NUM_GAINS - 1)
+			{
+				gain_print_index ++ ;
+                t_gain_start = t_gain_end ;
+			}
+			else
+			{
+				line_number ++ ;
+			}
+			break ;
+        }
+#endif // GAIN_SCHEDULING 
+        case 6 :
         {
 #if ( CONTROL_TYPE == TILT_PATTERN )
 			int16_t tilt_tilt = tilt_defs[tilt_print_index].tilt ;
@@ -553,7 +649,7 @@ void send_debug_line(void)
 #endif // USE_TILT
             break ;
         }
-		case 2 :
+		case 4 :
 		{
 			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
@@ -565,12 +661,12 @@ void send_debug_line(void)
 			line_number ++ ;
 			break ;
 		}
-        case 1 :
+        case 2 :
         {
             line_number ++ ;
             break ;
         }
-		case 12 :
+		case 24 :
 		{
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];
@@ -627,6 +723,11 @@ void send_debug_line(void)
             udb_serial_start_sending_data();
 			break ;
 		}
+        default:
+        {
+            line_number ++ ;
+            break ;
+        }
 	}
 }
 
@@ -648,4 +749,16 @@ void udb_serial_callback_received_byte(uint8_t rxchar)
 
 void udb_callback_radio_did_turn_off(void)
 {
+}
+
+void compute_control_gains(void)
+{
+    tilt_allotment_int = 2*tilt_pwm ;
+    spin_allotment_int = 2*roll_pwm ;
+    total_deflection = tilt_allotment_int + spin_allotment_int ;
+    max_roll_angle = max_roll ;
+    max_roll_binary = ((int32_t) ((int32_t)286*(int32_t)max_roll ));
+    tilt_gain = ( 4.0 * (float)tilt_allotment_int / ( max_tilt / 57.3 ) ) ;
+    spin_gain = ( ((float) spin_allotment_int) * ( 256.0 / 65.0) * ( 256.0 / (float) max_roll_rate ) ) ;
+    tilt_rate_gain =  (((float)tilt_allotment_int) * ( 256.0 / 65.0) * ( 256.0 / MAX_TILT_RATE ) ) ;
 }
