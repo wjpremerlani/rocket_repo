@@ -30,6 +30,27 @@
 
 #include <stdint.h>
 
+#define DEBUG_GAIN_SCHEDULE
+#ifdef DEBUG_GAIN_SCHEDULE
+#define max_roll_binary_ MAX_ROLL_BINARY
+#define tilt_allotment_int_ TILT_ALLOTMENT_INT
+#define spin_allotment_int_ SPIN_ALLOTMENT_INT
+#define total_deflection_ TOTAL_DEFLECTION
+#define max_roll_angle_ MAX_ROLL_ANGLE
+#define tilt_gain_ TILT_GAIN
+#define spin_gain_ SPIN_GAIN
+#define tilt_rate_gain_ TILT_RATE_GAIN
+#else
+#define max_roll_binary_ max_roll_binary
+#define tilt_allotment_int_ tilt_allotment_int
+#define spin_allotment_int_ spin_allotment_int
+#define total_deflection_ total_deflection
+#define max_roll_angle_ max_roll_angle
+#define tilt_gain_ tilt_gain
+#define spin_gain_ spin_gain
+#define tilt_rate_gain_ tilt_rate_gain
+#endif // DEBUG_GAIN_SCHEDULE
+
 char debug_buffer[512];
 int db_index = 0;
 void send_debug_line(void);
@@ -211,15 +232,15 @@ int16_t remove_offset ( int16_t value , int16_t offset )
 int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 {
 	union longww accum ;
-	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) tilt_gain ) ;
+	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) tilt_gain_ ) ;
 #if ( GYRO_RANGE == 500 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 2.0*tilt_rate_gain ) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 2.0*tilt_rate_gain_ ) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 4.0*tilt_rate_gain ) ) ; // 1000 degree per second
+	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 4.0*tilt_rate_gain_ ) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
-	return saturate ( tilt_allotment_int , accum._.W1 )  ;
+	return saturate ( tilt_allotment_int_ , accum._.W1 )  ;
 }
 
 void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t roll_rate , int16_t roll_deviation ,
@@ -236,26 +257,26 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	int16_t roll_pitch ;
 	int16_t roll_yaw ;
 
-	roll_margin_pitch = total_deflection - abs ( pitch_feedback ) ;
-	roll_margin_yaw = total_deflection - abs ( yaw_feedback ) ;
+	roll_margin_pitch = total_deflection_ - abs ( pitch_feedback ) ;
+	roll_margin_yaw = total_deflection_ - abs ( yaw_feedback ) ;
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
 	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
 	
 #ifdef NO_MIXING
-	net_roll_margin = spin_allotment_int ;
+	net_roll_margin = spin_allotment_int_ ;
 #else	
 	net_roll_margin = ( roll_margin_pitch + roll_margin_yaw ) / 2 ;
 #endif
 
 #if ( GYRO_RANGE == 500 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t )  (2.0*spin_gain) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t )  (2.0*spin_gain_) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) (4.0*spin_gain) ) ; // 1000 degree per second
+	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) (4.0*spin_gain_) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
 	
-	accum._.W1 += __builtin_divsd( __builtin_mulsu( roll_deviation , spin_allotment_int ) , max_roll_angle ) ;
+	accum._.W1 += __builtin_divsd( __builtin_mulsu( roll_deviation , spin_allotment_int_ ) , max_roll_angle_ ) ;
 			
 	net_roll_deflection = saturate ( net_roll_margin , accum._.W1 ) ;
 	abs_net_roll_deflection = abs ( net_roll_deflection ) ;
@@ -322,13 +343,13 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			roll_angle_32.WW += accum._.W1 ;
 			roll_angle_32.WW += accum._.W1 ;
 #endif // GYRO_RANGE
-			if ( roll_angle_32.WW > max_roll_binary )
+			if ( roll_angle_32.WW > max_roll_binary_ )
 			{
-				roll_angle_32.WW = max_roll_binary ;
+				roll_angle_32.WW = max_roll_binary_ ;
 			}
-			else if ( roll_angle_32.WW < - max_roll_binary  )
+			else if ( roll_angle_32.WW < - max_roll_binary_  )
 			{
-				roll_angle_32.WW = - max_roll_binary ;
+				roll_angle_32.WW = - max_roll_binary_ ;
 			}
 			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
 		}
@@ -492,7 +513,7 @@ void send_debug_line(void)
 		case 4 :
 		{
 			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
-			max_roll_angle , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
+			max_roll_angle_ , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;

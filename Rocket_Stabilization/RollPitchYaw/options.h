@@ -4,7 +4,7 @@
 #define TILT_PATTERN 4
 #define OUTPUT_HZ 20
 
-#define CONTROL_TYPE ROLL_PLUS_TILT
+#define CONTROL_TYPE TILT_PATTERN
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
