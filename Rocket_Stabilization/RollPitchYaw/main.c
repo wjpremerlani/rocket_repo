@@ -65,6 +65,8 @@ int16_t roll_deviation ;
 struct relative2D roll_reference ;
 int16_t roll_angle ;
 int16_t rect_to_polar16(struct relative2D *xy);
+int16_t signed_saturate(float x );
+uint16_t unsigned_saturate(float x) ;
 
 #define MAX_ROLL_BINARY ((int32_t) ((int32_t)286*(int32_t)MAX_ROLL_ANGLE ))
 int32_t max_roll_binary = MAX_ROLL_BINARY ;
@@ -255,11 +257,11 @@ int16_t remove_offset ( int16_t value , int16_t offset )
 int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 {
 	union longww accum ;
-	accum.WW = __builtin_mulsu ( tilt , ( uint16_t ) TILT_GAIN_ ) ;
+	accum.WW = __builtin_mulsu ( tilt , unsigned_saturate( TILT_GAIN_) ) ;
 #if ( GYRO_RANGE == 500 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 2.0*TILT_RATE_GAIN_ ) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW += __builtin_mulsu (  tilt_rate , unsigned_saturate( 2.0*TILT_RATE_GAIN_ ) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW += __builtin_mulsu (  tilt_rate , ( uint16_t ) ( 4.0*TILT_RATE_GAIN_ ) ) ; // 1000 degree per second
+	accum.WW += __builtin_mulsu (  tilt_rate , unsigned_saturate ( 4.0*TILT_RATE_GAIN_ ) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
@@ -292,9 +294,9 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #endif
 
 #if ( GYRO_RANGE == 500 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t )  (2.0*SPIN_GAIN_) ) ; // 2 is because use of drift corrected values instead of raw values
+	accum.WW = __builtin_mulsu (  roll_rate , unsigned_saturate  (2.0*SPIN_GAIN_) ) ; // 2 is because use of drift corrected values instead of raw values
 #elif ( GYRO_RANGE == 1000 )
-	accum.WW = __builtin_mulsu (  roll_rate , ( uint16_t ) (4.0*SPIN_GAIN_) ) ; // 1000 degree per second
+	accum.WW = __builtin_mulsu (  roll_rate , unsigned_saturate (4.0*SPIN_GAIN_) ) ; // 1000 degree per second
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
@@ -382,29 +384,32 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		}
 #ifdef GAIN_SCHEDULING
         {
-            if (first_gain_retrieved == 0 )
+            if ( launched == 1)
             {
-                gain_index = 0 ;
-                tilt_pwm = gain_defs[gain_index].tilt_pwm ;
-                max_tilt = gain_defs[gain_index].max_tilt ;
-                max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
-                roll_pwm = gain_defs[gain_index].roll_pwm ;
-                max_roll = gain_defs[gain_index].max_roll ;
-                max_roll_rate = gain_defs[gain_index].max_roll_rate ;
-                compute_control_gains();
-                first_gain_retrieved = 1 ;
-            }
-            uint16_t gain_time = gain_defs[gain_index].time ;
-            if ((tilt_count > 4*gain_time) &&(gain_index< NUM_GAINS-1))
-            {   
-                gain_index++;
-                tilt_pwm = gain_defs[gain_index].tilt_pwm ;
-                max_tilt = gain_defs[gain_index].max_tilt ;
-                max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
-                roll_pwm = gain_defs[gain_index].roll_pwm ;
-                max_roll = gain_defs[gain_index].max_roll ;
-                max_roll_rate = gain_defs[gain_index].max_roll_rate ;
-                compute_control_gains();
+                if (first_gain_retrieved == 0 )
+                {
+                    gain_index = 0 ;
+                    tilt_pwm = gain_defs[gain_index].tilt_pwm ;
+                    max_tilt = gain_defs[gain_index].max_tilt ;
+                    max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
+                    roll_pwm = gain_defs[gain_index].roll_pwm ;
+                    max_roll = gain_defs[gain_index].max_roll ;
+                    max_roll_rate = gain_defs[gain_index].max_roll_rate ;
+                    compute_control_gains();
+                    first_gain_retrieved = 1 ;
+                }
+                uint16_t gain_time = gain_defs[gain_index].time ;
+                if ((tilt_count > 4*gain_time) &&(gain_index< NUM_GAINS-1))
+                {   
+                    gain_index++;
+                    tilt_pwm = gain_defs[gain_index].tilt_pwm ;
+                    max_tilt = gain_defs[gain_index].max_tilt ;
+                    max_tilt_rate = gain_defs[gain_index].max_tilt_rate ;
+                    roll_pwm = gain_defs[gain_index].roll_pwm ;
+                    max_roll = gain_defs[gain_index].max_roll ;
+                    max_roll_rate = gain_defs[gain_index].max_roll_rate ;
+                    compute_control_gains();
+                }
             }
         }
 #endif // 
@@ -770,4 +775,33 @@ void compute_control_gains(void)
     tilt_gain = ( 4.0 * (float)tilt_allotment_int / ( max_tilt / 57.3 ) ) ;
     spin_gain = ( ((float) spin_allotment_int) * ( 256.0 / 65.0) * ( 256.0 / (float) max_roll_rate ) ) ;
     tilt_rate_gain =  (((float)tilt_allotment_int) * ( 256.0 / 65.0) * ( 256.0 / MAX_TILT_RATE ) ) ;
+}
+
+#define MAX_FLOAT 64000.0 // approximate
+
+int16_t signed_saturate(float x )
+{
+    if (x>MAX_FLOAT)
+    {
+        return (int16_t) MAX_FLOAT ;
+    }
+    else if (x<MAX_FLOAT)
+    {
+        return (int16_t) -MAX_FLOAT ;
+    }
+    else
+    {
+        return (int16_t) x ;
+    }
+}
+uint16_t unsigned_saturate(float x) 
+{
+    if(x<MAX_FLOAT)
+    {
+        return (uint16_t) x ;
+    }
+    else
+    {
+        return (uint16_t) MAX_FLOAT ;
+    }
 }
