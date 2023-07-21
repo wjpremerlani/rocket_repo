@@ -410,11 +410,20 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 #endif // 
 		{
 #if ( CONTROL_TYPE == TILT_PATTERN )
-            tilt_t = tilt_defs[tilt_index].t ;
-			if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
-			target_earth_frame_tilt[0] = - tilt_defs[tilt_index].x ;
-			target_earth_frame_tilt[1] = - tilt_defs[tilt_index].y ;
-            target_earth_frame_tilt[2] =  TILT_Z ;
+            if ( launched == 1 )
+            {
+                tilt_t = tilt_defs[tilt_index].t ;
+            	if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
+            	target_earth_frame_tilt[0] = - tilt_defs[tilt_index].x ;
+            	target_earth_frame_tilt[1] = - tilt_defs[tilt_index].y ;
+                target_earth_frame_tilt[2] =  TILT_Z ;
+            }
+            else
+            {
+                target_earth_frame_tilt[0] = - TILT_X ;
+                target_earth_frame_tilt[1] = - TILT_Y ;
+                target_earth_frame_tilt[2] =  TILT_Z ;
+            }
         }
 #else
             target_earth_frame_tilt[0] = - TILT_X ;
