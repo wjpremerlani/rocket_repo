@@ -777,17 +777,18 @@ void compute_control_gains(void)
     tilt_rate_gain =  (((float)tilt_allotment_int) * ( 256.0 / 65.0) * ( 256.0 / MAX_TILT_RATE ) ) ;
 }
 
-#define MAX_FLOAT 64000.0 // approximate
+#define MAX_FLOAT_U 64000.0 // approximate
+#define MAX_FLOAT_S 32000.0 // approximate
 
 int16_t signed_saturate(float x )
 {
-    if (x>MAX_FLOAT)
+    if (x>MAX_FLOAT_S)
     {
-        return (int16_t) MAX_FLOAT ;
+        return (int16_t) MAX_FLOAT_S ;
     }
-    else if (x<MAX_FLOAT)
+    else if (x<-MAX_FLOAT_S)
     {
-        return (int16_t) -MAX_FLOAT ;
+        return (int16_t) -MAX_FLOAT_S ;
     }
     else
     {
@@ -796,12 +797,12 @@ int16_t signed_saturate(float x )
 }
 uint16_t unsigned_saturate(float x) 
 {
-    if(x<MAX_FLOAT)
+    if(x<MAX_FLOAT_U)
     {
         return (uint16_t) x ;
     }
     else
     {
-        return (uint16_t) MAX_FLOAT ;
+        return (uint16_t) MAX_FLOAT_U ;
     }
 }
