@@ -84,6 +84,7 @@ int16_t max_roll ;
 int16_t max_roll_rate ;
 uint16_t gain_time ;
 int16_t first_gain_retrieved = 0 ;
+int16_t roll_step = 0 ;
 
 #if (CONTROL_TYPE == TILT_PATTERN)
 struct tilt_def {
@@ -91,6 +92,7 @@ struct tilt_def {
 	int16_t b ;
 	int16_t x ;
 	int16_t y ;
+    int16_t roll_step ;
 	uint16_t t	;		
 };
 struct tilt_def tilt_defs[] = TILT_DEFS ;
@@ -418,9 +420,24 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
             if ( launched == 1 )
             {
                 tilt_t = tilt_defs[tilt_index].t ;
-            	if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1)) tilt_index++;
-            	target_earth_frame_tilt[0] = - tilt_defs[tilt_index].x ;
-            	target_earth_frame_tilt[1] = - tilt_defs[tilt_index].y ;
+            	if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1))
+                {   
+                    roll_step = tilt_defs[tilt_index].roll_step ;
+                    roll_angle_32.WW = roll_angle_32.WW - ((int32_t)roll_step)*((int32_t)286) ;
+                    if ( roll_angle_32.WW > MAX_ROLL_BINARY_ )
+                    {
+                        roll_angle_32.WW = MAX_ROLL_BINARY_ ;
+                    }
+                    else if ( roll_angle_32.WW < - MAX_ROLL_BINARY_  )
+                    {
+                        roll_angle_32.WW = - MAX_ROLL_BINARY_ ;
+                    }
+                    roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
+	
+                    tilt_index++;
+                }
+                target_earth_frame_tilt[0] = - tilt_defs[tilt_index].x ;
+                target_earth_frame_tilt[1] = - tilt_defs[tilt_index].y ;
                 target_earth_frame_tilt[2] =  TILT_Z ;
             }
             else
@@ -635,16 +652,17 @@ void send_debug_line(void)
 			int16_t tilt_b = tilt_defs[tilt_print_index].b ;
 			int16_t tilt_x = tilt_defs[tilt_print_index].x ;
 			int16_t tilt_y = tilt_defs[tilt_print_index].y ;
+            roll_step = tilt_defs[tilt_print_index].roll_step ;
 			tilt_t = tilt_defs[tilt_print_index].t ;
 			t_end = tilt_t ;
 			if ( tilt_print_index == 0 )
 			{
-				sprintf( debug_buffer , "TILT LIST, tilt, bearing, X, Y, start time, end time\r\nTILT DEF, %i , %i , %i , %i , %.1f , %.1f\r\n" , tilt_tilt , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+				sprintf( debug_buffer , "TILT LIST,tilt,bearing,X,Y,roll_step,start time,end time\r\nTILT DEF,%.1f,%i,%i,%i,%i,%.1f,%.1f\r\n" , ((double)tilt_tilt ) , tilt_b , tilt_x , tilt_y , roll_step , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
                 udb_serial_start_sending_data();
 			}
 			else
 			{
-				sprintf( debug_buffer , "TILT DEF, %.1f , %i , %i , %i , %.1f , %.1f\r\n" , ((double)tilt_tilt ) , tilt_b , tilt_x , tilt_y , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
+				sprintf( debug_buffer , "TILT DEF,%.1f,%i,%i,%i,%i,%.1f,%.1f\r\n" , ((double)tilt_tilt ) , tilt_b , tilt_x , tilt_y , roll_step , ((double)t_start )/((double)10) , ((double)t_end )/((double)10) );
                 udb_serial_start_sending_data();
 			}
 			if ( tilt_print_index < NUM_TILTS - 1)
