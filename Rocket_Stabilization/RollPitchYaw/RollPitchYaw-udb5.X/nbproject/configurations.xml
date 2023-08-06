@@ -34,6 +34,7 @@
                      projectFiles="true">
         <itemPath>../options.h</itemPath>
         <itemPath>../tilt_defs.h</itemPath>
+        <itemPath>../gain_defs.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
