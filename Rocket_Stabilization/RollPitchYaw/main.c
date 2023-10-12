@@ -143,8 +143,8 @@ int main(void)
 	return 0;
 }
 
-// Called every 1/50 second at high priority
-void udb_heartbeat_50hz_callback(void)
+// Called high priority
+void udb_heartbeat_high_callback(void)
 {
 	static int count = 0;
 
@@ -506,7 +506,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 
 #if ( OUTPUT_HZ == 10 )
-	if (udb_heartbeat_counter % 5 == 0)
+	if (udb_heartbeat_counter % 4 == 0)
 #elif (OUTPUT_HZ == 20)
 		if (udb_heartbeat_counter % 2 == 0)
 #else
@@ -549,32 +549,32 @@ void send_debug_line(void)
     }
 	else switch ( line_number )
 	{
-        case 22 :
+        case 52 :
         {
             line_number ++ ;
             break ;
         }
-		case 20 :
+		case 48 :
 		{
 			sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-		case 18 :
+		case 44 :
         {
             line_number ++ ;
             break ;
         }
 		
-		case 16 :
+		case 40 :
 		{
 			sprintf( debug_buffer , "time,accelOn,launchCount,launched,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ, " ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-        case 14 :
+        case 36 :
         {
             sprintf( debug_buffer , "Logging rate is %i lines per second.\r\n",OUTPUT_HZ) ;
             udb_serial_start_sending_data();
@@ -582,7 +582,7 @@ void send_debug_line(void)
             break ;
         }
 #ifdef GAIN_SCHEDULING
-        case 13 :
+        case 32 :
         {
 			sprintf( debug_buffer , "Gains schedule is defined in gain_defs.h.\r\n" ) ;
             udb_serial_start_sending_data();
@@ -590,19 +590,19 @@ void send_debug_line(void)
 			break ;            
         }
 #endif // GAIN_SCHEDULING
-		case 12 :
+		case 28 :
 		{
 			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
 		}
-        case 10 :
+        case 24 :
         {
             line_number ++ ;
             break ;
         }
-		case 8 :
+		case 20 :
 		{
 			sprintf( debug_buffer , "Roll= %i deg, Rate= %i d/s, PWM=%i usecs\r\n" , 
 			MAX_ROLL_ANGLE_ , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ) ;
@@ -611,7 +611,7 @@ void send_debug_line(void)
 			break ;
 		}
 #ifdef GAIN_SCHEDULING
-        case 7 :
+        case 16 :
         {
             tilt_pwm = gain_defs[gain_print_index].tilt_pwm ;
             max_tilt = gain_defs[gain_print_index].max_tilt ;
@@ -645,7 +645,7 @@ void send_debug_line(void)
 			break ;
         }
 #endif // GAIN_SCHEDULING 
-        case 6 :
+        case 12 :
         {
 #if ( CONTROL_TYPE == TILT_PATTERN )
 			int16_t tilt_tilt = tilt_defs[tilt_print_index].tilt ;
@@ -681,7 +681,7 @@ void send_debug_line(void)
 #endif // USE_TILT
             break ;
         }
-		case 4 :
+		case 8 :
 		{
 			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
 			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
@@ -693,12 +693,12 @@ void send_debug_line(void)
 			line_number ++ ;
 			break ;
 		}
-        case 2 :
+        case 4 :
         {
             line_number ++ ;
             break ;
         }
-		case 24 :
+		case 56 :
 		{
 			roll_reference.x = rmat[0];
 			roll_reference.y = rmat[3];

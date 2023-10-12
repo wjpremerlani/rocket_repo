@@ -131,7 +131,7 @@ void udb_run(void);
 
 // Implement this callback to perform periodic background tasks (high priority).
 // It is called at 50 Hertz and must return quickly. (No printf!)
-void udb_heartbeat_50hz_callback(void);
+void udb_heartbeat_high_callback(void);
 
 // Implement this callback to prepare the pwOut values.
 // It is called at HEARTBEAT_HZ at a low priority.

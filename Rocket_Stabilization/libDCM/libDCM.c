@@ -98,9 +98,8 @@ void udb_heartbeat_callback(void)
 
 	if (!dcm_flags._.init_finished)
 	{
-		if (udb_heartbeat_counter % (HEARTBEAT_HZ / 50) == 0)
 		{
-			dcm_run_init_step(udb_heartbeat_counter / (HEARTBEAT_HZ / 50));
+			dcm_run_init_step(udb_heartbeat_counter);
 		}
 	}
 

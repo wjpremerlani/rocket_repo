@@ -46,8 +46,6 @@ inline uint16_t heartbeat_cnt(void)
 
 inline void heartbeat(void) // called from ISR
 {
-	// Start the sequential servo pulses at frequency SERVO_HZ
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ/SERVO_HZ) == 0)
 	{
 		start_pwm_outputs();
 	}
@@ -60,10 +58,8 @@ inline void heartbeat(void) // called from ISR
 	}
 
 	// TODO: determine why this is called from the high priority interrupt handler? is it req?
-	// Call the periodic callback at 50 Hz
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ/50) == 0)
 	{
-		udb_heartbeat_50hz_callback(); // this was called udb_background_callback_periodic()
+		udb_heartbeat_high_callback(); // this was called udb_background_callback_periodic()
 	}
 
 	// Trigger the HEARTBEAT_HZ calculations, but at a lower priority
