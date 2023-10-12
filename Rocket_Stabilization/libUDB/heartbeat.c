@@ -60,10 +60,10 @@ inline void heartbeat(void) // called from ISR
 	}
 
 	// TODO: determine why this is called from the high priority interrupt handler? is it req?
-	// Call the periodic callback at 40 Hz
-	if (udb_heartbeat_counter % (HEARTBEAT_HZ/40) == 0)
+	// Call the periodic callback at 50 Hz
+	if (udb_heartbeat_counter % (HEARTBEAT_HZ/50) == 0)
 	{
-		udb_heartbeat_40hz_callback(); // this was called udb_background_callback_periodic()
+		udb_heartbeat_50hz_callback(); // this was called udb_background_callback_periodic()
 	}
 
 	// Trigger the HEARTBEAT_HZ calculations, but at a lower priority

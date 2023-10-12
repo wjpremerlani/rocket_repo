@@ -4,7 +4,7 @@
 #define TILT_PATTERN 4
 #define OUTPUT_HZ 20
 
-#define CONTROL_TYPE TILT_PATTERN
+#define CONTROL_TYPE ROLL_PLUS_VERTICAL
 
 // Uncomment the line below if you do not wish to use gain scheduling.
 // Otherwise define the gains schedule that you want in gain_defs.h.
@@ -67,6 +67,7 @@
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 #define CUSTOM_OFFSETS
+#define BILLS_BRD_2
 #ifdef BILLS_BRD_2
 #define XACCEL_OFFSET	( 530 )
 #define YACCEL_OFFSET	( -91 )

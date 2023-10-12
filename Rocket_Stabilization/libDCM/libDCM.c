@@ -28,12 +28,9 @@
 union dcm_fbts_word dcm_flags;
 
 // Calibrate for 10 seconds before moving servos
-//#define CALIB_COUNT  400    // 10 seconds at 40 Hz
-//#define GPS_COUNT    1000   // 25 seconds at 40 Hz
 
-#define CALIB_COUNT  80    // 2 seconds at 40 Hz
-//#define CALIB_COUNT  160    // 4 seconds at 40 Hz
-#define GPS_COUNT    1000   // 25 seconds at 40 Hz
+#define CALIB_COUNT  100    // 2 seconds at 50 Hz
+#define GPS_COUNT    1250   // 25 seconds at 50 Hz
 
 
 extern int16_t rmat[9] ;
@@ -101,9 +98,9 @@ void udb_heartbeat_callback(void)
 
 	if (!dcm_flags._.init_finished)
 	{
-		if (udb_heartbeat_counter % (HEARTBEAT_HZ / 40) == 0)
+		if (udb_heartbeat_counter % (HEARTBEAT_HZ / 50) == 0)
 		{
-			dcm_run_init_step(udb_heartbeat_counter / (HEARTBEAT_HZ / 40));
+			dcm_run_init_step(udb_heartbeat_counter / (HEARTBEAT_HZ / 50));
 		}
 	}
 

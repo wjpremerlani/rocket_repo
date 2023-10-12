@@ -143,8 +143,8 @@ int main(void)
 	return 0;
 }
 
-// Called every 1/40 second at high priority
-void udb_heartbeat_40hz_callback(void)
+// Called every 1/50 second at high priority
+void udb_heartbeat_50hz_callback(void)
 {
 	static int count = 0;
 
@@ -506,7 +506,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 
 #if ( OUTPUT_HZ == 10 )
-	if (udb_heartbeat_counter % 4 == 0)
+	if (udb_heartbeat_counter % 5 == 0)
 #elif (OUTPUT_HZ == 20)
 		if (udb_heartbeat_counter % 2 == 0)
 #else

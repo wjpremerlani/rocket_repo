@@ -343,7 +343,7 @@ extern int16_t launch_count ;
 #define LAUNCH_VELOCITY ( 10.0 ) // miles per hour
 #define LAUNCH_ACCELERATION_BINARY (( int16_t) ( GRAVITY*LAUNCH_ACCELERATION ))
 #define EARTH_GRAVITY ( 9.81 ) // meters per second per second
-#define FRAME_RATE ( 40.0 ) // computations are done 40 times per second
+#define FRAME_RATE ( 50.0 ) // computations are done 50 times per second
 #define METERSPERSECONDPERMPH ( 4.0/9.0 ) // conversion from MPH to meters/second
 #define LAUNCH_VELOCITY_BINARY ( ( int32_t ) ( LAUNCH_VELOCITY*GRAVITY*FRAME_RATE*METERSPERSECONDPERMPH/ EARTH_GRAVITY ) )
 #define LAUNCH_DETECT_COUNT ( 20 )
