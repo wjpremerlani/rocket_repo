@@ -676,21 +676,49 @@ void send_debug_line(void)
 			}
 			break ;
 #else
-			line_number ++ ;
-			return ;
-#endif // USE_TILT
+            line_number ++ ;
             break ;
+#endif 
+        }    
+        case 11 :
+        {
+            		sprintf( debug_buffer , "Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
+                    MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
+				) ;
+            line_number ++ ;
+            udb_serial_start_sending_data();
+			break ;
+        }
+        
+        case 10 :
+        {       
+            sprintf( debug_buffer , "\r\nTilt= %5.1f deg, \r\n" ,
+			MAX_TILT_ANGLE 
+				) ;
+            line_number ++ ;
+            udb_serial_start_sending_data();
+			break ;         
+        }
+             
+        case 9 :
+        {
+            
+            sprintf( debug_buffer , "\r\nGyro range %i DPS, calib %6.4f\r\n" ,
+			GYRO_RANGE , CALIBRATION
+				) ;
+            line_number ++ ;
+            udb_serial_start_sending_data();
+			break ;
+            
         }
 		case 8 :
 		{
-			sprintf( debug_buffer , "%s, %s\r\nGyro range %i DPS, calib %6.4f\r\nTilt= %5.1f deg, Rate= %5.1f d/s, PWM=%i usecs\r\n" ,
-			REVISION, DATE, GYRO_RANGE , CALIBRATION ,
-			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
-			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
-			
-			 	) ;
+         
+			sprintf( debug_buffer , "%s, %s\r\n" ,
+			REVISION, DATE 
+				) ;
+            line_number ++ ;
             udb_serial_start_sending_data();
-			line_number ++ ;
 			break ;
 		}
         case 4 :
