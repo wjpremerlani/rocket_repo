@@ -4,12 +4,12 @@
 #define TILT_PATTERN 4
 #define OUTPUT_HZ 20
 
-#define CONTROL_TYPE ROLL_PLUS_VERTICAL
+#define CONTROL_TYPE TILT_PATTERN
 
-// Uncomment the line below if you do not wish to use gain scheduling.
-// Otherwise define the gains schedule that you want in gain_defs.h.
+// Uncomment the line below if you wish to use gain scheduling,
+// and define the gains schedule that you want in gain_defs.h.
 // Gain scheduling is separate from tilt patterns. You can use neither, either or both features.
-//#define GAIN_SCHEDULING
+#define GAIN_SCHEDULING
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"

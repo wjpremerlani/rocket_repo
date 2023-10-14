@@ -401,7 +401,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
                     first_gain_retrieved = 1 ;
                 }
                 uint16_t gain_time = gain_defs[gain_index].time ;
-                if ((tilt_count > 4*gain_time) &&(gain_index< NUM_GAINS-1))
+                if ((tilt_count > 5*gain_time) &&(gain_index< NUM_GAINS-1))
                 {   
                     gain_index++;
                     tilt_pwm = gain_defs[gain_index].tilt_pwm ;
@@ -420,7 +420,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
             if ( launched == 1 )
             {
                 tilt_t = tilt_defs[tilt_index].t ;
-            	if ((tilt_count > 4*tilt_t) &&(tilt_index< NUM_TILTS-1))
+            	if ((tilt_count > 5*tilt_t) &&(tilt_index< NUM_TILTS-1))
                 {   
                     roll_step = tilt_defs[tilt_index].roll_step ;
                     roll_angle_32.WW = roll_angle_32.WW - ((int32_t)roll_step)*((int32_t)286) ;
