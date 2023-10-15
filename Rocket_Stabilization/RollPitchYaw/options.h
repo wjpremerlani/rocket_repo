@@ -53,8 +53,8 @@
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "7/19/2023"
-#define REVISION "VOS_port_RV3_upgrade\r\nIncludes support of gain scheduling."
+#define DATE "10/15/2023."
+#define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds

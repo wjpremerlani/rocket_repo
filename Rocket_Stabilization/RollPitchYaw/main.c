@@ -561,8 +561,11 @@ void send_debug_line(void)
 			line_number ++ ;
 			break ;
 		}
-		case 44 :
+		case 38 :
         {
+            sprintf(debug_buffer, "X, Y and Z accelerometer offsets: %i, %i, %i\r\n" ,
+                XACCEL_OFFSET , YACCEL_OFFSET , ZACCEL_OFFSET    ) ;
+            udb_serial_start_sending_data();
             line_number ++ ;
             break ;
         }
@@ -692,7 +695,7 @@ void send_debug_line(void)
         
         case 10 :
         {       
-            sprintf( debug_buffer , "\r\nTilt= %5.1f deg, \r\n" ,
+            sprintf( debug_buffer , "Tilt= %5.1f deg, " ,
 			MAX_TILT_ANGLE 
 				) ;
             line_number ++ ;
@@ -703,7 +706,7 @@ void send_debug_line(void)
         case 9 :
         {
             
-            sprintf( debug_buffer , "\r\nGyro range %i DPS, calib %6.4f\r\n" ,
+            sprintf( debug_buffer , "Gyro range %i DPS, calib %6.4f\r\n" ,
 			GYRO_RANGE , CALIBRATION
 				) ;
             line_number ++ ;
