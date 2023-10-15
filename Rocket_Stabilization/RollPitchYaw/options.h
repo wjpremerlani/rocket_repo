@@ -69,7 +69,6 @@
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 #define CUSTOM_OFFSETS
-#define BILLS_BRD_2
 #ifdef BILLS_BRD_2
 #define XACCEL_OFFSET	( 530 )
 #define YACCEL_OFFSET	( -91 )
