@@ -2,7 +2,9 @@
 #define ROLL_PLUS_VERTICAL 2
 #define ROLL_PLUS_TILT 3
 #define TILT_PATTERN 4
-#define OUTPUT_HZ 20
+// OUTPUT_HZ must be either 10 or 25
+//#define OUTPUT_HZ 10
+#define OUTPUT_HZ 25
 
 #define CONTROL_TYPE TILT_PATTERN
 

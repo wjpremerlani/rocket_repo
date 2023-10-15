@@ -506,11 +506,11 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 
 
 #if ( OUTPUT_HZ == 10 )
-	if (udb_heartbeat_counter % 4 == 0)
-#elif (OUTPUT_HZ == 20)
+	if (udb_heartbeat_counter % 5 == 0)
+#elif (OUTPUT_HZ == 25)
 		if (udb_heartbeat_counter % 2 == 0)
 #else
-#error "OUTPUT_HZ must be either 10 or 20"
+#error "OUTPUT_HZ must be either 10 or 25"
 #endif // OUTPUT_HZ 
 	{
 		if (dcm_flags._.calib_finished)
@@ -763,7 +763,7 @@ void send_debug_line(void)
 #if (OUTPUT_HZ == 10)
 			tenths ++ ;
 #else
-			hundredths += 5 ;
+			hundredths += 4 ;
 #endif // OUTPUT_HZ
 #if  (OUTPUT_HZ == 10)          
 			if ( tenths == 10 )
