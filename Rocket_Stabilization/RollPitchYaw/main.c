@@ -203,9 +203,11 @@ uint16_t tilt_t ;
 int16_t controlModeYawPitch = YAW_PITCH_ENABLE ;
 int16_t controlModeRoll = ROLL_ENABLE ;
 int16_t launched = 0 ;
+int16_t roll_saturated = 0 ;
 int16_t accelEarthVertical = 0 ;
 int32_t velocityEarthVertical = 0 ;
 int16_t launch_count = 0 ;
+int16_t roll_saturated_count = 0 ;
 
 
 int16_t roll_feedback_horizontal_pitch = 0 ;

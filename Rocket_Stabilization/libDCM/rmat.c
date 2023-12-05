@@ -335,9 +335,11 @@ static void normalize(void)
 
 extern int16_t accelOn ;
 extern int16_t launched ;
+extern int16_t roll_saturated ;
 extern int16_t accelEarthVertical ;
 extern int32_t velocityEarthVertical ;
 extern int16_t launch_count ;
+extern int16_t roll_saturated_count ;
 
 #define LAUNCH_ACCELERATION ( 2.0 ) // times gravity
 #define LAUNCH_VELOCITY ( 10.0 ) // miles per hour
@@ -347,6 +349,8 @@ extern int16_t launch_count ;
 #define METERSPERSECONDPERMPH ( 4.0/9.0 ) // conversion from MPH to meters/second
 #define LAUNCH_VELOCITY_BINARY ( ( int32_t ) ( LAUNCH_VELOCITY*GRAVITY*FRAME_RATE*METERSPERSECONDPERMPH/ EARTH_GRAVITY ) )
 #define LAUNCH_DETECT_COUNT ( 20 )
+#define ROLL_SATURATION_COUNT ( 10 )
+#define ROLL_SATURATION_LEVEL ( 15565 ) // 95% of maximum
 
 static void roll_pitch_drift(void)
 {
@@ -354,6 +358,25 @@ static void roll_pitch_drift(void)
 	uint16_t acceleration ;	
 	gplaneMagnitude = vector3_mag( gplane[0] , gplane[1] , gplane[2]   ) ;
 	acceleration = abs ( gplaneMagnitude - GRAVITY ) ;
+    if ( abs ( ZRATE_VALUE ) < ROLL_SATURATION_LEVEL )
+    {
+        if ( roll_saturated_count > 0 )
+        {
+            roll_saturated_count -- ;
+        }
+    }
+    else
+    {
+        if ( roll_saturated_count < ROLL_SATURATION_COUNT )
+        {
+            roll_saturated_count++ ;
+        }
+    }
+    if ( roll_saturated_count == ROLL_SATURATION_COUNT )
+	{
+		roll_saturated = 1 ;
+	}
+
 	if ( acceleration < ( GRAVITY ))  // thrust must be at least 2 times gravity
 	{
 		if ( launch_count > 0 )
