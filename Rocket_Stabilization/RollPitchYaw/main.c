@@ -270,6 +270,7 @@ int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 	return saturate ( TILT_ALLOTMENT_INT_ , accum._.W1 )  ;
 }
 
+//#define USE_ROLL_MARGIN  // uncomment this line if you want to allocate unused tilt deflection to roll control
 void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t roll_rate , int16_t roll_deviation ,
 							int16_t * roll_feedback_pitch_pntr , int16_t * roll_feedback_yaw_pntr , int16_t * total_roll_feedback_pntr )
 {
@@ -284,8 +285,13 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	int16_t roll_pitch ;
 	int16_t roll_yaw ;
 
+#ifdef USE_ROLL_MARGIN 
 	roll_margin_pitch = TOTAL_DEFLECTION_ - abs ( pitch_feedback ) ;
 	roll_margin_yaw = TOTAL_DEFLECTION_ - abs ( yaw_feedback ) ;
+#else
+    roll_margin_pitch = 0 ;
+    roll_margin_yaw = 0 ;
+#endif // USE_ROLL_MARGIN
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
 	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
 	
