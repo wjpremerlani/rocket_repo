@@ -291,8 +291,8 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	roll_margin_pitch = TOTAL_DEFLECTION_ - abs ( pitch_feedback ) ;
 	roll_margin_yaw = TOTAL_DEFLECTION_ - abs ( yaw_feedback ) ;
 #else
-    roll_margin_pitch = 0 ;
-    roll_margin_yaw = 0 ;
+    roll_margin_pitch = TILT_ALLOTMENT_INT_ ;
+    roll_margin_yaw = TILT_ALLOTMENT_INT_ ;
 #endif // USE_ROLL_MARGIN
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
 	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
@@ -505,7 +505,8 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		udb_pwOut[7] = 3000 ;
 		udb_pwOut[8] = 3000 ;
         
-        if (roll_saturated == 0)           
+ //       if (roll_saturated == 0) 
+        if(1)
         {
             udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
             udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;

@@ -350,7 +350,8 @@ extern int16_t roll_saturated_count ;
 #define LAUNCH_VELOCITY_BINARY ( ( int32_t ) ( LAUNCH_VELOCITY*GRAVITY*FRAME_RATE*METERSPERSECONDPERMPH/ EARTH_GRAVITY ) )
 #define LAUNCH_DETECT_COUNT ( 20 )
 #define ROLL_SATURATION_COUNT ( 10 )
-#define ROLL_SATURATION_LEVEL ( 15565 ) // 95% of maximum
+//#define ROLL_SATURATION_LEVEL ( 15565 ) // 95% of maximum
+#define ROLL_SATURATION_LEVEL ( 1638 ) // 10% of maximum for debugging
 
 static void roll_pitch_drift(void)
 {
