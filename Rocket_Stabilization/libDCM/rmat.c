@@ -358,7 +358,7 @@ static void roll_pitch_drift(void)
 	uint16_t acceleration ;	
 	gplaneMagnitude = vector3_mag( gplane[0] , gplane[1] , gplane[2]   ) ;
 	acceleration = abs ( gplaneMagnitude - GRAVITY ) ;
-    if ( abs ( ZRATE_VALUE ) < ROLL_SATURATION_LEVEL )
+    if ( (abs ( ZRATE_VALUE ) < ROLL_SATURATION_LEVEL) || (launched == 0 ) )
     {
         if ( roll_saturated_count > 0 )
         {
