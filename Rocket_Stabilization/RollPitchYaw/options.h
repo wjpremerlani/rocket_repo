@@ -11,7 +11,7 @@
 // Uncomment the line below if you wish to use gain scheduling,
 // and define the gains schedule that you want in gain_defs.h.
 // Gain scheduling is separate from tilt patterns. You can use neither, either or both features.
-#define GAIN_SCHEDULING
+//#define GAIN_SCHEDULING
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -55,7 +55,7 @@
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "10/15/2023."
+#define DATE "12/17/2023."
 #define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second

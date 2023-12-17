@@ -505,8 +505,7 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		udb_pwOut[7] = 3000 ;
 		udb_pwOut[8] = 3000 ;
         
- //       if (roll_saturated == 0) 
-        if(1)
+        if (roll_saturated == 0) 
         {
             udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
             udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
