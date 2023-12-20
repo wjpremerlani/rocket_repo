@@ -574,7 +574,7 @@ void send_debug_line(void)
         }
 		case 48 :
 		{
-			sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
+			sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFb,pitchFb,rollFb,pwm1,pwm2,pwm3,pwm4\r\n" ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
@@ -590,7 +590,7 @@ void send_debug_line(void)
 		
 		case 40 :
 		{
-			sprintf( debug_buffer , "time,accelOn,launchCount,launched,saturated,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ, " ) ;
+			sprintf( debug_buffer , "time,accelOn,launched,saturated,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ," ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
@@ -753,11 +753,11 @@ void send_debug_line(void)
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
 #if(OUTPUT_HZ==10)  
-            sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
-			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
+            sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.1f,%i,%i,%i,%i,%i,%i,%i,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			minutes, seconds , tenths ,  accelOn, launched ,roll_saturated,  ((double)roll_angle)/(182.0) , 
 #else
-            sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",                  
-          	minutes, seconds , hundredths ,  accelOn, launch_count, launched , roll_saturated, ((double)roll_angle)/(182.0) ,           
+            sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.1f,%i,%i,%i,%i,%i,%i,%i,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%i,%i,%i,%i,%i,%i,%i\r\n",                  
+          	minutes, seconds , hundredths ,  accelOn, launched , roll_saturated, ((double)roll_angle)/(182.0) ,           
 #endif // OUTPUT_HZ
             roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
