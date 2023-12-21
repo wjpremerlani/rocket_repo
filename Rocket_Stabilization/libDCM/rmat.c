@@ -349,10 +349,18 @@ extern int16_t roll_saturated_count ;
 #define METERSPERSECONDPERMPH ( 4.0/9.0 ) // conversion from MPH to meters/second
 #define LAUNCH_VELOCITY_BINARY ( ( int32_t ) ( LAUNCH_VELOCITY*GRAVITY*FRAME_RATE*METERSPERSECONDPERMPH/ EARTH_GRAVITY ) )
 #define LAUNCH_DETECT_COUNT ( 20 )
-#define ROLL_SATURATION_COUNT ( 10 )
-//select a roll saturation level by which #define ROLL_SATURATION_LEVEL you enable,
-#define ROLL_SATURATION_LEVEL ( 15565 ) // 95% of maximum, recommended for actual flight
-//#define ROLL_SATURATION_LEVEL ( 1638 ) // 10% of maximum if you want verify with ground testing
+#define GYRO_MAX_RANGE ( 16384.0 )
+
+// roll rate saturation detection parameters
+#define ROLL_SATURATION_COUNT ( 10 )  // 0.2 seconds at 50 Hz counting rate
+// Select one the roll saturation ratios below.
+// A low value, such as 0.05 or 0.10 is recommended for ground testing.
+// 0.95 is recommended for flight, but in any case, do not use a ratio larger than that
+#define ROLL_SATURATION_RATIO 0.05 // recommended value for ground testing
+//#define ROLL_SATURATION_RATIO 0.95 // recommended value for flight
+
+// do not change the following line, it computes the corresponding integer value of the saturation roll rate
+#define ROLL_SATURATION_LEVEL ((uint16_t)GYRO_MAX_RANGE*ROLL_SATURATION_RATIO)
 
 static void roll_pitch_drift(void)
 {
