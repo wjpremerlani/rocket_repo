@@ -6,12 +6,12 @@
 //#define OUTPUT_HZ 10
 #define OUTPUT_HZ 25
 
-#define CONTROL_TYPE TILT_PATTERN
+#define CONTROL_TYPE ROLL_PLUS_VERTICAL
 
 // Uncomment the line below if you wish to use gain scheduling,
 // and define the gains schedule that you want in gain_defs.h.
 // Gain scheduling is separate from tilt patterns. You can use neither, either or both features.
-#define GAIN_SCHEDULING
+//#define GAIN_SCHEDULING
 
 #if ( CONTROL_TYPE == ROLL_ONLY )
 #define CONTROL_TEXT "roll only"
@@ -55,7 +55,7 @@
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "10/15/2023."
+#define DATE "12/17/2023."
 #define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
@@ -68,22 +68,20 @@
 //#define CALIBRATION ( 0.9945 )
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
+
 #define CUSTOM_OFFSETS
-#ifdef BILLS_BRD_2
-#define XACCEL_OFFSET	( 530 )
-#define YACCEL_OFFSET	( -91 )
-#define ZACCEL_OFFSET	( 436 )
-#define XRATE_OFFSET	( -85 )
-#define YRATE_OFFSET	( -8 )
-#define ZRATE_OFFSET	( -23 )
-#else
+// If the accelerometer offsets have been measured,
+// enter their actual values in this section as integers,
+// otherwise set them to zero.
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
 #define ZACCEL_OFFSET	( 0 )
+
+// Initial estimates of gyro offsets are set to zero.
+// Actual gyro offsets are automatically computed while waiting for launch.
 #define XRATE_OFFSET	( 0 )
 #define YRATE_OFFSET	( 0 )
 #define ZRATE_OFFSET	( 0 )
-#endif // BILLS_BRD_2
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)

@@ -203,9 +203,11 @@ uint16_t tilt_t ;
 int16_t controlModeYawPitch = YAW_PITCH_ENABLE ;
 int16_t controlModeRoll = ROLL_ENABLE ;
 int16_t launched = 0 ;
+int16_t roll_saturated = 0 ;
 int16_t accelEarthVertical = 0 ;
 int32_t velocityEarthVertical = 0 ;
 int16_t launch_count = 0 ;
+int16_t roll_saturated_count = 0 ;
 
 
 int16_t roll_feedback_horizontal_pitch = 0 ;
@@ -270,6 +272,7 @@ int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 	return saturate ( TILT_ALLOTMENT_INT_ , accum._.W1 )  ;
 }
 
+//#define USE_ROLL_MARGIN  // uncomment this line if you want to allocate unused tilt deflection to roll control
 void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t roll_rate , int16_t roll_deviation ,
 							int16_t * roll_feedback_pitch_pntr , int16_t * roll_feedback_yaw_pntr , int16_t * total_roll_feedback_pntr )
 {
@@ -284,8 +287,13 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	int16_t roll_pitch ;
 	int16_t roll_yaw ;
 
+#ifdef USE_ROLL_MARGIN 
 	roll_margin_pitch = TOTAL_DEFLECTION_ - abs ( pitch_feedback ) ;
 	roll_margin_yaw = TOTAL_DEFLECTION_ - abs ( yaw_feedback ) ;
+#else
+    roll_margin_pitch = TILT_ALLOTMENT_INT_ ;
+    roll_margin_yaw = TILT_ALLOTMENT_INT_ ;
+#endif // USE_ROLL_MARGIN
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
 	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
 	
@@ -496,11 +504,21 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 		udb_pwOut[6] = 3000 ;
 		udb_pwOut[7] = 3000 ;
 		udb_pwOut[8] = 3000 ;
-
-		udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
-		udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal + 3000 ;
+        
+        if (roll_saturated == 0) 
+        {
+            udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
+            udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
+            udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + 3000 ;
+            udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal + 3000 ;
+        }
+        else
+        {
+            udb_pwOut[1] = 3000 ;
+            udb_pwOut[2] = 3000 ;
+            udb_pwOut[3] = 3000 ;
+            udb_pwOut[4] = 3000 ;           
+        }
 
 	}
 
@@ -556,7 +574,7 @@ void send_debug_line(void)
         }
 		case 48 :
 		{
-			sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset, yawFb, pitchFb, rollFb, pwm1 , pwm2, pwm3, pwm4\r\n" ) ;
+			sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFb,pitchFb,rollFb,pwm1,pwm2,pwm3,pwm4\r\n" ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
@@ -572,7 +590,7 @@ void send_debug_line(void)
 		
 		case 40 :
 		{
-			sprintf( debug_buffer , "time,accelOn,launchCount,launched,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ, " ) ;
+			sprintf( debug_buffer , "time,accelOn,launched,saturated,rollAngle,rollDeviation,vertX,vertY,vertZ,accX,accY,accZ,gyroX,gyroY,gyroZ," ) ;
             udb_serial_start_sending_data();
 			line_number ++ ;
 			break ;
@@ -735,11 +753,11 @@ void send_debug_line(void)
 			roll_reference.y = rmat[3];
 			roll_angle = rect_to_polar16(&roll_reference) ;
 #if(OUTPUT_HZ==10)  
-            sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",
-			minutes, seconds , tenths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) , 
+            sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%.1f,%i,%i,%i,%i,%i,%i,%i,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%i,%i,%i,%i,%i,%i,%i\r\n",
+			minutes, seconds , tenths ,  accelOn, launched ,roll_saturated,  ((double)roll_angle)/(182.0) , 
 #else
-            sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%i,%i,%i,%i,%i,%i,%i\r\n",                  
-          	minutes, seconds , hundredths ,  accelOn, launch_count, launched , ((double)roll_angle)/(182.0) ,           
+            sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%.1f,%i,%i,%i,%i,%i,%i,%i,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%i,%i,%i,%i,%i,%i,%i\r\n",                  
+          	minutes, seconds , hundredths ,  accelOn, launched , roll_saturated, ((double)roll_angle)/(182.0) ,           
 #endif // OUTPUT_HZ
             roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
