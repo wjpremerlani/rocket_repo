@@ -175,6 +175,8 @@ int16_t minutes = 0 ;
 #define SPIN_ALLOTMENT_INT (( uint16_t ) SPIN_ALLOTMENT)
 #define TOTAL_DEFLECTION ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT )
 
+int16_t net_roll_margin = SPIN_ALLOTMENT_INT ;
+
 int16_t tilt_allotment_int = (( uint16_t ) TILT_ALLOTMENT) ;
 int16_t spin_allotment_int = (( uint16_t ) SPIN_ALLOTMENT) ;
 int16_t total_deflection = ( TILT_ALLOTMENT_INT + SPIN_ALLOTMENT_INT );
@@ -272,7 +274,7 @@ int16_t tilt_feedback ( int16_t tilt , int16_t tilt_rate )
 	return saturate ( TILT_ALLOTMENT_INT_ , accum._.W1 )  ;
 }
 
-//#define USE_ROLL_MARGIN  // uncomment this line if you want to allocate unused tilt deflection to roll control
+
 void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t roll_rate , int16_t roll_deviation ,
 							int16_t * roll_feedback_pitch_pntr , int16_t * roll_feedback_yaw_pntr , int16_t * total_roll_feedback_pntr )
 {
@@ -281,27 +283,34 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	int16_t roll_margin_pitch ;
 	int16_t yaw_margin_minus_pitch_margin_over_2 ;
 	int16_t abs_yaw_margin_minus_pitch_margin_over_2 ;
-	int16_t net_roll_margin ;
+//	int16_t net_roll_margin ;
 	int16_t net_roll_deflection ;
 	int16_t abs_net_roll_deflection ;
 	int16_t roll_pitch ;
 	int16_t roll_yaw ;
 
-#ifdef USE_ROLL_MARGIN 
 	roll_margin_pitch = TOTAL_DEFLECTION_ - abs ( pitch_feedback ) ;
 	roll_margin_yaw = TOTAL_DEFLECTION_ - abs ( yaw_feedback ) ;
+    
+#ifdef EXTENDED_ROLL_RANGE
+#ifdef REDISTRIBUTION
+    net_roll_margin = ( roll_margin_pitch + roll_margin_yaw ) / 2 ;
 #else
-    roll_margin_pitch = TILT_ALLOTMENT_INT_ ;
-    roll_margin_yaw = TILT_ALLOTMENT_INT_ ;
-#endif // USE_ROLL_MARGIN
+    if ( roll_margin_yaw < roll_margin_pitch)
+    {
+        net_roll_margin = roll_margin_yaw ;
+    }
+    else
+    {
+        net_roll_margin = roll_margin_pitch ;
+    }
+#endif // REDISTRIBUTION
+#else
+    net_roll_margin = SPIN_ALLOTMENT ;
+#endif // EXTENDED_ROLL_RANGE   
+   
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
-	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;
-	
-#ifdef NO_MIXING
-	net_roll_margin = SPIN_ALLOTMENT_INT_ ;
-#else	
-	net_roll_margin = ( roll_margin_pitch + roll_margin_yaw ) / 2 ;
-#endif
+	abs_yaw_margin_minus_pitch_margin_over_2 = abs ( yaw_margin_minus_pitch_margin_over_2 ) ;		
 
 #if ( GYRO_RANGE == 500 )
 	accum.WW = __builtin_mulsu (  roll_rate , unsigned_saturate  (2.0*SPIN_GAIN_) ) ; // 2 is because use of drift corrected values instead of raw values
@@ -342,14 +351,22 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 			roll_pitch = net_roll_deflection + yaw_margin_minus_pitch_margin_over_2 ;
 		}
 	}
+#ifdef REDISTRIBUTION    
 	* roll_feedback_pitch_pntr = roll_pitch ;
 	* roll_feedback_yaw_pntr = roll_yaw ;
 	* total_roll_feedback_pntr = net_roll_deflection ;
+#else
+    * roll_feedback_pitch_pntr = net_roll_deflection ;
+	* roll_feedback_yaw_pntr = net_roll_deflection ;
+	* total_roll_feedback_pntr = net_roll_deflection ;    
+#endif // REDISTRIBUTION
 	return ;
 }
 
 #define VERTICAL_MOUNT  1 
 #define HORIZONTAL_MOUNT  2 
+
+int32_t max_roll_binary_extended ;
 
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
@@ -378,13 +395,14 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 			roll_angle_32.WW += accum._.W1 ;
 			roll_angle_32.WW += accum._.W1 ;
 #endif // GYRO_RANGE
-			if ( roll_angle_32.WW > MAX_ROLL_BINARY_ )
+            max_roll_binary_extended = (int32_t)((MAX_ROLL_BINARY_ * ((int32_t)net_roll_margin))/((int32_t)SPIN_ALLOTMENT));
+			if ( roll_angle_32.WW > max_roll_binary_extended )
 			{
-				roll_angle_32.WW = MAX_ROLL_BINARY_ ;
+				roll_angle_32.WW = max_roll_binary_extended ;
 			}
-			else if ( roll_angle_32.WW < - MAX_ROLL_BINARY_  )
+			else if ( roll_angle_32.WW < - max_roll_binary_extended  )
 			{
-				roll_angle_32.WW = - MAX_ROLL_BINARY_ ;
+				roll_angle_32.WW = - max_roll_binary_extended ;
 			}
 			roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
 		}
@@ -432,15 +450,17 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
                 {   
                     roll_step = tilt_defs[tilt_index].roll_step ;
                     roll_angle_32.WW = roll_angle_32.WW - ((int32_t)roll_step)*((int32_t)286) ;
-                    if ( roll_angle_32.WW > MAX_ROLL_BINARY_ )
-                    {
-                        roll_angle_32.WW = MAX_ROLL_BINARY_ ;
-                    }
-                    else if ( roll_angle_32.WW < - MAX_ROLL_BINARY_  )
-                    {
-                        roll_angle_32.WW = - MAX_ROLL_BINARY_ ;
-                    }
-                    roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
+                    
+                max_roll_binary_extended = (int32_t)((MAX_ROLL_BINARY_ * ((int32_t)net_roll_margin))/((int32_t)SPIN_ALLOTMENT));
+                if ( roll_angle_32.WW > max_roll_binary_extended )
+                {
+                    roll_angle_32.WW = max_roll_binary_extended ;
+                }
+                else if ( roll_angle_32.WW < - max_roll_binary_extended  )
+                {
+                    roll_angle_32.WW = - max_roll_binary_extended ;
+                }
+                roll_deviation = (int16_t)(roll_angle_32.WW/(int32_t)286);	
 	
                     tilt_index++;
                 }
@@ -620,6 +640,19 @@ void send_debug_line(void)
 		}
         case 24 :
         {
+#ifdef REDISTRIBUTION
+            sprintf(debug_buffer, "Roll control is allocated separately to yaw and pitch axes.\r\n");
+            udb_serial_start_sending_data();
+#endif // REDISTRIBUTION
+            line_number ++ ;
+            break ;
+        }
+        case 22 :
+        {
+#ifdef EXTENDED_ROLL_RANGE
+            sprintf(debug_buffer, "Unused yaw and pitch deflection is used to extend roll control range.\r\n");
+            udb_serial_start_sending_data();
+#endif // EXTENDED_ROLL_RANGE
             line_number ++ ;
             break ;
         }
