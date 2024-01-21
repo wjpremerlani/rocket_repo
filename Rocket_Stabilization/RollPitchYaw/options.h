@@ -8,6 +8,7 @@
 
 #define CONTROL_TYPE ROLL_PLUS_VERTICAL
 
+//#define CONTROL_TYPE TILT_PATTERN
 // Uncomment the line below if you wish to use gain scheduling,
 // and define the gains schedule that you want in gain_defs.h.
 // Gain scheduling is separate from tilt patterns. You can use neither, either or both features.
@@ -51,7 +52,7 @@
 #endif // 
 
 #define EXTENDED_ROLL_RANGE
-#define REDISTRIBUTION
+//#define REDISTRIBUTION
 
 #ifndef CONTROL_TYPE
 #error "no control type defined"
@@ -59,12 +60,20 @@
 
 #define DATE "12/17/2023."
 #define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
-#define MAX_TILT_ANGLE ( 7.5 ) // degrees
+/*#define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
 #define MAX_SPIN_RATE ( 1000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 360 ) // degrees
+ */
+
+#define MAX_TILT_ANGLE ( 45.0 ) // degrees
+#define MAX_TILT_RATE ( 1000.0 ) // degrees per second
+#define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_SPIN_RATE ( 1000.0 ) // degrees per second
+#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 90 ) // degrees
 
 #define GYRO_RANGE ( 1000 )
 //#define CALIBRATION ( 0.9945 )
