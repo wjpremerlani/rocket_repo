@@ -50,6 +50,8 @@
 #define TILT_Z 16384
 #endif // 
 
+#define EXTENDED_ROLL_RANGE
+#define REDISTRIBUTION
 
 #ifndef CONTROL_TYPE
 #error "no control type defined"
