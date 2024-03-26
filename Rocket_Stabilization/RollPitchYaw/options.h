@@ -72,7 +72,7 @@
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 
-#define ACCEL_RANGE 8 // must be either 4 or 8
+#define ACCEL_RANGE 4 // must be either 4 or 8
 
 #define CUSTOM_OFFSETS
 // If the accelerometer offsets have been measured,
