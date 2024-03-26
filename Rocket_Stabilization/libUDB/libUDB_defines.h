@@ -169,7 +169,15 @@ struct udb_flag_bits {
 
 // Constants
 #define RMAX                    16384//0b0100000000000000       // 1.0 in 2.14 fractional format
-#define GRAVITY                 ((int32_t)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
+#if (ACCEL_RANGE == 4)
+#define GRAVITY 4096
+#elif (ACCEL_RANGE== 8)
+#define GRAVITY 2048
+#else
+#error "ACCEL_RANGE must be either 4 or 8"
+#endif // ACCEL_RANGE
+
+//#define GRAVITY                 ((int32_t)(5280.0/SCALEACCEL))  // gravity in AtoD/2 units
 
 #define SERVOCENTER             3000
 #define SERVORANGE              ((int16_t)(1000))

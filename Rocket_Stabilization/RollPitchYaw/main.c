@@ -599,10 +599,17 @@ void send_debug_line(void)
 			line_number ++ ;
 			break ;
 		}
-		case 38 :
+		case 39 :
         {
             sprintf(debug_buffer, "X, Y and Z accelerometer offsets: %i, %i, %i\r\n" ,
                 XACCEL_OFFSET , YACCEL_OFFSET , ZACCEL_OFFSET    ) ;
+            udb_serial_start_sending_data();
+            line_number ++ ;
+            break ;
+        }
+        case 38 :
+        {
+            sprintf(debug_buffer, "Accelerometer range is %i.\r\n",ACCEL_RANGE);
             udb_serial_start_sending_data();
             line_number ++ ;
             break ;

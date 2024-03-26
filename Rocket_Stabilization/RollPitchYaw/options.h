@@ -51,14 +51,14 @@
 #define TILT_Z 16384
 #endif // 
 
-#define EXTENDED_ROLL_RANGE
+//#define EXTENDED_ROLL_RANGE
 #define REDISTRIBUTION
 
 #ifndef CONTROL_TYPE
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "1/21/2023."
+#define DATE "3/26/2024."
 #define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
@@ -72,13 +72,23 @@
 #define CALIBRATION ( 0.9972 )
 //#define GYRO_RANGE ( 500 )
 
+#define ACCEL_RANGE 8 // must be either 4 or 8
+
 #define CUSTOM_OFFSETS
 // If the accelerometer offsets have been measured,
 // enter their actual values in this section as integers,
 // otherwise set them to zero.
+#if (ACCEL_RANGE==4)
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
 #define ZACCEL_OFFSET	( 0 )
+#elif (ACCEL_RANGE==8)
+#define XACCEL_OFFSET	( 0 )
+#define YACCEL_OFFSET	( 0 )
+#define ZACCEL_OFFSET	( 0 )
+#else
+#error "ACCEL_RANGE must be either 4 or 8"
+#endif // ACCEL_RANGE
 
 // Initial estimates of gyro offsets are set to zero.
 // Actual gyro offsets are automatically computed while waiting for launch.
