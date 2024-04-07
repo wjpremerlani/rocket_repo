@@ -319,9 +319,10 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 #else
 #error set GYRO_RANGE to 500 or 1000 in options.h
 #endif // GYRO_RANGE
-	
+    
+#ifdef HEADING_HOLD	
 	accum._.W1 += __builtin_divsd( __builtin_mulsu( roll_deviation , SPIN_ALLOTMENT_INT_ ) , MAX_ROLL_ANGLE_ ) ;
-			
+#endif // HEADING_HOLD			
 	net_roll_deflection = saturate ( net_roll_margin , accum._.W1 ) ;
 	abs_net_roll_deflection = abs ( net_roll_deflection ) ;
 
