@@ -58,15 +58,24 @@
 #error "no control type defined"
 #endif // CONTROL_TYPE
 
-#define DATE "4/7/2024."
-#define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling"
+#define DATE "5/27/2024."
+#define REVISION "VOS_port_RV3, 50 Hz.\r\nAlso supports gain scheduling and roll reversal mitigation"
 #define MAX_TILT_ANGLE ( 7.5 ) // degrees
 #define MAX_TILT_RATE ( 100.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 200.0 ) // microseconds
 #define MAX_SPIN_RATE ( 1000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 250.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
 #define HEADING_HOLD // comment out this line to turn off heading hold
 #define MAX_ROLL_ANGLE ( 360 ) // degrees
+
+// The following section is for control reversal mitigation,
+// which works by injecting mixing a triangular "null" control signal with the other 3.
+#define CONTROL_REVERSAL_MITIGATION (1)
+#if (CONTROL_REVERSAL_MITIGATION==1)
+#define NULL_FREQ 1.0 // cycles per second
+// note : NULL_FREQ must be less than 20
+#define NULL_PULSE_WIDTH (100.0) // microseconds
+#endif // CONTROL_REVERSAL_MITIGATION
  
 #define GYRO_RANGE ( 1000 )
 //#define CALIBRATION ( 0.9945 )

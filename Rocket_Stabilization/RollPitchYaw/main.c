@@ -143,6 +143,29 @@ int main(void)
 	return 0;
 }
 
+#if (CONTROL_REVERSAL_MITIGATION==1)
+const uint16_t null_amplitude = (uint16_t)(2.0*NULL_PULSE_WIDTH) ;
+uint16_t null_increment = (uint16_t)( ( 2.0*32768.0)*(NULL_FREQ)/50.0) ;
+int16_t null_phase = 0 ;
+
+int16_t update_null_injection(void)
+{
+    union longww null_injection_32 ;
+    null_phase += null_increment ;
+    if (abs(null_phase)>16384) null_increment = - null_increment ;
+    null_injection_32.WW = __builtin_mulss(null_phase,4*null_amplitude) ;
+    return null_injection_32._.W1 ;
+}
+
+#else
+
+int16_t update_null_injection(void)
+{
+    return 0 ;
+}
+
+#endif // CONTROL_REVERSAL_MITIGATION
+
 // Called high priority
 void udb_heartbeat_high_callback(void)
 {
@@ -369,6 +392,8 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 
 int32_t max_roll_binary_extended ;
 
+int16_t null_signal ;
+
 // Called at HEARTBEAT_HZ, before sending servo pulses
 void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outputs()
 {
@@ -528,10 +553,18 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
         
         if (roll_saturated == 0) 
         {
-            udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
-            udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
-            udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + 3000 ;
-            udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal + 3000 ;
+            if (launched == 1) 
+            {
+                null_signal = update_null_injection();
+            }
+            else
+            {
+                null_signal = 0 ;
+            }
+            udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + null_signal + 3000 ;
+            udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal - null_signal + 3000 ;
+            udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + null_signal + 3000 ;
+            udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal - null_signal + 3000 ;
         }
         else
         {
@@ -639,6 +672,17 @@ void send_debug_line(void)
 			break ;            
         }
 #endif // GAIN_SCHEDULING
+#ifdef CONTROL_REVERSAL_MITIGATION
+        case 30 :
+        {
+            sprintf(debug_buffer,"Null injection of %.1f usec PWM at %.1f Hz for control reversal mitigation.\r\n",
+                    NULL_PULSE_WIDTH, NULL_FREQ );
+            udb_serial_start_sending_data();
+            line_number ++ ;
+            break ;
+        }
+            
+#endif // CONTROL_REVERSAL_MITIGATION
 		case 28 :
 		{
 			sprintf( debug_buffer , "Control mode is %s.\r\n" , CONTROL_TEXT ) ;
