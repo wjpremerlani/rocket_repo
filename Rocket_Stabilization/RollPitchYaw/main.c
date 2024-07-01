@@ -148,13 +148,23 @@ const uint16_t null_amplitude = (uint16_t)(2.0*NULL_PULSE_WIDTH) ;
 uint16_t null_increment = (uint16_t)( ( 2.0*32768.0)*(NULL_FREQ)/50.0) ;
 int16_t null_phase = 0 ;
 
+int16_t null_timer = 50*NULL_DURATION ;
+
 int16_t update_null_injection(void)
 {
     union longww null_injection_32 ;
-    null_phase += null_increment ;
-    if (abs(null_phase)>16384) null_increment = - null_increment ;
-    null_injection_32.WW = __builtin_mulss(null_phase,4*null_amplitude) ;
-    return null_injection_32._.W1 ;
+    if(null_timer>0)
+    {
+        null_timer = null_timer - 1 ;
+        null_phase += null_increment ;
+        if (abs(null_phase)>16384) null_increment = - null_increment ;
+        null_injection_32.WW = __builtin_mulss(null_phase,4*null_amplitude) ;
+        return null_injection_32._.W1 ;
+    }
+    else
+    {
+        return 0 ;
+    }
 }
 
 #else
@@ -672,7 +682,7 @@ void send_debug_line(void)
 			break ;            
         }
 #endif // GAIN_SCHEDULING
-#ifdef CONTROL_REVERSAL_MITIGATION
+#if  (CONTROL_REVERSAL_MITIGATION == 1)
         case 30 :
         {
             sprintf(debug_buffer,"Null injection of %.1f usec PWM at %.1f Hz for control reversal mitigation.\r\n",

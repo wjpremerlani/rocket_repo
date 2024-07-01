@@ -75,6 +75,7 @@
 #define NULL_FREQ 1.0 // cycles per second
 // note : NULL_FREQ must be less than 20
 #define NULL_PULSE_WIDTH (100.0) // microseconds
+#define NULL_DURATION 60 // duration of null control in seconds
 #endif // CONTROL_REVERSAL_MITIGATION
  
 #define GYRO_RANGE ( 1000 )
