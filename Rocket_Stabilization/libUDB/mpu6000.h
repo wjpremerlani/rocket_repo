@@ -51,6 +51,7 @@
 #define MPUREG_CONFIG               0x1A
 #define MPUREG_GYRO_CONFIG          0x1B
 #define MPUREG_ACCEL_CONFIG         0x1C
+#define MPUREG_ACCEL_CONFIG2        0x1D
 #define MPUREG_INT_PIN_CFG          0x37
 #define MPUREG_INT_ENABLE           0x38
 #define MPUREG_ACCEL_XOUT_H         0x3B
@@ -134,6 +135,7 @@
 #define BIT_FIFO_OFLOW_INT          0x10
 #define BIT_I2C_MST_INT             0x08
 #define BIT_DATA_RDY_INT            0x01
+#define BIT_4KHZ_ACC                0x08
 
 
 // DMP output rate constants
@@ -142,6 +144,9 @@
 #define MPU6000_66HZ                2
 #define MPU6000_50HZ                3
 
+#define WHOAMI_MPU_6000			0x68
+#define WHOAMI_ICM_20689		0x98
+#define WHOAMI_ICM_20600		0x11
 
 void MPU6000_print(void);
 void MPU6000_read(void);            // read raw data

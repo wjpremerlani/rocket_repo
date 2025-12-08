@@ -31,6 +31,8 @@
 #include "mpu6000.h"
 #include "../libDCM/libDCM_internal.h"
 
+boolean is_ICM_20689 = 0;
+
 #if (BOARD_TYPE != UDB4_BOARD)
 
 #include <stdbool.h>
@@ -88,10 +90,26 @@ void MPU6000_init16(void)
 
 	// Wake up device and select GyroZ clock (better performance)
 	writeMPUSPIreg16(MPUREG_PWR_MGMT_1, MPU_CLK_SEL_PLLGYROZ);
+    
+    	// Which chip is this?
+	uint16_t mpu_whoami = readMPUSPIreg16(MPUREG_WHOAMI) ;
+	is_ICM_20689 = (mpu_whoami == WHOAMI_ICM_20689);
 
 	// Disable I2C bus (recommended on datasheet)
-	writeMPUSPIreg16(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
+	 if (mpu_whoami != WHOAMI_ICM_20600) {
+    	writeMPUSPIreg16(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
+	}
+    
+    	if (is_ICM_20689) {
+//	if (mpu_whoami == WHOAMI_ICM_20689 || mpu_whoami == WHOAMI_ICM_20600) {
+		// Disable I2C communications on the ICM_20689
+		uint8_t v = readMPUSPIreg16(MPUREG_INT_PIN_CFG) | BIT_INT_RD_CLEAR | BIT_LATCH_INT_EN;
+		v &= BIT_I2C_BYPASS_EN;
+		writeMPUSPIreg16(MPUREG_INT_PIN_CFG, v);
+	}
 
+    
+    
 	// SAMPLE RATE
 	writeMPUSPIreg16(MPUREG_SMPLRT_DIV, 4); // Sample rate = 200Hz  Fsample= 1Khz/(N+1) = 200Hz
 
@@ -109,15 +127,35 @@ void MPU6000_init16(void)
 //	writeMPUSPIreg16(MPUREG_GYRO_CONFIG, BITS_FS_250DPS); // Gyro scale 250º/s
 
 
-#if (ACCEL_RANGE == 2)
-	writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_2G); // Accel scele 2g, g = 8192
-#elif (ACCEL_RANGE == 4)
-	writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_4G); // Accel scale g = 4096
-#elif (ACCEL_RANGE == 8)
-	writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_8G); // Accel scale g = 2048
-#else
-#error "Invalid ACCEL_RANGE"
-#endif
+
+	
+	if (mpu_whoami == WHOAMI_ICM_20689 || mpu_whoami == WHOAMI_ICM_20600) {
+	#if (ACCEL_RANGE == 2)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, 0<<3); // Accel scele 2g, g = 8192
+	#elif (ACCEL_RANGE == 4)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, 1<<3); // Accel scele 4g, g = 4096
+	#elif (ACCEL_RANGE == 8)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, 2<<3); // Accel scele 8g, g = 2048
+	#elif (ACCEL_RANGE == 16)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, 3<<3); // Accel scele 8g, g = 2048
+	#else
+		#error "Invalid ACCEL_RANGE"
+	#endif
+	}
+	else {
+	#if (ACCEL_RANGE == 2)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_2G); // Accel scele 2g, g = 8192
+	#elif (ACCEL_RANGE == 4)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_4G); // Accel scale 4g = 4096
+	#elif (ACCEL_RANGE == 8)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_8G); // Accel scale 8g = 2048
+	#elif (ACCEL_RANGE == 16)
+		writeMPUSPIreg16(MPUREG_ACCEL_CONFIG, BITS_FS_16G); // Accel scale 8g = 2048
+	#else
+		#error "Invalid ACCEL_RANGE"
+	#endif
+	}
+
 
 #if 0
 	// Legacy from Mark Whitehorn's testing, we might need it some day.
