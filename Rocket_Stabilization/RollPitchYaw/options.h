@@ -487,6 +487,7 @@
 #endif // WAYNE_BRD8
 
 #if ( WAYNE_BRD9 == 1 )
+#define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn09.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION VERTICAL_MOUNT

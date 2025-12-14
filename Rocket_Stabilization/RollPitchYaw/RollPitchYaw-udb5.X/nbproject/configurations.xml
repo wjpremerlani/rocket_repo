@@ -76,6 +76,7 @@
         <itemPath>../../libUDB/mpu_spi.c</itemPath>
         <itemPath>../../libUDB/analogs.c</itemPath>
         <itemPath>../../libUDB/heartbeat.c</itemPath>
+        <itemPath>../../libUDB/gyro_offsets_table.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="libVectorMatrix" projectFiles="true">
         <itemPath>../../libVectorMatrix/madd.s</itemPath>
