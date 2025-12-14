@@ -12,6 +12,9 @@
         <itemPath>../../libDCM/rmat.h</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
+        <logicalFolder name="f1" displayName="gyro_tables" projectFiles="true">
+          <itemPath>../../libUDB/gyro_tables/table_vos_sn09.h</itemPath>
+        </logicalFolder>
         <itemPath>../../libUDB/magnetometerOptions.h</itemPath>
         <itemPath>../../libUDB/libUDB.h</itemPath>
         <itemPath>../../libUDB/libUDB_internal.h</itemPath>
@@ -58,9 +61,6 @@
         <itemPath>../../libDCM/gpsParseNMEA.c</itemPath>
       </logicalFolder>
       <logicalFolder name="libUDB" displayName="libUDB" projectFiles="true">
-        <logicalFolder name="f1" displayName="gyro_tables" projectFiles="true">
-          <itemPath>../../libUDB/gyro_tables/table_vos_sn09.h</itemPath>
-        </logicalFolder>
         <itemPath>../../libUDB/background.c</itemPath>
         <itemPath>../../libUDB/libUDB.c</itemPath>
         <itemPath>../../libUDB/analog2digital_udb4.c</itemPath>
