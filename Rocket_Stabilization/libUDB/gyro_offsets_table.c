@@ -71,29 +71,16 @@ int16_t accel_gyro_coupling_compensation[]= { 0 , 0 , 0 };
 #define CROSS_SHIFT 10
 #endif // ACCEL_RANGE
 
-
 void lookup_gyro_offsets(void)
-{
-#ifdef X_CROSS_COUPLING
-    accel_gyro_coupling_compensation[0] = 
-            (int16_t)(__builtin_mulss(aero_force[2],X_CROSS_COUPLING)>>CROSS_SHIFT ) ;
-#endif //
-#ifdef Y_CROSS_COUPLING
-    accel_gyro_coupling_compensation[1] = 
-            (int16_t)(__builtin_mulss(aero_force[2],Y_CROSS_COUPLING)>>CROSS_SHIFT ) ;   
-#endif //
-#ifdef Z_CROSS_COUPLING
-        accel_gyro_coupling_compensation[2] = 
-            (int16_t)(__builtin_mulss(aero_force[2],Z_CROSS_COUPLING)>>CROSS_SHIFT ) ;
-#endif //    
+{ 
 	temperature_index = mpu_temp.value - TABLE_ORIGIN ;
 	if (temperature_index < 0)
 	{
 		index_msb = 0 ;
 		index_lsb = 0 ;
-		gyro_offset[0] = accel_gyro_coupling_compensation[0]+residual_offset[0]+ gyro_offset_table[0].x ;
-		gyro_offset[1] = accel_gyro_coupling_compensation[1]+residual_offset[1]+ gyro_offset_table[0].y ;
-		gyro_offset[2] = accel_gyro_coupling_compensation[2]+residual_offset[2]+ gyro_offset_table[0].z ;
+		gyro_offset[0] = residual_offset[0]+ gyro_offset_table[0].x ;
+		gyro_offset[1] = residual_offset[1]+ gyro_offset_table[0].y ;
+		gyro_offset[2] = residual_offset[2]+ gyro_offset_table[0].z ;
 	}
 	else
 	{
@@ -102,9 +89,9 @@ void lookup_gyro_offsets(void)
 		number_entries = (sizeof (gyro_offset_table))/(sizeof (gyro_offset_table_entry)) ;
 		if ( index_msb >= (number_entries - 1 ))
 		{
-			gyro_offset[0] = accel_gyro_coupling_compensation[0]+residual_offset[0]+ gyro_offset_table[number_entries - 1].x ;
-			gyro_offset[1] = accel_gyro_coupling_compensation[1]+residual_offset[1]+ gyro_offset_table[number_entries - 1].y ;
-			gyro_offset[2] = accel_gyro_coupling_compensation[2]+residual_offset[2]+ gyro_offset_table[number_entries - 1].z ;
+			gyro_offset[0] = residual_offset[0]+ gyro_offset_table[number_entries - 1].x ;
+			gyro_offset[1] = residual_offset[1]+ gyro_offset_table[number_entries - 1].y ;
+			gyro_offset[2] = residual_offset[2]+ gyro_offset_table[number_entries - 1].z ;
 		}
 		else
 		{
@@ -130,6 +117,9 @@ void lookup_gyro_offsets(void)
 					__builtin_divsd(__builtin_mulss(right_minus_left[2],index_lsb),STEP_SIZE);
 		}
 	}
+    udb_xrate.offset = (gyro_offset[0])>>6 ;
+	udb_yrate.offset = (gyro_offset[1])>>6 ;
+	udb_zrate.offset = (gyro_offset[2])>>6 ;
 }
 
 #ifdef ACCEL_TABLE
@@ -192,11 +182,7 @@ void lookup_accel_offsets(void)
 
 #else
 
-int16_t accel_residual_offset[] = { 0 , 0 , 0 } ; 
-void lookup_accel_offsets(void)
-{
-    
-}
+int16_t accel_residual_offset[] = { 0 , 0 , 0 } ;
 
 #endif // ACCEL_TABLE
 
@@ -224,5 +210,13 @@ int16_t reported_temperature = -8000 ;
 int16_t initial_temp_recorded = 0 ;
 int16_t initial_temp_reported = 0 ;
 
-
+#else
+void lookup_accel_offsets(void)
+{
+    
+}
+void lookup_gyro_offsets(void)
+{
+    
+}
 #endif // GYRO_OFFSET_TABLE

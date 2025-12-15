@@ -252,9 +252,14 @@ inline void read_accel(void)
 //	accelEarthFiltered[2].WW += ((((int32_t)accelEarth[2])<<16) - accelEarthFiltered[2].WW)>>5;
 }
 
+extern void lookup_gyro_offsets() ;
+extern void lookup_accel_offsets() ;
+
 void udb_callback_read_sensors(void)
 {
+    lookup_gyro_offsets() ;
 	read_gyros(); // record the average values for both DCM and for offset measurements
+    lookup_accel_offsets() ;
 	read_accel();
 }
 
