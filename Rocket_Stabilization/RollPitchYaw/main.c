@@ -306,7 +306,7 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
     }
 #endif // REDISTRIBUTION
 #else
-    net_roll_margin = SPIN_ALLOTMENT ;
+    net_roll_margin = spin_allotment_int ;
 #endif // EXTENDED_ROLL_RANGE   
    
 	yaw_margin_minus_pitch_margin_over_2 = ( roll_margin_yaw - roll_margin_pitch ) / 2 ;
