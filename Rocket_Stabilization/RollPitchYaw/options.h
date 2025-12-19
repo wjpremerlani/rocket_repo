@@ -495,15 +495,17 @@
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
-#define NO_MIXING
+//#define NO_MIXING
 
 #define PWM1_CENTER (3000)
 #define PWM2_CENTER (3000)
 #define PWM3_CENTER (3000)
+#define PWM4_CENTER (3000)
 
 #define PWM1_SIGN +
-#define PWM2_SIGN -
-#define PWM3_SIGN -
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+#define PWM4_SIGN +
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -513,11 +515,11 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
-#define BOARD "SN9, Wayne"
+#define BOARD "SN9, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "3/23/25, gnd test"
+#define DATE "12/19/25, gnd test"
 #else
-#define DATE "3/23/25, flt rdy"
+#define DATE "12/19/25, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
@@ -537,15 +539,17 @@
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
-#define NO_MIXING
+//#define NO_MIXING
 
 #define PWM1_CENTER (3000)
 #define PWM2_CENTER (3000)
 #define PWM3_CENTER (3000)
+#define PWM4_CENTER (3000)
 
 #define PWM1_SIGN +
-#define PWM2_SIGN -
-#define PWM3_SIGN -
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+#define PWM4_SIGN +
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -555,11 +559,11 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
-#define BOARD "SN10, Wayne"
+#define BOARD "SN10, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "3/23/25, gnd test"
+#define DATE "12/19/25, gnd test"
 #else
-#define DATE "3/23/25, flt rdy"
+#define DATE "12/19/25, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
@@ -579,15 +583,17 @@
 #define MOUNT_ORIENTATION VERTICAL_MOUNT
 //#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 #define DETECT_APOGEE
-#define NO_MIXING
+//#define NO_MIXING
 
 #define PWM1_CENTER (3000)
 #define PWM2_CENTER (3000)
 #define PWM3_CENTER (3000)
+#define PWM4_CENTER (3000)
 
 #define PWM1_SIGN +
-#define PWM2_SIGN -
-#define PWM3_SIGN -
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+#define PWM4_SIGN +
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -597,11 +603,11 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
-#define BOARD "SN11, Wayne"
+#define BOARD "SN11, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "3/23/25, gnd test"
+#define DATE "12/19/25, gnd test"
 #else
-#define DATE "3/23/25, flt rdy"
+#define DATE "12/19/25, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, vert, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
