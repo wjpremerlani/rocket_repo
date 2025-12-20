@@ -515,6 +515,11 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
+#define CALIB_GRAVITY	8192
+#define CAL_GRAV_X 8206
+#define CAL_GRAV_Y 8206
+#define CAL_GRAV_Z 8194
+
 #define BOARD "SN9, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
 #define DATE "12/19/25, gnd test"
@@ -559,6 +564,11 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
+#define CALIB_GRAVITY	8192
+#define CAL_GRAV_X 8212
+#define CAL_GRAV_Y 8208
+#define CAL_GRAV_Z 8195
+
 #define BOARD "SN10, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
 #define DATE "12/19/25, gnd test"
@@ -602,6 +612,11 @@
 #define YRATE_OFFSET	( 0 )
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
+
+#define CALIB_GRAVITY	8192
+#define CAL_GRAV_X 8201
+#define CAL_GRAV_Y 8204
+#define CAL_GRAV_Z 8215
 
 #define BOARD "SN11, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))

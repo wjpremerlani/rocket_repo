@@ -592,6 +592,8 @@ uint16_t t_end = 0 ;
 
 int16_t line_number = 1 ;
 // Prepare a line of serial output and start it sending
+
+extern int16_t gplane[] ;
 void send_debug_line(void)
 {
 	db_index = 0;
@@ -610,7 +612,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz\r\n" ) ;
 			}
 			else
 			{
@@ -700,7 +702,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -733,7 +735,11 @@ void send_debug_line(void)
 			udb_pwOut[7] ,
 			udb_pwOut[8] ) ;
 #else
-			total_roll_feedback_horizontal ) ;
+			total_roll_feedback_horizontal ,
+                    (rmat[6]+2)/4 - gplane[0] ,(rmat[7]+2)/4 - gplane[1] ,(rmat[8]+2)/4 - gplane[2]
+                    
+                    
+                    ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
 			tenths ++ ;

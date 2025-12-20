@@ -211,9 +211,15 @@ inline void read_accel(void)
 //	gplane[1] = g_a_y_sim.BB;
 //	gplane[2] = g_a_z_sim.BB;
 #else
+#ifdef GYRO_OFFSET_TABLE
+    gplane[0] = __builtin_divsd(__builtin_mulss(XACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_X);
+	gplane[1] = __builtin_divsd(__builtin_mulss(YACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Y);
+	gplane[2] = __builtin_divsd(__builtin_mulss(ZACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Z);
+#else
 	gplane[0] = XACCEL_VALUE;
 	gplane[1] = YACCEL_VALUE;
 	gplane[2] = ZACCEL_VALUE;
+#endif // GYRO_OFFSET_TABLE
 	aero_force[0] = - gplane[0] ;
 	aero_force[1] = - gplane[1] ;
 	aero_force[2] = - gplane[2] ;
