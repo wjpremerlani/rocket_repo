@@ -7,6 +7,11 @@
 //#define GROUND_TEST ( 1 ) 
 #define DEBUG_NO_MIX ( 0 )
 
+#ifndef ACCEL_RANGE
+#define ACCEL_RANGE 4 // default
+#endif
+
+
 // the following allows multiple sets of options to be saved in one file
 #define FLORIN (0)
 #define JIM (0)
@@ -16,9 +21,9 @@
 #define WAYNE_BRD6 (0)
 #define WAYNE_BRD7 (0)
 #define WAYNE_BRD8 (0)
-#define WAYNE_BRD9 (0)
+#define WAYNE_BRD9 (1)
 #define WAYNE_BRD10 (0)
-#define WAYNE_BRD11 (1)
+#define WAYNE_BRD11 (0)
 
 // Florin's board
 #if( FLORIN == 1)
@@ -489,6 +494,8 @@
 #endif // WAYNE_BRD8
 
 #if ( WAYNE_BRD9 == 1 )
+#undef ACCEL_RANGE
+#define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn09.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)
@@ -515,10 +522,10 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
-#define CALIB_GRAVITY	8192
-#define CAL_GRAV_X 8206
-#define CAL_GRAV_Y 8206
-#define CAL_GRAV_Z 8194
+#define CALIB_GRAVITY	2048
+#define CAL_GRAV_X 2051
+#define CAL_GRAV_Y 2050
+#define CAL_GRAV_Z 2047
 
 #define BOARD "SN9, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
@@ -538,6 +545,8 @@
 #endif // WAYNE_BRD9
 
 #if ( WAYNE_BRD10 == 1 )
+#undef ACCEL_RANGE
+#define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn10.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)
@@ -587,6 +596,8 @@
 #endif // WAYNE_BRD10
 
 #if ( WAYNE_BRD11 == 1 )
+#undef ACCEL_RANGE
+#define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn11.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)

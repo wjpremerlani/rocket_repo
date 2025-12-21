@@ -684,8 +684,8 @@ void send_debug_line(void)
 		}
 		case 1 :
 		{
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range %i DPS, calib %6.4f\r\nMaxTilt= %5.1f deg, TiltRate= %5.1f d/s, PWM=%i usecs\r\n" ,
-			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION ,
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range = %i DPS and calib %6.4f , Accel range = %i g's\r\nMaxTilt= %5.1f deg, TiltRate= %5.1f d/s, PWM=%i usecs\r\n" ,
+			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION , ACCEL_RANGE , 
 			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
 			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
 			
@@ -736,9 +736,10 @@ void send_debug_line(void)
 			udb_pwOut[8] ) ;
 #else
 			total_roll_feedback_horizontal ,
-                    (rmat[6]+2)/4 - gplane[0] ,(rmat[7]+2)/4 - gplane[1] ,(rmat[8]+2)/4 - gplane[2]
-                    
-                    
+                    ((rmat[6]+(ACCEL_RANGE/2))/ACCEL_RANGE) - gplane[0] , 
+                    ((rmat[7]+(ACCEL_RANGE/2))/ACCEL_RANGE) - gplane[1] , 
+                    ((rmat[8]+(ACCEL_RANGE/2))/ACCEL_RANGE) - gplane[2] 
+                                        
                     ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
