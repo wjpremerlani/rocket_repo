@@ -155,10 +155,11 @@ fractional dirOverGndHrmat[] = { 0, RMAX, 0 };
 //fractional rbuff[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // vector buffer
-static fractional errorRP[] = { 0, 0, 0 };
+//static fractional errorRP[] = { 0, 0, 0 };
+fractional errorRP[] = { 0, 0, 0 };
 static fractional errorYawground[] = { 0, 0, 0 };
-static fractional errorYawplane[]  = { 0, 0, 0 };
-
+//static fractional errorYawplane[]  = { 0, 0, 0 };
+fractional errorYawplane[]  = { 0, 0, 0 };
 // measure of error in orthogonality, used for debugging purposes:
 static fractional error = 0;
 
@@ -186,6 +187,7 @@ void dcm_init_rmat(void)
 #endif
 }
 
+int16_t gplane_raw[3] ;
 static inline void read_gyros(void)
 {
 	// fetch the gyro signals and subtract the baseline offset, 
@@ -202,9 +204,31 @@ static inline void read_gyros(void)
 	omegagyro[2] = ZRATE_VALUE;
 #endif
 }
-
+int16_t normalize_acc(int16_t acc )
+{
+    int32_t acc_32 ;
+    if (ACCEL_RANGE == 4)
+    {
+        return acc ;
+    }
+    else ;
+    acc_32 = (int32_t) acc ;
+    acc_32 = acc_32 *((int32_t) (ACCEL_RANGE/4)) ;
+    if ( acc_32 > 32767 )
+    {
+        acc_32 = 32767 ;
+    }
+    if ( acc_32 < - 32767 )
+    {
+        acc_32 = - 32767 ;
+    }
+    return ((int16_t)acc_32) ;
+}
+int16_t gplane_raw[3] ;
+uint16_t read_count = 0 ;
 inline void read_accel(void)
 {
+    read_count = read_count + 1 ;
 #if (HILSIM == 1)
 	HILSIM_set_gplane();
 //	gplane[0] = g_a_x_sim.BB;
@@ -212,9 +236,13 @@ inline void read_accel(void)
 //	gplane[2] = g_a_z_sim.BB;
 #else
 #ifdef GYRO_OFFSET_TABLE
-    gplane[0] = __builtin_divsd(__builtin_mulss(XACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_X);
-	gplane[1] = __builtin_divsd(__builtin_mulss(YACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Y);
-	gplane[2] = __builtin_divsd(__builtin_mulss(ZACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Z);
+    gplane_raw[0] = __builtin_divsd(__builtin_mulss(XACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_X);
+	gplane_raw[1] = __builtin_divsd(__builtin_mulss(YACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Y);
+	gplane_raw[2] = __builtin_divsd(__builtin_mulss(ZACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Z);
+    gplane[0] = normalize_acc(gplane_raw[0]);
+    gplane[1] = normalize_acc(gplane_raw[1]);
+    gplane[2] = normalize_acc(gplane_raw[2]);
+    
 #else
 	gplane[0] = XACCEL_VALUE;
 	gplane[1] = YACCEL_VALUE;
@@ -398,10 +426,49 @@ extern int16_t launch_count ;
 #define LAUNCH_VELOCITY_BINARY ( ( int32_t ) ( LAUNCH_VELOCITY*GRAVITY*FRAME_RATE*METERSPERSECONDPERMPH/ EARTH_GRAVITY ) )
 #define LAUNCH_DETECT_COUNT ( 20 )
 
+void align_roll_pitch(fractional tilt_mat[])
+{
+	fractional vertical[3] ;
+	fractional Z , one_plus_Z ;
+	vertical[0] = gplane[0] ;
+	vertical[1] = gplane[1] ;
+	vertical[2] = gplane[2] ;
+	vector3_normalize( vertical , vertical ) ;
+	tilt_mat[2] = - vertical[0] ;
+	tilt_mat[5] = - vertical[1] ;
+	tilt_mat[6] = vertical[0] ;
+	tilt_mat[7] = vertical[1] ;
+	tilt_mat[8] = vertical[2] ;
+	Z = vertical[2] ;
+	one_plus_Z = RMAX + Z ;
+	if ( one_plus_Z > 0 )
+	{
+		tilt_mat[0] = Z+__builtin_divsd( __builtin_mulss( vertical[1], vertical[1]),one_plus_Z );
+		tilt_mat[4] = Z+__builtin_divsd( __builtin_mulss( vertical[0], vertical[0]),one_plus_Z );
+		tilt_mat[1] = - __builtin_divsd( __builtin_mulss( vertical[0], vertical[1]),one_plus_Z );
+		tilt_mat[3] = tilt_mat[1];
+	}
+	else
+	{
+		// this case cannot happen right now, but we may eventually want to control inverted
+		tilt_mat[0] = Z ;
+		tilt_mat[4] = Z ;
+		tilt_mat[1] = 0 ;
+		tilt_mat[3] = 0 ;
+	}
+}
+
+static boolean roll_pitch_initialized = false  ;
+
 static void roll_pitch_drift(void)
 {
 	uint16_t gplaneMagnitude  ;
 	uint16_t acceleration ;	
+    if (roll_pitch_initialized == false )
+    {
+        align_roll_pitch(rmat);
+        roll_pitch_initialized = true ;
+    }
 	gplaneMagnitude = vector3_mag( gplane[0] , gplane[1] , gplane[2]   ) ;
 	acceleration = abs ( gplaneMagnitude - GRAVITY ) ;
 	if ( acceleration < ( GRAVITY ))  // thrust must be at least 2 times gravity
@@ -764,9 +831,10 @@ void udb_magnetometer_callback(void)
 
 #define MAXIMUM_SPIN_DCM_INTEGRAL 20.0 // degrees per second
 
+fractional errorRPScaled[3];
 static void PI_feedback(void)
 {
-	fractional errorRPScaled[3];
+	//fractional errorRPScaled[3];
 	int16_t kpyaw;
 	int16_t kprollpitch;
 
