@@ -247,6 +247,10 @@ inline void read_accel(void)
 	gplane[0] = XACCEL_VALUE;
 	gplane[1] = YACCEL_VALUE;
 	gplane[2] = ZACCEL_VALUE;
+    gplane_raw[0] = gplane[0] ;
+    gplane_raw[1] = gplane[1] ;
+    gplane_raw[2] = gplane[2] ;
+    
 #endif // GYRO_OFFSET_TABLE
 	aero_force[0] = - gplane[0] ;
 	aero_force[1] = - gplane[1] ;
@@ -460,6 +464,10 @@ void align_roll_pitch(fractional tilt_mat[])
 
 static boolean roll_pitch_initialized = false  ;
 
+int32_t velocity[3] ;
+
+extern int16_t apogee ;
+
 static void roll_pitch_drift(void)
 {
 	uint16_t gplaneMagnitude  ;
@@ -490,6 +498,23 @@ static void roll_pitch_drift(void)
 	{
 		launched = 1 ;
 	}
+    if ((((launched == 1) || (launch_count > 0))) && ( apogee == 0))
+    {
+        velocity[0] = velocity[0] + (int32_t)((rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0]) ;
+        velocity[1] = velocity[1] + (int32_t)((rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1]) ;
+        velocity[2] = velocity[2] + (int32_t)((rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2]) ;
+        
+    }
+    else
+    {
+        if ( apogee == 0)
+        {
+            velocity[0] = (int32_t)0 ;
+            velocity[1] = (int32_t)0 ;
+            velocity[2] = (int32_t)0 ;
+        }
+        
+    }
 #ifndef GROUND_TEST
 #error ground_test
 #endif

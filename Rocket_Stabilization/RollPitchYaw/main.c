@@ -599,6 +599,7 @@ int16_t line_number = 1 ;
 
 extern int16_t gplane[] ;
 extern uint16_t read_count ;
+extern int32_t velocity[3] ;
 void send_debug_line(void)
 {
 	db_index = 0;
@@ -617,7 +618,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , eRPx , eRPy ,eRPz , eYawx , eYawy , eYawz \r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz \r\n" ) ;
 			}
 			else
 			{
@@ -707,7 +708,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -741,15 +742,13 @@ void send_debug_line(void)
 			udb_pwOut[8] ) ;
 #else
 			total_roll_feedback_horizontal ,
-                    rmat[6]/4 - 4*gplane_raw[0] , 
-                    rmat[7]/4 - 4*gplane_raw[1] , 
-                    rmat[8]/4 - 4*gplane_raw[2] ,
-                    errorRPScaled[0] ,
-                    errorRPScaled[1] ,
-                    errorRPScaled[2] ,
-                    errorYawplane[0] ,
-                    errorYawplane[1] ,
-                    errorYawplane[2] 
+                    (rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0] , 
+                    (rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1] , 
+                    (rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2] ,
+                    velocity[0] ,
+                    velocity[1] ,
+                    velocity[2]
+                    
                     
                     
                                         
