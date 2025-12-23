@@ -745,9 +745,9 @@ void send_debug_line(void)
                     (rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0] , 
                     (rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1] , 
                     (rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2] ,
-                    velocity[0] ,
-                    velocity[1] ,
-                    velocity[2]
+                    ((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)20369 ,
+                    ((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)20369 ,
+                    ((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)20369
                     
                     
                     
