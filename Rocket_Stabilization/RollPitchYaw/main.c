@@ -600,6 +600,8 @@ int16_t line_number = 1 ;
 extern int16_t gplane[] ;
 extern uint16_t read_count ;
 extern int32_t velocity[3] ;
+extern int32_t mag_sqr_rmat ;
+extern int32_t mag_sqr_acc ;
 void send_debug_line(void)
 {
 	db_index = 0;
@@ -618,7 +620,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz \r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz , sqr_rmat , sqr_acc , diff_sqr \r\n" ) ;
 			}
 			else
 			{
@@ -708,7 +710,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -747,11 +749,11 @@ void send_debug_line(void)
                     (rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2] ,
                     ((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)20369 ,
                     ((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)20369 ,
-                    ((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)20369
-                    
-                    
-                    
-                                        
+                    ((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)20369 ,
+                    mag_sqr_rmat ,
+                    mag_sqr_acc ,
+                    mag_sqr_rmat - mag_sqr_acc
+                                                                             
                     ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );

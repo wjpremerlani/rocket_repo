@@ -524,8 +524,8 @@
 
 #define CALIB_GRAVITY	2048
 #define CAL_GRAV_X 2051
-#define CAL_GRAV_Y 2050
-#define CAL_GRAV_Z 2047
+#define CAL_GRAV_Y 2051
+#define CAL_GRAV_Z 2048
 
 #define BOARD "SN9, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))

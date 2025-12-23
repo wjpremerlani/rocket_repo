@@ -224,8 +224,24 @@ int16_t normalize_acc(int16_t acc )
     }
     return ((int16_t)acc_32) ;
 }
+
+int32_t div_square( int16_t x , int16_t y , int16_t z , int16_t scale )
+{
+    int32_t sum_square = 0 ;
+    int16_t scaled ;
+    scaled = (x+scale/2)/scale ;
+    sum_square = sum_square + __builtin_mulss(scaled,scaled);
+    scaled = (y+scale/2)/scale ;
+    sum_square = sum_square + __builtin_mulss(scaled,scaled);
+    scaled = (z+scale/2)/scale ;
+    sum_square = sum_square + __builtin_mulss(scaled,scaled);
+    return sum_square ;
+    
+}
+
 int16_t gplane_raw[3] ;
 uint16_t read_count = 0 ;
+int32_t mag_sqr_rmat , mag_sqr_acc ;
 inline void read_accel(void)
 {
     read_count = read_count + 1 ;
@@ -242,6 +258,8 @@ inline void read_accel(void)
     gplane[0] = normalize_acc(gplane_raw[0]);
     gplane[1] = normalize_acc(gplane_raw[1]);
     gplane[2] = normalize_acc(gplane_raw[2]);
+    mag_sqr_rmat = div_square(rmat[6],rmat[7],rmat[8],ACCEL_RANGE) ;
+    mag_sqr_acc = div_square(gplane_raw[0],gplane_raw[1],gplane_raw[2],1) ;
     
 #else
 	gplane[0] = XACCEL_VALUE;
