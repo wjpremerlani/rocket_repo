@@ -21,8 +21,8 @@
 #define WAYNE_BRD6 (0)
 #define WAYNE_BRD7 (0)
 #define WAYNE_BRD8 (0)
-#define WAYNE_BRD9 (1)
-#define WAYNE_BRD10 (0)
+#define WAYNE_BRD9 (0)
+#define WAYNE_BRD10 (1)
 #define WAYNE_BRD11 (0)
 
 // Florin's board
@@ -573,10 +573,10 @@
 #define ZRATE_OFFSET	( 0 )
 #define CALIBRATION ( 1.0032 )
 
-#define CALIB_GRAVITY	8192
-#define CAL_GRAV_X 8212
-#define CAL_GRAV_Y 8208
-#define CAL_GRAV_Z 8195
+#define CALIB_GRAVITY	2048
+#define CAL_GRAV_X 2052
+#define CAL_GRAV_Y 2051
+#define CAL_GRAV_Z 2047
 
 #define BOARD "SN10, Wayne, temperature compensated"
 #if (( GROUND_TEST == 1 ))
