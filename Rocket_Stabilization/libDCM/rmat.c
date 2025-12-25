@@ -240,6 +240,7 @@ int32_t div_square( int16_t x , int16_t y , int16_t z , int16_t scale )
 }
 
 int16_t gplane_raw[3] ;
+int16_t dvdt_raw[3] ;
 uint16_t read_count = 0 ;
 int32_t mag_sqr_rmat , mag_sqr_acc ;
 inline void read_accel(void)
@@ -255,11 +256,15 @@ inline void read_accel(void)
     gplane_raw[0] = __builtin_divsd(__builtin_mulss(XACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_X);
 	gplane_raw[1] = __builtin_divsd(__builtin_mulss(YACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Y);
 	gplane_raw[2] = __builtin_divsd(__builtin_mulss(ZACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Z);
+    dvdt_raw[0] = (int32_t)((rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0]) ;
+    dvdt_raw[1] = (int32_t)((rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1]) ;
+    dvdt_raw[2] = (int32_t)((rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2])  ;
+    
     gplane[0] = normalize_acc(gplane_raw[0]);
     gplane[1] = normalize_acc(gplane_raw[1]);
     gplane[2] = normalize_acc(gplane_raw[2]);
-    mag_sqr_rmat = div_square(rmat[6],rmat[7],rmat[8],ACCEL_RANGE) ;
-    mag_sqr_acc = div_square(gplane_raw[0],gplane_raw[1],gplane_raw[2],1) ;
+    //mag_sqr_rmat = div_square(rmat[6],rmat[7],rmat[8],ACCEL_RANGE) ;
+    //mag_sqr_acc = div_square(gplane_raw[0],gplane_raw[1],gplane_raw[2],1) ;
     
 #else
 	gplane[0] = XACCEL_VALUE;
@@ -480,9 +485,16 @@ void align_roll_pitch(fractional tilt_mat[])
 	}
 }
 
+int32_t filter_residual(int32_t filtered,int16_t raw)
+{
+    return (filtered + (((((int32_t) raw ) << 6 ) - filtered)>>8 )) ;
+}
 static boolean roll_pitch_initialized = false  ;
 
 int32_t velocity[3] ;
+int32_t dvdt_residual[] = { 0 , 0 , 0 } ;
+int16_t velocity_fps[] = { 0 , 0 , 0 } ;
+int16_t dvdt_offset[] = { 0 , 0 , 0 } ;
 
 extern int16_t apogee ;
 
@@ -518,10 +530,12 @@ static void roll_pitch_drift(void)
 	}
     if ((((launched == 1) || (launch_count > 0))) && ( apogee == 0))
     {
-        velocity[0] = velocity[0] + (int32_t)((rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0]) ;
-        velocity[1] = velocity[1] + (int32_t)((rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1]) ;
-        velocity[2] = velocity[2] + (int32_t)((rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2]) ;
-        
+        velocity[0] = velocity[0] + dvdt_raw[0]-(int16_t)((dvdt_residual[0])>>6) ;
+        velocity[1] = velocity[1] + dvdt_raw[1]-(int16_t)((dvdt_residual[1])>>6) ;
+        velocity[2] = velocity[2] + dvdt_raw[2]-(int16_t)((dvdt_residual[2])>>6) ;
+        velocity_fps[0] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)20369 );
+        velocity_fps[1] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)20369 );
+        velocity_fps[2] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)20369 );     
     }
     else
     {
@@ -530,6 +544,12 @@ static void roll_pitch_drift(void)
             velocity[0] = (int32_t)0 ;
             velocity[1] = (int32_t)0 ;
             velocity[2] = (int32_t)0 ;
+            dvdt_residual[0] = filter_residual(dvdt_residual[0],dvdt_raw[0]) ;
+            dvdt_residual[1] = filter_residual(dvdt_residual[1],dvdt_raw[1]) ;
+            dvdt_residual[2] = filter_residual(dvdt_residual[2],dvdt_raw[2]) ;
+            dvdt_offset[0] = (int16_t)((dvdt_residual[0])>>6 );
+            dvdt_offset[1] = (int16_t)((dvdt_residual[1])>>6 );
+            dvdt_offset[2] = (int16_t)((dvdt_residual[2])>>6 );        
         }
         
     }

@@ -602,6 +602,11 @@ extern uint16_t read_count ;
 extern int32_t velocity[3] ;
 extern int32_t mag_sqr_rmat ;
 extern int32_t mag_sqr_acc ;
+extern int32_t dvdt_residual[];
+extern int16_t dvdt_raw[];
+extern int16_t velocity_fps[];
+extern int16_t dvdt_offset[];
+
 void send_debug_line(void)
 {
 	db_index = 0;
@@ -620,7 +625,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz , sqr_rmat , sqr_acc , diff_sqr \r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz , residx , residy , residz \r\n" ) ;
 			}
 			else
 			{
@@ -710,7 +715,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -744,16 +749,16 @@ void send_debug_line(void)
 			udb_pwOut[8] ) ;
 #else
 			total_roll_feedback_horizontal ,
-                    (rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0] , 
-                    (rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1] , 
-                    (rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2] ,
-                    ((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)20369 ,
-                    ((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)20369 ,
-                    ((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)20369 ,
-                    mag_sqr_rmat ,
-                    mag_sqr_acc ,
-                    mag_sqr_rmat - mag_sqr_acc
-                                                                             
+                    dvdt_raw[0] ,
+                    dvdt_raw[1] ,
+                    dvdt_raw[2] ,
+                    velocity_fps[0],
+                    velocity_fps[1],
+                    velocity_fps[2],
+                    dvdt_offset[0],
+                    dvdt_offset[1],
+                    dvdt_offset[2]
+                                                                                              
                     ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
