@@ -240,6 +240,7 @@ int32_t div_square( int16_t x , int16_t y , int16_t z , int16_t scale )
 }
 
 int16_t gplane_raw[3] ;
+int16_t gplane_earth[3] ;
 int16_t dvdt_raw[3] ;
 uint16_t read_count = 0 ;
 int32_t mag_sqr_rmat , mag_sqr_acc ;
@@ -256,6 +257,9 @@ inline void read_accel(void)
     gplane_raw[0] = __builtin_divsd(__builtin_mulss(XACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_X);
 	gplane_raw[1] = __builtin_divsd(__builtin_mulss(YACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Y);
 	gplane_raw[2] = __builtin_divsd(__builtin_mulss(ZACCEL_VALUE,CALIB_GRAVITY),CAL_GRAV_Z);
+    
+    MatrixMultiply(3,3,1,gplane_earth, rmat , gplane_raw) ;
+    
     dvdt_raw[0] = (int32_t)((rmat[6]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[0]) ;
     dvdt_raw[1] = (int32_t)((rmat[7]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[1]) ;
     dvdt_raw[2] = (int32_t)((rmat[8]+ACCEL_RANGE/2)/ACCEL_RANGE - gplane_raw[2])  ;
