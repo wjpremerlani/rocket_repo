@@ -606,6 +606,7 @@ extern int32_t dvdt_residual[];
 extern int16_t dvdt_raw[];
 extern int16_t velocity_fps[];
 extern int16_t dvdt_offset[];
+extern int16_t dvdt_earth[];
 extern int16_t gplane_earth[];
 
 void send_debug_line(void)
@@ -626,7 +627,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset, gyroYoffset, gyroZoffset,yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz , accx , accy , accz , Vx , Vy , Vz , residx , residy , residz , ge_x, ge_y , ge_z \r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,gex,gey,gez,dvdtex,dvdtey,dvdtez,Vx,Vy,Vz,rsx,rsy,rsz\r\n" ) ;
 			}
 			else
 			{
@@ -750,18 +751,19 @@ void send_debug_line(void)
 			udb_pwOut[8] ) ;
 #else
 			total_roll_feedback_horizontal ,
-                    dvdt_raw[0] ,
-                    dvdt_raw[1] ,
-                    dvdt_raw[2] ,
+               
+                    gplane_earth[0],
+                    gplane_earth[1],
+                    gplane_earth[2],
+                    dvdt_earth[0],
+                    dvdt_earth[1],
+                    dvdt_earth[2],
                     velocity_fps[0],
                     velocity_fps[1],
                     velocity_fps[2],
                     dvdt_offset[0],
                     dvdt_offset[1],
-                    dvdt_offset[2] ,
-                    gplane_earth[0] ,
-                    gplane_earth[1] ,
-                    gplane_earth[2]                                                                                              
+                    dvdt_offset[2]                                                                                             
                     ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
