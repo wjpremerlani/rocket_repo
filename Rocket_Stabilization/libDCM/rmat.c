@@ -500,6 +500,7 @@ int32_t velocity[3] ;
 int32_t dvdt_residual[] = { 0 , 0 , 0 } ;
 int16_t velocity_fps[] = { 0 , 0 , 0 } ;
 int16_t dvdt_offset[] = { 0 , 0 , 0 } ;
+int32_t distance_ft[] = { 0 , 0 , 0 } ;
 
 extern int16_t apogee ;
 
@@ -537,10 +538,14 @@ static void roll_pitch_drift(void)
     {
         velocity[0] = velocity[0] + dvdt_earth[0]-(int16_t)((dvdt_residual[0])>>6) ;
         velocity[1] = velocity[1] + dvdt_earth[1]-(int16_t)((dvdt_residual[1])>>6) ;
-        velocity[2] = velocity[2] + dvdt_earth[2]-(int16_t)((dvdt_residual[2])>>6) ;
+        velocity[2] = velocity[2] + dvdt_earth[2]+5120-(int16_t)((dvdt_residual[2])>>6) ;
         velocity_fps[0] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)(20368/2) );
         velocity_fps[1] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)(20368/2) );
-        velocity_fps[2] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)(20368/2) );     
+        velocity_fps[2] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)(20368/2) );  
+        distance_ft[0] = distance_ft[0] + ((int32_t)velocity_fps[0]);
+        distance_ft[1] = distance_ft[1] + ((int32_t)velocity_fps[1]);
+        distance_ft[2] = distance_ft[2] + ((int32_t)velocity_fps[2]);
+        
     }
     else
     {
@@ -549,6 +554,9 @@ static void roll_pitch_drift(void)
             velocity[0] = (int32_t)0 ;
             velocity[1] = (int32_t)0 ;
             velocity[2] = (int32_t)0 ;
+            distance_ft[0] = (int32_t)0 ;
+            distance_ft[1] = (int32_t)0 ;
+            distance_ft[2] = (int32_t)0 ;
             dvdt_residual[0] = filter_residual(dvdt_residual[0],dvdt_earth[0]) ;
             dvdt_residual[1] = filter_residual(dvdt_residual[1],dvdt_earth[1]) ;
             dvdt_residual[2] = filter_residual(dvdt_residual[2],dvdt_earth[2]) ;

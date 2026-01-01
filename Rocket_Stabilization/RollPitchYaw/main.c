@@ -600,6 +600,7 @@ int16_t line_number = 1 ;
 extern int16_t gplane[] ;
 extern uint16_t read_count ;
 extern int32_t velocity[3] ;
+extern int32_t distance_ft[];
 extern int32_t mag_sqr_rmat ;
 extern int32_t mag_sqr_acc ;
 extern int32_t dvdt_residual[];
@@ -627,7 +628,7 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,gex,gey,gez,dvdtex,dvdtey,dvdtez,Vx,Vy,Vz,rsx,rsy,rsz\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,gex,gey,gez,dvdtex,dvdtey,dvdtez,Vx,Vy,Vz,rsx,rsy,rsz,d_east,d_north,d_up\r\n" ) ;
 			}
 			else
 			{
@@ -717,7 +718,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -763,7 +764,11 @@ void send_debug_line(void)
                     velocity_fps[2],
                     dvdt_offset[0],
                     dvdt_offset[1],
-                    dvdt_offset[2]                                                                                             
+                    dvdt_offset[2] ,
+                    distance_ft[0]/((int32_t)40),
+                    distance_ft[1]/((int32_t)40),
+                    distance_ft[2]/((int32_t)40)
+
                     ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
