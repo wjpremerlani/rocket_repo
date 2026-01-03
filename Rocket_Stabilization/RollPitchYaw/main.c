@@ -21,6 +21,7 @@
 
 // main program for testing the IMU.
 
+#include "options.h"
 
 #include "../libDCM/libDCM.h"
 #include "../libUDB/heartbeat.h"
@@ -454,12 +455,12 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 #elif ( MOUNT_ORIENTATION == HORIZONTAL_MOUNT )
 		if ( rmat[8] < 8256 )
 		{
-			LED_GREEN = LED_ON ;
+			LED_GREEN = LED_OFF ;
 			tilted = 1 ;
 		}
 		else
 		{
-			LED_GREEN = LED_OFF ;
+			LED_GREEN = LED_ON ;
 			tilted = 0 ;
 		}
 #endif // MOUNT_ORIENTATION

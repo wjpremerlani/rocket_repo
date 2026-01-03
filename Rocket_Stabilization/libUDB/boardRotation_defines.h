@@ -26,7 +26,10 @@
 // to remove gravity from the offset measurement
 // **************************************************************************************
 
+
+#ifndef BOARD_ORIENTATION
 #define BOARD_ORIENTATION                   ORIENTATION_FORWARDS
+#endif
 
 // Setup the defines for board orientation
 #if (BOARD_ORIENTATION == ORIENTATION_FORWARDS)
