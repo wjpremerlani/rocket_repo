@@ -534,19 +534,19 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 #else		
 #ifndef NO_SPIN_CONTROL
 #if ( MOUNT_ORIENTATION == VERTICAL_MOUNT )
-		udb_pwOut[1] = roll_feedback_vertical_pitch + pitch_feedback_vertical + 3000 ;
-		udb_pwOut[2] = roll_feedback_vertical_yaw + yaw_feedback_vertical + 3000 ;
-		udb_pwOut[3] = roll_feedback_vertical_pitch - pitch_feedback_vertical + 3000 ;
-		udb_pwOut[4] = roll_feedback_vertical_yaw - yaw_feedback_vertical + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN (roll_feedback_vertical_pitch + pitch_feedback_vertical)  ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN (roll_feedback_vertical_yaw + yaw_feedback_vertical)  ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN (roll_feedback_vertical_pitch - pitch_feedback_vertical)  ;
+		udb_pwOut[4] = PWM4_CENTER PWM4_SIGN (roll_feedback_vertical_yaw - yaw_feedback_vertical)  ;
         udb_pwOut[5] = 3000 ;
         udb_pwOut[6] = 3000 ;
         udb_pwOut[7] = 3000 ;
         udb_pwOut[8] = 3000 ;        
 #else
-		udb_pwOut[1] = roll_feedback_horizontal_pitch + pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = roll_feedback_horizontal_yaw + yaw_feedback_horizontal + 3000 ;
-		udb_pwOut[3] = roll_feedback_horizontal_pitch - pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[4] = roll_feedback_horizontal_yaw - yaw_feedback_horizontal + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN (roll_feedback_horizontal_pitch + pitch_feedback_horizontal) ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN (roll_feedback_horizontal_yaw + yaw_feedback_horizontal) ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN (roll_feedback_horizontal_pitch - pitch_feedback_horizontal ) ;
+		udb_pwOut[4] = PWM4_CENTER PWM4_SIGN (roll_feedback_horizontal_yaw - yaw_feedback_horizontal ) ;
         udb_pwOut[5] = 3000 ;
         udb_pwOut[6] = 3000 ;
         udb_pwOut[7] = 3000 ;
@@ -554,20 +554,20 @@ void dcm_heartbeat_callback(void) // was called dcm_servo_callback_prepare_outpu
 #endif // MOUNTING        
 #else
 #if ( MOUNT_ORIENTATION == VERTICAL_MOUNT )        
-		udb_pwOut[1] = pitch_feedback_vertical + 3000 ;
-		udb_pwOut[2] = yaw_feedback_vertical + 3000 ;
-		udb_pwOut[3] =  - pitch_feedback_vertical + 3000 ;
-		udb_pwOut[4] =  - yaw_feedback_vertical + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN (pitch_feedback_vertical ) ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN (yaw_feedback_vertical ) ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN (- pitch_feedback_vertical) ;
+		udb_pwOut[4] = PWM4_CENTER PWM4_SIGN (- yaw_feedback_vertical) ;
         udb_pwOut[5] = 3000 ;
         udb_pwOut[6] = 3000 ;
         udb_pwOut[7] = 3000 ;
         udb_pwOut[8] = 3000 ;
 #else
 
-		udb_pwOut[1] = pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[2] = yaw_feedback_horizontal + 3000 ;
-		udb_pwOut[3] =  - pitch_feedback_horizontal + 3000 ;
-		udb_pwOut[4] =  - yaw_feedback_horizontal + 3000 ;
+		udb_pwOut[1] = PWM1_CENTER PWM1_SIGN (pitch_feedback_horizontal ) ;
+		udb_pwOut[2] = PWM2_CENTER PWM2_SIGN (yaw_feedback_horizontal ) ;
+		udb_pwOut[3] = PWM3_CENTER PWM3_SIGN (- pitch_feedback_horizontal ) ;
+		udb_pwOut[4] = PWM4_CENTER PWM4_SIGN (- yaw_feedback_horizontal ) ;
         udb_pwOut[5] = 3000 ;
         udb_pwOut[6] = 3000 ;
         udb_pwOut[7] = 3000 ;
