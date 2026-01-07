@@ -527,19 +527,20 @@
 #define CAL_GRAV_Y 2051
 #define CAL_GRAV_Z 2048
 
-#define BOARD "SN9, Wayne, temperature compensated"
+#define BOARD "Wayne SN9 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "12/19/25, gnd test"
+#define DATE "1/7/2026, gnd test"
 #else
-#define DATE "12/19/25, flt rdy"
+#define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, vert, apogee det"
+#define REVISION "R23, inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
-#define MAX_ROLL_ANGLE ( 540 )
+//#define MAX_ROLL_ANGLE ( 540 )
+#define MAX_ROLL_ANGLE ( 30 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD9
@@ -578,19 +579,20 @@
 #define CAL_GRAV_Y 2051
 #define CAL_GRAV_Z 2047
 
-#define BOARD "SN10, Wayne, temperature compensated"
+#define BOARD "Wayne SN10 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "12/19/25, gnd test"
+#define DATE "1/7/2026, gnd test"
 #else
-#define DATE "12/19/25, flt rdy"
+#define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, vert, apogee det"
+#define REVISION "R23, inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
-#define MAX_ROLL_ANGLE ( 540 )
+//#define MAX_ROLL_ANGLE ( 540 )
+#define MAX_ROLL_ANGLE ( 30 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD10
@@ -630,11 +632,11 @@
 #define CAL_GRAV_Y 2051
 #define CAL_GRAV_Z 2054
 
-#define BOARD "SN11, Wayne, temperature compensated"
+#define BOARD "Wayne SN11 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "12/19/25, gnd test"
+#define DATE "1/7/2026, gnd test"
 #else
-#define DATE "12/19/25, flt rdy"
+#define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
 #define REVISION "R23, inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees

@@ -632,6 +632,9 @@ extern int16_t velocity_fps[];
 extern int16_t dvdt_offset[];
 extern int16_t dvdt_earth[];
 extern int16_t gplane_earth[];
+extern uint16_t acceleration ;
+extern uint16_t gplaneMagnitude;
+
 
 void send_debug_line(void)
 {
@@ -651,11 +654,11 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,gex,gey,gez,dvdtex,dvdtey,dvdtez,Vx,Vy,Vz,rsx,rsy,rsz,d_east,d_north,d_up\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			else
 			{
-				sprintf( debug_buffer , "yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz, out1, out2, out3, out4, out5, out6, out7, out8\r\n" ) ;
+				sprintf( debug_buffer , "yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz, out1, out2, out3, out4, out5, out6, out7, out8,Vx,Vy,Vz,d_east,d_north,d_up\r\n" ) ;
 			}
 			line_number ++ ;
 			break ;
@@ -741,7 +744,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -776,21 +779,25 @@ void send_debug_line(void)
 #else
 			total_roll_feedback_horizontal ,
                
-                    gplane_earth[0],
-                    gplane_earth[1],
-                    gplane_earth[2],
-                    dvdt_earth[0],
-                    dvdt_earth[1],
-                    dvdt_earth[2],
-                    velocity_fps[0],
-                    velocity_fps[1],
-                    velocity_fps[2],
-                    dvdt_offset[0],
-                    dvdt_offset[1],
-                    dvdt_offset[2] ,
-                    distance_ft[0]/((int32_t)40),
-                    distance_ft[1]/((int32_t)40),
-                    distance_ft[2]/((int32_t)40)
+            //gplane_earth[0],
+            //gplane_earth[1],
+            //gplane_earth[2],
+            //acceleration ,
+            //gplaneMagnitude,
+            //(int16_t)GRAVITY ,
+	
+            //dvdt_earth[0],
+            //dvdt_earth[1],
+            //dvdt_earth[2],
+            velocity_fps[0],
+            velocity_fps[1],
+            velocity_fps[2],
+            //dvdt_offset[0],
+            //dvdt_offset[1],
+            //dvdt_offset[2] ,
+            distance_ft[0]/((int32_t)40),
+            distance_ft[1]/((int32_t)40),
+            distance_ft[2]/((int32_t)40)
 
                     ) ;
 #endif // GROUND_TEST

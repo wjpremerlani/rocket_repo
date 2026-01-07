@@ -504,10 +504,12 @@ int32_t distance_ft[] = { 0 , 0 , 0 } ;
 
 extern int16_t apogee ;
 
+uint16_t gplaneMagnitude  ;
+uint16_t acceleration ;
+
 static void roll_pitch_drift(void)
 {
-	uint16_t gplaneMagnitude  ;
-	uint16_t acceleration ;	
+	
     if (roll_pitch_initialized == false )
     {
         align_roll_pitch(rmat);
@@ -538,7 +540,7 @@ static void roll_pitch_drift(void)
     {
         velocity[0] = velocity[0] + dvdt_earth[0]-(int16_t)((dvdt_residual[0])>>6) ;
         velocity[1] = velocity[1] + dvdt_earth[1]-(int16_t)((dvdt_residual[1])>>6) ;
-        velocity[2] = velocity[2] + dvdt_earth[2]+5120-(int16_t)((dvdt_residual[2])>>6) ;
+        velocity[2] = velocity[2] + dvdt_earth[2]+1*5120-(int16_t)((dvdt_residual[2])>>6) ;
         velocity_fps[0] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[0])/(int32_t)(20368/2) );
         velocity_fps[1] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[1])/(int32_t)(20368/2) );
         velocity_fps[2] = (int16_t)(((int32_t)ACCEL_RANGE*velocity[2])/(int32_t)(20368/2) );  
