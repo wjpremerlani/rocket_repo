@@ -603,7 +603,7 @@
 #undef ACCEL_RANGE
 #define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn11.h"
-#define GROUND_TEST (1)
+#define GROUND_TEST 0
 #define USE_TILT (0)
 //#define MOUNT_ORIENTATION VERTICAL_MOUNT
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT

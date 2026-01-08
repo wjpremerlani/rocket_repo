@@ -658,7 +658,7 @@ void send_debug_line(void)
 			}
 			else
 			{
-				sprintf( debug_buffer , "yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz, out1, out2, out3, out4, out5, out6, out7, out8,Vx,Vy,Vz,d_east,d_north,d_up\r\n" ) ;
+				sprintf( debug_buffer , "yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz, out1, out2, out3, out4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			line_number ++ ;
 			break ;
@@ -755,7 +755,7 @@ void send_debug_line(void)
 		roll_angle = rect_to_polar16(&roll_reference) ;
 //		sprintf(debug_buffer, "%i:%2.2i.%.1i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n",
 #if ( GROUND_TEST == 0 )
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #else
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
@@ -785,29 +785,18 @@ void send_debug_line(void)
 			udb_pwOut[2] ,
 			udb_pwOut[3] ,
 			udb_pwOut[4] ,
-			udb_pwOut[5] ,
-			udb_pwOut[6] ,
-			udb_pwOut[7] ,
-			udb_pwOut[8] ) ;
+			velocity_fps[0],
+            velocity_fps[1],
+            velocity_fps[2],
+            distance_ft[0]/((int32_t)40),
+            distance_ft[1]/((int32_t)40),
+            distance_ft[2]/((int32_t)40)
+                    );
 #else
-			total_roll_feedback_horizontal ,
-               
-            //gplane_earth[0],
-            //gplane_earth[1],
-            //gplane_earth[2],
-            //acceleration ,
-            //gplaneMagnitude,
-            //(int16_t)GRAVITY ,
-	
-            //dvdt_earth[0],
-            //dvdt_earth[1],
-            //dvdt_earth[2],
+			total_roll_feedback_horizontal ,         
             velocity_fps[0],
             velocity_fps[1],
             velocity_fps[2],
-            //dvdt_offset[0],
-            //dvdt_offset[1],
-            //dvdt_offset[2] ,
             distance_ft[0]/((int32_t)40),
             distance_ft[1]/((int32_t)40),
             distance_ft[2]/((int32_t)40)
