@@ -499,8 +499,9 @@
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn09.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)
-#define MOUNT_ORIENTATION VERTICAL_MOUNT
-//#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+//#define MOUNT_ORIENTATION VERTICAL_MOUNT
+#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+#define BOARD_ORIENTATION ORIENTATION_INVERTED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
@@ -533,14 +534,14 @@
 #else
 #define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, inverted, apogee det"
+#define REVISION "R23, horizontal inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
-//#define MAX_ROLL_ANGLE ( 540 )
-#define MAX_ROLL_ANGLE ( 30 )
+#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 540 )
+//#define MAX_ROLL_ANGLE ( 30 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD9
@@ -551,8 +552,9 @@
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn10.h"
 #define GROUND_TEST (1)
 #define USE_TILT (0)
-#define MOUNT_ORIENTATION VERTICAL_MOUNT
-//#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+//#define MOUNT_ORIENTATION VERTICAL_MOUNT
+#define MOUNT_ORIENTATION HORIZONTAL_MOUNT
+#define BOARD_ORIENTATION ORIENTATION_INVERTED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
@@ -585,12 +587,12 @@
 #else
 #define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, inverted, apogee det"
+#define REVISION "R23, horizontal inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
 //#define MAX_ROLL_ANGLE ( 540 )
 #define MAX_ROLL_ANGLE ( 30 )
 
@@ -638,14 +640,14 @@
 #else
 #define DATE "1/7/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, inverted, apogee det"
+#define REVISION "R23, horizontal inverted, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 200.0 ) // microseconds
-//#define MAX_ROLL_ANGLE ( 540 )
-#define MAX_ROLL_ANGLE ( 30 )
+#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
+#define MAX_ROLL_ANGLE ( 540 )
+//#define MAX_ROLL_ANGLE ( 30 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD11

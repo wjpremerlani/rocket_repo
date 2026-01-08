@@ -650,7 +650,7 @@ void send_debug_line(void)
 	else switch ( line_number )
 	{
 		
-		case 5 :
+		case 6 :
 		{
 			if ( GROUND_TEST == 1)
 			{
@@ -664,13 +664,13 @@ void send_debug_line(void)
 			break ;
 		}
 		
-		case 4 :
+		case 5 :
 		{
 			sprintf( debug_buffer , "time, cntlModeYwPtch, cntlModeRoll, accelOn, launchCount, launched, tilt_count, apogee , rollAngle, rollDeviation, vertX, vertY, vertZ, accX, accY, accZ, gyroX, gyroY, gyroZ, " ) ;
 			line_number ++ ;
 			break ;
 		}
-		case 3 :
+		case 4 :
 		{
 #if ( USE_TILT == 1)
 			int16_t tilt_tilt = tilt_defs[tilt_print_index].tilt ;
@@ -702,16 +702,22 @@ void send_debug_line(void)
 			return ;
 #endif // USE_TILT
 		}
-		case 2 :
+		case 3 :
 		{
 #ifndef NO_MIXING
-			sprintf( debug_buffer , "Max Roll= %i deg, Max Roll Rate= %i deg/sec %i usecs\r\nOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
+			sprintf( debug_buffer , "Max Roll= %i deg, Max Roll Rate= %i deg/sec, PWM= %i usecs\r\nOffsets, Accel: , %i, %i, %i, Gyro: , %i, %i, %i\r\n" , 
 			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ,
+#ifdef GYRO_OFFSET_TABLE
+            0,0,0,0,0,0 ) ;
+            line_number ++ ;
+            break ;
+#else
 			udb_xaccel.offset , udb_yaccel.offset , udb_zaccel.offset ,
 			udb_xrate.offset , udb_yrate.offset , udb_zrate.offset
 			 	) ;
 			line_number ++ ;
 			break ;
+#endif // GYRO_OFFSET_TABLE
 #else
 			sprintf( debug_buffer , "MaxRoll= %i deg, RollRate= %i d/s, PWM=%i usecs\r\nOffsets, Accel,%i,%i,%i,Gyro,%i, %i,%i\r\nPWM cntrs,%i,%i,%i usecs, signs,%i,%i,%i\r\n" , 
 			MAX_ROLL_ANGLE , (int16_t) MAX_SPIN_RATE , (int16_t) MAX_SPIN_PULSE_WIDTH ,
@@ -726,16 +732,23 @@ void send_debug_line(void)
 		}
 		case 1 :
 		{
-		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range = %i DPS and calib %6.4f , Accel range = %i g's\r\nMaxTilt= %5.1f deg, TiltRate= %5.1f d/s, PWM=%i usecs\r\n" ,
-			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION , ACCEL_RANGE , 
-			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
-			//(int16_t) TILT_GAIN , (int16_t) SPIN_GAIN ,
-			
+		sprintf( debug_buffer , "%s, %s, %s\r\nGyro range = %i DPS and calib %6.4f , Accel range = %i g's\r\n" ,
+			BOARD, REVISION, DATE, GYRO_RANGE , CALIBRATION , ACCEL_RANGE 
 			 	) ;
 		line_number ++ ;
 		break ;
 		}
-		case 6 :
+        case 2 :
+        {
+        sprintf( debug_buffer , "PWM centers = %i,%i,%i,%i usecs and PWM signs = %i,%i,%i,%i\r\nMax Tilt= %5.1f deg, Mag Tilt Rate= %5.1f deg/sec, PWM=%i usecs\r\n" ,
+			PWM1_CENTER/2 , PWM2_CENTER/2 , PWM3_CENTER/2 , PWM4_CENTER/2 , PWM1_SIGN 1 ,PWM2_SIGN 1 ,PWM3_SIGN 1 , PWM4_SIGN 1 ,
+			MAX_TILT_ANGLE , MAX_TILT_RATE ,(int16_t) MAX_TILT_PULSE_WIDTH 
+			
+			 	) ;
+        line_number ++ ;
+		break ;
+        }
+		case 7 :
 	{
 		roll_reference.x = rmat[0];
 		roll_reference.y = rmat[3];
