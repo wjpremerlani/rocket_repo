@@ -12,6 +12,9 @@
 #endif
 
 
+#define VERTICAL_MOUNT  1 
+#define HORIZONTAL_MOUNT  2 
+
 // the following allows multiple sets of options to be saved in one file
 #define FLORIN (0)
 #define JIM (0)
@@ -603,7 +606,7 @@
 #undef ACCEL_RANGE
 #define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn11.h"
-#define GROUND_TEST 0
+#define GROUND_TEST 1
 #define USE_TILT (0)
 //#define MOUNT_ORIENTATION VERTICAL_MOUNT
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
@@ -653,6 +656,15 @@
 #endif // WAYNE_BRD11
 
 
+#if MOUNT_ORIENTATION == VERTICAL_MOUNT
+#define YAW_FEEDBACK yaw_feedback_vertical
+#define PITCH_FEEDBACK pitch_feedback_vertical
+#define ROLL_FEEDBACK total_roll_feedback_vertical
+#else
+#define YAW_FEEDBACK yaw_feedback_horizontal
+#define PITCH_FEEDBACK pitch_feedback_horizontal
+#define ROLL_FEEDBACK total_roll_feedback_horizontal
+#endif // MOUNT_ORIENTATION
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set this value to your GPS type.  (Set to GPS_STD, GPS_UBX_2HZ, GPS_UBX_4HZ, GPS_MTEK, GPS_NMEA, or GPS_NONE)

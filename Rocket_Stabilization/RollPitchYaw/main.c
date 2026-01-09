@@ -294,8 +294,8 @@ void roll_feedback ( int16_t pitch_feedback , int16_t yaw_feedback ,  int16_t ro
 	return ;
 }
 
-#define VERTICAL_MOUNT  1 
-#define HORIZONTAL_MOUNT  2 
+//#define VERTICAL_MOUNT  1 
+//#define HORIZONTAL_MOUNT  2 
 
 int16_t tilt_count = 0 ;
 
@@ -654,11 +654,11 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yawFbVert,pitchFbVert,rollFbVert,yawFbHoriz,pitchFbHoriz,rollFbHori,yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yaw_fd_back, pitch_fd_back, roll_fd_back, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			else
 			{
-				sprintf( debug_buffer , "yawFbVert, pitchFbVert, rollFbVert, yawFbHoriz, pitchFbHoriz, rollFbHoriz, out1, out2, out3, out4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
+				sprintf( debug_buffer , "yaw_fd_back, pitch_fd_back, roll_fd_back, out1, out2, out3, out4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			line_number ++ ;
 			break ;
@@ -755,9 +755,9 @@ void send_debug_line(void)
 		roll_angle = rect_to_polar16(&roll_reference) ;
 //		sprintf(debug_buffer, "%i:%2.2i.%.1i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n",
 #if ( GROUND_TEST == 0 )
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -774,13 +774,15 @@ void send_debug_line(void)
 			((double)( omegacorrI[1])) / ((double)( GYRO_FACTOR/2 )) ,
 			((double)( omegacorrI[2])) / ((double)( GYRO_FACTOR/2 )) ,
 #endif // GROUND_TEST
-			yaw_feedback_vertical ,
-			pitch_feedback_vertical ,
-			total_roll_feedback_vertical ,
-			yaw_feedback_horizontal ,
-			pitch_feedback_horizontal ,
+			//yaw_feedback_vertical ,
+			//pitch_feedback_vertical ,
+			//total_roll_feedback_vertical ,
+			//yaw_feedback_horizontal ,
+			//pitch_feedback_horizontal ,
+            YAW_FEEDBACK, PITCH_FEEDBACK,
 #if ( GROUND_TEST == 0 )
-			total_roll_feedback_horizontal ,
+            ROLL_FEEDBACK ,
+			//total_roll_feedback_horizontal ,
 			udb_pwOut[1] ,
 			udb_pwOut[2] ,
 			udb_pwOut[3] ,
@@ -793,7 +795,7 @@ void send_debug_line(void)
             distance_ft[2]/((int32_t)40)
                     );
 #else
-			total_roll_feedback_horizontal ,         
+			ROLL_FEEDBACK ,        
             velocity_fps[0],
             velocity_fps[1],
             velocity_fps[2],
