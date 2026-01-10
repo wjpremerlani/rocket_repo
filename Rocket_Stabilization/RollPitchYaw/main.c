@@ -654,11 +654,11 @@ void send_debug_line(void)
 		{
 			if ( GROUND_TEST == 1)
 			{
-				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yaw_fd_back, pitch_fd_back, roll_fd_back, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
+				sprintf( debug_buffer , "gyroXoffset,gyroYoffset,gyroZoffset,yaw_fd_back, pitch_fd_back, roll_fd_back, pwm1, pwm2, pwm3, pwm4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			else
 			{
-				sprintf( debug_buffer , "yaw_fd_back, pitch_fd_back, roll_fd_back, out1, out2, out3, out4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
+				sprintf( debug_buffer , "yaw_fd_back, pitch_fd_back, roll_fd_back, pwm1, pwm2, pwm3, pwm4, yaw_velocity,pitch_velocity,vertical_velocity,yaw_disp,pitch_disp,vertical_disp\r\n" ) ;
 			}
 			line_number ++ ;
 			break ;
@@ -757,7 +757,7 @@ void send_debug_line(void)
 #if ( GROUND_TEST == 0 )
 			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%li,%li,%li\r\n",
 #endif // GROUND_TEST
 			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
 			roll_deviation,
@@ -795,7 +795,11 @@ void send_debug_line(void)
             distance_ft[2]/((int32_t)40)
                     );
 #else
-			ROLL_FEEDBACK ,        
+			ROLL_FEEDBACK ,
+            udb_pwOut[1] ,
+			udb_pwOut[2] ,
+			udb_pwOut[3] ,
+			udb_pwOut[4] ,
             velocity_fps[0],
             velocity_fps[1],
             velocity_fps[2],
