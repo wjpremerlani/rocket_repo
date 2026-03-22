@@ -503,7 +503,7 @@
 #define GROUND_TEST (1)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
-#define BOARD_ORIENTATION ORIENTATION_FLIPPED
+//#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
@@ -512,10 +512,10 @@
 #define PWM3_CENTER (3000)
 #define PWM4_CENTER (3000)
 
-#define PWM1_SIGN +
-#define PWM2_SIGN +
-#define PWM3_SIGN +
-#define PWM4_SIGN +
+#define PWM1_SIGN -
+#define PWM2_SIGN -
+#define PWM3_SIGN -
+#define PWM4_SIGN -
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -532,18 +532,17 @@
 
 #define BOARD "Wayne SN9 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "1/7/2026, gnd test"
+#define DATE "1/29/2026, gnd test"
 #else
-#define DATE "1/7/2026, flt rdy"
+#define DATE "1/29/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, horizontal inverted, apogee det"
+#define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
-//#define MAX_ROLL_ANGLE ( 30 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD9
@@ -555,7 +554,7 @@
 #define GROUND_TEST (1)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
-#define BOARD_ORIENTATION ORIENTATION_FLIPPED
+//#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
@@ -564,10 +563,10 @@
 #define PWM3_CENTER (3000)
 #define PWM4_CENTER (3000)
 
-#define PWM1_SIGN +
-#define PWM2_SIGN +
-#define PWM3_SIGN +
-#define PWM4_SIGN +
+#define PWM1_SIGN -
+#define PWM2_SIGN -
+#define PWM3_SIGN -
+#define PWM4_SIGN -
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -584,18 +583,17 @@
 
 #define BOARD "Wayne SN10 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "1/7/2026, gnd test"
+#define DATE "1/29/2026, gnd test"
 #else
-#define DATE "1/7/2026, flt rdy"
+#define DATE "1/29/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, horizontal inverted, apogee det"
+#define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
-//#define MAX_ROLL_ANGLE ( 540 )
-#define MAX_ROLL_ANGLE ( 30 )
+#define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD10
@@ -607,7 +605,7 @@
 #define GROUND_TEST 1
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
-#define BOARD_ORIENTATION ORIENTATION_FLIPPED
+//#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
@@ -636,19 +634,17 @@
 
 #define BOARD "Wayne SN11 mini7, temperature compensated"
 #if (( GROUND_TEST == 1 ))
-#define DATE "1/7/2026, gnd test"
+#define DATE "1/29/2026, gnd test"
 #else
-#define DATE "1/7/2026, flt rdy"
+#define DATE "1/29/2026, flt rdy"
 #endif // GROUND_TEST 
-#define REVISION "R23, horizontal inverted, apogee det"
+#define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
 #define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
 #define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
-//#define MAX_ROLL_ANGLE ( 30 )
-
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD11
 
