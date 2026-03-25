@@ -24,9 +24,6 @@
 #define WAYNE_BRD6 (0)
 #define WAYNE_BRD7 (0)
 #define WAYNE_BRD8 (0)
-#define WAYNE_BRD9 (1)
-#define WAYNE_BRD10 (0)
-#define WAYNE_BRD11 (0)
 
 // Florin's board
 #if( FLORIN == 1)
@@ -496,26 +493,31 @@
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD8
 
+#define WAYNE_BRD9 (0)
+#define WAYNE_BRD10 (0)
+#define WAYNE_BRD11 (1)
+
+
 #if ( WAYNE_BRD9 == 1 )
 #undef ACCEL_RANGE
 #define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn09.h"
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 //#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
-#define PWM1_CENTER (3000)
-#define PWM2_CENTER (3000)
-#define PWM3_CENTER (3000)
-#define PWM4_CENTER (3000)
+#define PWM1_CENTER (3070)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3042)
+#define PWM4_CENTER (3060)
 
-#define PWM1_SIGN -
-#define PWM2_SIGN -
-#define PWM3_SIGN -
-#define PWM4_SIGN -
+#define PWM1_SIGN +
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+#define PWM4_SIGN +
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -539,9 +541,9 @@
 #define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 100.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
@@ -551,22 +553,22 @@
 #undef ACCEL_RANGE
 #define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn10.h"
-#define GROUND_TEST (1)
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 //#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
-#define PWM1_CENTER (3000)
-#define PWM2_CENTER (3000)
-#define PWM3_CENTER (3000)
-#define PWM4_CENTER (3000)
+#define PWM1_CENTER (3070)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3042)
+#define PWM4_CENTER (3060)
 
-#define PWM1_SIGN -
-#define PWM2_SIGN -
-#define PWM3_SIGN -
-#define PWM4_SIGN -
+#define PWM1_SIGN +
+#define PWM2_SIGN +
+#define PWM3_SIGN +
+#define PWM4_SIGN +
 
 #define XACCEL_OFFSET	( 0 )
 #define YACCEL_OFFSET	( 0 )
@@ -590,9 +592,9 @@
 #define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 100.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
 
 #define GYRO_RANGE ( 1000 )
@@ -602,17 +604,17 @@
 #undef ACCEL_RANGE
 #define ACCEL_RANGE 16
 #define GYRO_OFFSET_TABLE "../libUDB/gyro_tables/table_vos_sn11.h"
-#define GROUND_TEST 1
+#define GROUND_TEST (0)
 #define USE_TILT (0)
 #define MOUNT_ORIENTATION HORIZONTAL_MOUNT
 //#define BOARD_ORIENTATION ORIENTATION_FLIPPED
 #define DETECT_APOGEE
 //#define NO_MIXING
 
-#define PWM1_CENTER (3000)
-#define PWM2_CENTER (3000)
-#define PWM3_CENTER (3000)
-#define PWM4_CENTER (3000)
+#define PWM1_CENTER (3070)
+#define PWM2_CENTER (2944)
+#define PWM3_CENTER (3042)
+#define PWM4_CENTER (3060)
 
 #define PWM1_SIGN +
 #define PWM2_SIGN +
@@ -641,9 +643,9 @@
 #define REVISION "R23, horizontal upright, apogee det"
 #define MAX_TILT_ANGLE ( 30.0 ) // degrees
 #define MAX_TILT_RATE ( 500.0 ) // degrees per second
-#define MAX_TILT_PULSE_WIDTH ( 350.0 ) // microseconds
+#define MAX_TILT_PULSE_WIDTH ( 400.0 ) // microseconds
 #define MAX_SPIN_RATE ( 2000.0 ) // degrees per second
-#define MAX_SPIN_PULSE_WIDTH ( 150.0 ) // microseconds
+#define MAX_SPIN_PULSE_WIDTH ( 100.0 ) // microseconds
 #define MAX_ROLL_ANGLE ( 540 )
 #define GYRO_RANGE ( 1000 )
 #endif // WAYNE_BRD11
