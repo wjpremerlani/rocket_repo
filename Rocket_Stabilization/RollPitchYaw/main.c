@@ -81,6 +81,11 @@ void init_events(void)
 {
 }
 
+int16_t hundredths = 0 ;
+//int16_t tenths = 0 ;
+int16_t seconds = 0 ;
+int16_t minutes = 0 ;
+
 // Called every 1/40 second at high priority
 void udb_heartbeat_40hz_callback(void)
 {
@@ -99,6 +104,21 @@ void udb_heartbeat_40hz_callback(void)
 	{
 		// No longer calibrating: solid RED and send debug output
 		LED_RED = LED_ON;
+
+    if (udb_heartbeat_counter % 2 == 0)
+    {
+      hundredths += 5 ;
+      if ( hundredths == 100 )
+      {
+        hundredths = 0 ;
+        seconds++ ;
+        if ( seconds == 60 )
+        {
+          seconds = 0 ;
+          minutes++ ;
+        }
+      }
+    }
 	}
 }
 
@@ -108,11 +128,6 @@ void dcm_callback_gps_location_updated(void)
 	// Blink GREEN led to show that the GPS is communicating
 	udb_led_toggle(LED_GREEN);
 }
-
-//int16_t hundredths = 0 ;
-int16_t tenths = 0 ;
-int16_t seconds = 0 ;
-int16_t minutes = 0 ;
 
 #define TILT_ALLOTMENT ( 2.0*MAX_TILT_PULSE_WIDTH )
 #define SPIN_ALLOTMENT ( 2.0*MAX_SPIN_PULSE_WIDTH )
@@ -698,11 +713,11 @@ void send_debug_line(void)
 		roll_angle = rect_to_polar16(&roll_reference) ;
 //		sprintf(debug_buffer, "%i:%2.2i.%.1i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i\r\n",
 #if ( GROUND_TEST == 0 )
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 #else
-			sprintf(debug_buffer, "%i:%2.2i.%.1i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i\r\n",
+			sprintf(debug_buffer, "%i:%2.2i.%.2i,%i,%i,%i,%i,%i,%i,%i,%.2f,%i,%i,%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i,%i,%i,%i,%i,%i\r\n",
 #endif // GROUND_TEST
-			minutes, seconds , tenths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) , 
+			minutes, seconds , hundredths ,  controlModeYawPitch, controlModeRoll , accelOn, launch_count, launched , tilt_count, apogee, ((double)roll_angle)/(182.0) ,
 			roll_deviation,
 			rmat[6], rmat[7], rmat[8] ,
 //			offsetX , offsetZ ,
@@ -736,20 +751,7 @@ void send_debug_line(void)
 			total_roll_feedback_horizontal ) ;
 #endif // GROUND_TEST
 //			(uint16_t) udb_cpu_load() );
-			tenths ++ ;
-//			hundredths += 5 ;
-			if ( tenths == 10 )
-//			if ( hundredths == 100 )
-			{
-				tenths = 0 ;
-//				hundredths = 0 ;
-				seconds++ ;
-				if ( seconds == 60 )
-				{
-					seconds = 0 ;
-					minutes++ ;
-				}
-			}
+
 			break ;
 		}
 	}
